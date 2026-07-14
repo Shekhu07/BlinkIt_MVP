@@ -1,0 +1,8 @@
+google-play-scraper
+app-store-scraper
+psycopg2-binary
+SQLAlchemy
+celery
+redis
+google-generativeai
+python-dotenv
