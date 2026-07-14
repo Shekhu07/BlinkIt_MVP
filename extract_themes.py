@@ -53,12 +53,17 @@ def extract_insights():
     session = SessionLocal()
     print("Session created.")
     try:
+        batch_count = 0
         while True:
+            if batch_count >= 3:
+                print("Reached batch limit. Done for now.")
+                break
+            batch_count += 1
             print("Querying extracted_ids...")
             extracted_ids = [e.filtered_review_id for e in session.query(Extraction.filtered_review_id).all()]
             print(f"Found {len(extracted_ids)} extracted_ids.")
             print("Querying reviews_to_process...")
-            reviews_to_process = session.query(FilteredReview).filter(~FilteredReview.id.in_(extracted_ids)).limit(50).all()
+            reviews_to_process = session.query(FilteredReview).filter(~FilteredReview.id.in_(extracted_ids)).order_by(FilteredReview.id.desc()).limit(50).all()
             
             if not reviews_to_process:
                 print("No new reviews to process. Done!")

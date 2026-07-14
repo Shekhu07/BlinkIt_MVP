@@ -15,20 +15,20 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 ## 2. Phase-by-Phase Plan
 
 ### Phase 0 — Setup (Day 1)
-- [ ] Confirm Blinkit's current Play Store package ID / App Store ID
-- [x] Register Reddit API app (Dropped: Scoping to Play Store / App Store only)
-- [ ] Stand up Postgres schema for Part 1 (raw_reviews, filtered_reviews, extractions, themes, theme_evidence, validation_samples, company_disclosures)
+- [x] Confirm Blinkit's current Play Store package ID (App Store dropped due to strict bot protection)
+- [x] Register Reddit API app (Dropped: Scoping to Play Store / MouthShut / CC only)
+- [x] Stand up Postgres schema for Part 1 (raw_reviews, filtered_reviews, extractions, themes, theme_evidence, validation_samples, company_disclosures)
 - [ ] Reuse Celery + Redis config from existing news-tracker project
 - [ ] Confirm Gemini 1.5 Flash API access via Google AI Studio for both Part 1 extraction and Part 4 agent reasoning
 - [ ] Block out interview recruitment channels for Part 2 (personal network, online communities, paid panel if needed) — start early since scheduling 5–6 interviews takes lead time
 
 ### Phase 1 — Discovery Engine Build (Days 2–8)
 *(Detailed sub-tasks in the Part 1–specific implementation plan; summarized here)*
-- [ ] Days 2–4: Ingestion — Play Store, App Store scrapers; dedup
-- [ ] Days 4–5: Pre-filtering (TF-IDF)
-- [ ] Days 5–7: LLM extraction (batched Gemini 1.5 Flash calls, structured JSON)
-- [ ] Days 7–8: Theme clustering + ranking
-- [ ] **Milestone**: by end of Day 8, have a ranked theme list with evidence — this determines your Part 2 segment choice, so don't let this slip
+- [x] Days 2–4: Ingestion — Play Store, App Store (JSON dump), MouthShut, ConsumerComplaints; dedup
+- [x] Days 4–5: Pre-filtering (TF-IDF)
+- [x] Days 5–7: LLM extraction (batched Gemini 1.5 Flash calls, structured JSON)
+- [x] Days 7–8: Theme clustering + ranking
+- [x] **Milestone**: by end of Day 8, have a ranked theme list with evidence — this determines your Part 2 segment choice, so don't let this slip
 
 ### Phase 2 — Validation + Supplementary Signal (Day 9, parallel)
 - [ ] Sample-validate top themes (human + optional LLM-judge cross-check), log agreement rate

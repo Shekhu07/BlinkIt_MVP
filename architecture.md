@@ -34,7 +34,7 @@ Each part **consumes the output of the previous part as its primary input.** Thi
 *(Full detail lives in the Part 1–specific architecture doc already built; summarized here for the whole-project view.)*
 
 ```
-Data Sources (Play Store, App Store, forums, Eternal concalls)
+Data Sources (Play Store, App Store [JSON dump], MouthShut, ConsumerComplaints, Eternal concalls)
    -> Ingestion (Celery + Redis, dedup via SHA-256)
    -> Pre-filter (TF-IDF, drop non-relevant noise)
    -> LLM Extraction (Gemini 1.5 Flash, structured JSON: behavior_type, category, reason, confidence)
@@ -111,7 +111,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 | Layer | Choice | Used in |
 |---|---|---|
 | Task orchestration | Celery + Redis | Part 1 ingestion, Part 4 background jobs if needed |
-| Scraping | `google-play-scraper`, `app-store-scraper` | Part 1 |
+| Scraping | `google-play-scraper`, `BeautifulSoup`, `Playwright` (MouthShut, CC), JSON parsing (App Store) | Part 1 |
 | Pre-filter | TF-IDF (scikit-learn) | Part 1 |
 | LLM | Gemini 1.5 Flash API | Part 1 extraction, Part 4 agent reasoning |
 | Storage | PostgreSQL | Part 1 themes/evidence, Part 4 synthetic user profiles |
