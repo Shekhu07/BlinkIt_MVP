@@ -31,14 +31,14 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 - [x] **Milestone**: by end of Day 8, have a ranked theme list with evidence — this determines your Part 2 segment choice, so don't let this slip
 
 ### Phase 2 — Validation + Supplementary Signal (Day 9, parallel)
-- [ ] Sample-validate top themes (human + optional LLM-judge cross-check), log agreement rate
-- [ ] Manually review last 2–3 Eternal earnings call transcripts, log corroborating/contradicting points against themes
+- [x] Sample-validate top themes (human + optional LLM-judge cross-check), log agreement rate
+- [x] Manually review last 2–3 Eternal earnings call transcripts, log corroborating/contradicting points against themes
 
 ### Phase 3 — User Research (Days 8–13, overlapping with late Phase 1/2)
-- [ ] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question)
-- [ ] Days 9–11: Recruit and schedule 5–6 interviewees matching the segment
-- [ ] Days 11–13: Conduct interviews, take notes/recordings (with consent)
-- [ ] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — this is the direct input to Part 3
+- [x] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question)
+- [x] Days 9–11: Recruit and schedule 5–6 interviewees matching the segment *(mocked for prototype)*
+- [x] Days 11–13: Conduct interviews, take notes/recordings (with consent) *(mocked for prototype)*
+- [x] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — this is the direct input to Part 3
 - [ ] **Risk flag**: interview scheduling is usually the slowest part of any research plan — start recruitment outreach as early as Day 8, don't wait for Phase 1 to fully close first
 
 ### Phase 4 — Problem Definition Synthesis (Days 13–14)

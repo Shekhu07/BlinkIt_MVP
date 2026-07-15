@@ -43,7 +43,7 @@ Data Sources (Play Store, App Store [JSON dump], MouthShut, ConsumerComplaints, 
    -> Postgres storage + FastAPI query endpoint
 ```
 
-**Output artifact carried into Part 2**: a ranked list of themes (e.g., "trust deficit on personal-care brand sourcing," "no discovery trigger at right moment," "habitual reordering via saved carts") each tagged with a likely user segment. This ranked list is what determines *which* segment you recruit for interviews — not a guess made independently.
+**Output artifact carried into Part 2**: a ranked list of themes (actual validated theme: "Post-Purchase Support & Refund Friction") each tagged with a likely user segment. This ranked list is what determines *which* segment you recruit for interviews — not a guess made independently.
 
 **Supplementary signal**: Eternal Ltd's (Blinkit's public parent) earnings call transcripts, manually reviewed, logged against themes as `corroborates | contradicts | unrelated_context`. This becomes direct ammunition for Part 3's business case.
 
@@ -82,7 +82,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 
 **"Category Nudge Agent"** — an AI agent that:
 1. Takes a user's recent basket/order history (mocked/synthetic data if you don't have Blinkit's real order data — this is expected and fine for a fellowship MVP)
-2. Cross-references it against the validated friction themes from Part 1+3 (e.g., if the blocking reason is "trust deficit," the nudge leads with a trust signal — ratings, return policy — rather than just a generic "try this!" banner)
+2. Cross-references it against the validated friction themes from Part 1+3 (i.e. the "Post-Purchase Support & Refund Friction" theme; the nudge leads with a strong support/return guarantee — rather than just a generic "try this!" banner)
 3. Outputs a specific, reasoned category suggestion + the *reason* framed to counter the specific friction identified — this is the part that makes it "AI-native" rather than a static rules-based recommender: the reasoning is generated per-user based on which theme applies to them, not a fixed lookup table
 
 ### 6.2 Component architecture
