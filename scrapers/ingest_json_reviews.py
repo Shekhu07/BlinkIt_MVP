@@ -26,7 +26,8 @@ class RawReview(Base):
 def ingest_json_reviews():
     session = SessionLocal()
     try:
-        with open('blinkit_reviews.json', 'r') as f:
+        json_path = os.path.join(os.path.dirname(__file__), '../data/blinkit_reviews.json')
+        with open(json_path, 'r') as f:
             data = json.load(f)
             
         inserted_count = 0
