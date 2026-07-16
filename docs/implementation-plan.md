@@ -24,7 +24,7 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 
 ### Phase 1 — Discovery Engine Build (Days 2–8)
 *(Detailed sub-tasks in the Part 1–specific implementation plan; summarized here)*
-- [x] Days 2–4: Ingestion — Play Store, App Store (JSON dump), MouthShut, ConsumerComplaints; dedup
+- [x] Days 2–4: Ingestion — Play Store, Google Maps, App Store, ConsumerComplaints (via 11k+ `MASTER_Blinkit_Reviews.json`); deduped
 - [x] Days 4–5: Pre-filtering (TF-IDF)
 - [x] Days 5–7: LLM extraction (batched Gemini 1.5 Flash calls, structured JSON)
 - [x] Days 7–8: Theme clustering + ranking

@@ -68,19 +68,22 @@ def cluster_themes():
                         temperature=0.2
                     )
                 )
+                themes_data = json.loads(response.text)
                 break
             except Exception as e:
                 import time
                 if "429" in str(e) or "quota" in str(e).lower():
                     print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
                     time.sleep(35)
+                elif isinstance(e, json.JSONDecodeError):
+                    print(f"Bad JSON generated (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                    time.sleep(5)
                 else:
                     raise e
-
-        themes_data = json.loads(response.text)
         
         # Clear old themes for idempotency during dev
-        session.query(Theme).delete()
+        from sqlalchemy import text
+        session.execute(text("TRUNCATE TABLE themes CASCADE"))
         
         for t in themes_data:
             theme = Theme(
