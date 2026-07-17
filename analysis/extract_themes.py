@@ -36,16 +36,20 @@ class Extraction(Base):
     __tablename__ = "extractions"
     id = Column(Integer, primary_key=True)
     filtered_review_id = Column(Integer)
+    mentions_category_behavior = Column(Boolean)
     behavior_type = Column(String(100))
     category = Column(String(100))
     reason = Column(Text)
+    sentiment = Column(String(100))
     confidence = Column(Float)
 
 class SingleExtraction(typing.TypedDict):
     filtered_review_id: int
+    mentions_category_behavior: bool
     behavior_type: str
-    category: str
-    reason: str
+    category_mentioned: str
+    underlying_reason: str
+    sentiment: str
     confidence: float
 
 def extract_insights():
@@ -76,11 +80,17 @@ def extract_insights():
                 batch_text += f"Review ID: {r.id}\nContent: {r.filtered_content}\n---\n"
                 
             prompt = (
-                "You are a Product Manager at Blinkit analyzing user reviews. "
-                "For each review provided, extract any friction or reason why a user might not adopt "
-                "new categories (like electronics, personal care, etc) or why they have a bad experience. "
-                "If a review doesn't contain a clear reason or friction, ignore it. "
-                "Return a JSON array of extractions, maintaining the Review ID provided."
+                "You are an AI extracting specific user behavior from reviews. "
+                "Step 1 - Relevance Gate: Check if the text relates to: why a user keeps buying the same category, "
+                "why a user has not tried an unfamiliar category, how users discover new products/categories, "
+                "a specific moment of considering/trying/rejecting a category, trust or risk about trying something unfamiliar, "
+                "or habitual/repeat-purchase patterns. If it is primarily about refunds, support, delivery timing/conduct, "
+                "pricing, payments, or general app bugs with no explicit tie to category trial/avoidance, set mentions_category_behavior to false.\n"
+                "Step 2 - Extraction: If mentions_category_behavior is true, fill in behavior_type (repeat_purchase | category_avoidance | discovery_friction | new_category_trial), "
+                "category_mentioned (groceries | personal_care | pet_supplies | baby_products | electronics | household_essentials | snacks_beverages | other | unspecified), "
+                "underlying_reason (one sentence, paraphrased), and sentiment (frustration | neutral_observation | satisfaction | curiosity). "
+                "If mentions_category_behavior is false, leave other fields blank or default. "
+                "Maintain the Review ID provided."
             )
 
             for attempt in range(5):
@@ -93,32 +103,44 @@ def extract_insights():
                             temperature=0.1
                         )
                     )
+                    extractions_data = json.loads(response.text)
                     break
                 except Exception as e:
                     import time
                     if "429" in str(e) or "quota" in str(e).lower():
                         print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
                         time.sleep(35)
+                    elif isinstance(e, json.JSONDecodeError):
+                        print(f"Bad JSON (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                        time.sleep(5)
                     else:
                         raise e
             
-            extractions_data = json.loads(response.text)
-            print(f"Gemini extracted {len(extractions_data)} insights!")
+            print(f"Gemini processed {len(extractions_data)} reviews in batch!")
             
             inserted = 0
+            rejected = 0
             for data in extractions_data:
+                # We save all of them so we don't process them again, but we track the gate
+                mentions = data.get('mentions_category_behavior', False)
+                if not mentions:
+                    rejected += 1
+                
                 ext = Extraction(
                     filtered_review_id=data.get('filtered_review_id'),
+                    mentions_category_behavior=mentions,
                     behavior_type=data.get('behavior_type', 'unknown')[:100],
-                    category=data.get('category', 'unknown')[:100],
-                    reason=data.get('reason', ''),
+                    category=data.get('category_mentioned', 'unknown')[:100],
+                    reason=data.get('underlying_reason', ''),
+                    sentiment=data.get('sentiment', 'unknown')[:100],
                     confidence=float(data.get('confidence', 0.8))
                 )
                 session.add(ext)
-                inserted += 1
+                if mentions:
+                    inserted += 1
                 
             session.commit()
-            print(f"Saved {inserted} extractions to the database.")
+            print(f"Batch complete. Valid signal extracted: {inserted}. Rejected as noise: {rejected}.")
 
     except Exception as e:
         session.rollback()

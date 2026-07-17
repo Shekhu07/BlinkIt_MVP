@@ -3,7 +3,7 @@ import json
 import google.generativeai as genai
 import typing_extensions as typing
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, String, Text
+from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
@@ -18,7 +18,13 @@ Base = declarative_base()
 class Extraction(Base):
     __tablename__ = "extractions"
     id = Column(Integer, primary_key=True)
+    filtered_review_id = Column(Integer)
+    mentions_category_behavior = Column(Boolean)
+    behavior_type = Column(String(100))
+    category = Column(String(100))
     reason = Column(Text)
+    sentiment = Column(String(100))
+    confidence = Column(Float)
 
 class Theme(Base):
     __tablename__ = "themes"
