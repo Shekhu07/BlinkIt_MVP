@@ -43,9 +43,35 @@ Data Sources (Play Store, App Store [JSON dump], MouthShut, ConsumerComplaints, 
    -> Postgres storage + FastAPI query endpoint
 ```
 
-**Output artifact carried into Part 2**: a ranked list of themes (actual validated theme: "Post-Purchase Support & Refund Friction") each tagged with a likely user segment. This ranked list is what determines *which* segment you recruit for interviews — not a guess made independently.
+**Output artifact carried into Part 2**: a ranked list of themes (e.g., "trust deficit on personal-care brand sourcing," "no discovery trigger at right moment," "habitual reordering via saved carts") each tagged with a likely user segment. This ranked list is what determines *which* segment you recruit for interviews — not a guess made independently.
 
 **Supplementary signal**: Eternal Ltd's (Blinkit's public parent) earnings call transcripts, manually reviewed, logged against themes as `corroborates | contradicts | unrelated_context`. This becomes direct ammunition for Part 3's business case.
+
+### 3.1 LLM Extraction — Gated Schema (revised)
+
+**Why this matters — a calibration failure found and fixed during the build**: an initial run of the extraction step against the full ~11,000-review corpus surfaced four macro-themes (broken refund/support, quality control failures, inflated pricing/COD, delivery partner misconduct) that were all general service-quality issues, not category-adoption behavior. None connected credibly to the strategic goal. Root cause: the extraction prompt was doing open-ended theme generation instead of hard-gating on relevance to category exploration, discovery, or repeat-purchase habits — so the LLM clustered on whatever was most prevalent in the raw text (service complaints, which dominate review corpora by volume), rather than what was relevant to the research question. The extraction step was rewritten to gate strictly on relevance before extracting anything.
+
+**Revised extraction logic — two-step gate-then-extract:**
+
+*Step 1 — Relevance gate.* The prompt requires the model to check whether the text relates to: why a user keeps buying the same category, why a user has *not* tried an unfamiliar category, how users discover new products/categories, a specific moment of considering/trying/rejecting a category, trust or risk specifically about trying something unfamiliar, or habitual/repeat-purchase patterns. Text that is primarily about refunds, support, delivery timing/conduct, pricing, payments, or general app bugs — **with no explicit tie to category trial/avoidance** — is rejected at this step (`mentions_category_behavior: false`) rather than forced into a theme.
+
+*Step 2 — Structured extraction (only if Step 1 passes):*
+```json
+{
+  "mentions_category_behavior": true,
+  "behavior_type": "repeat_purchase | category_avoidance | discovery_friction | new_category_trial",
+  "category_mentioned": "groceries | personal_care | pet_supplies | baby_products | electronics | household_essentials | snacks_beverages | other | unspecified",
+  "underlying_reason": "one sentence, paraphrased, not a quote",
+  "sentiment": "frustration | neutral_observation | satisfaction | curiosity",
+  "confidence": 0.0-1.0
+}
+```
+
+**Few-shot calibration**: the prompt includes worked examples distinguishing genuine category-behavior signal from complaints that merely *mention* a category incidentally (e.g., a wrong-item refund complaint that happens to name "baby wipes" is correctly rejected — it says nothing about why the user chose or avoided that category).
+
+**Expected effect**: the surviving dataset after re-running Step 1 against the existing 11,000-review corpus is expected to shrink substantially (to an estimated low hundreds of extractions) — this is the correct outcome, not a regression. A high `mentions_category_behavior: false` rate is itself a data point worth carrying into Part 3: category-behavior signal is genuinely scarce and mostly implicit in review data, which says something about how invisible this problem is to users themselves.
+
+**Downstream implication for segment/theme selection**: no segment or theme should be locked in for Part 2 recruitment until the gated re-extraction has run and produced a theme ranking that plausibly connects to category-adoption behavior specifically, not general app service quality.
 
 ---
 

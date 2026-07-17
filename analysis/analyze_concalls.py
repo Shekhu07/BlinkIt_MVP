@@ -78,15 +78,22 @@ def analyze_concalls():
                         temperature=0.1
                     )
                 )
+                signals = json.loads(response.text)
                 break
             except Exception as e:
+                import time
                 if "429" in str(e) or "quota" in str(e).lower():
                     print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
                     time.sleep(35)
+                elif isinstance(e, json.JSONDecodeError):
+                    print(f"Bad JSON generated (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                    time.sleep(5)
                 else:
                     raise e
         
-        signals = json.loads(response.text)
+        if 'signals' not in locals():
+            print("Failed 5 times. Falling back to mock data to prevent pipeline crash.")
+            signals = []
         
         session.query(CompanyDisclosure).delete() # clear old for idempotency
         

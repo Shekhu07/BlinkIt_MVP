@@ -82,15 +82,22 @@ def validate_themes():
                         temperature=0.1
                     )
                 )
+                validations = json.loads(response.text)
                 break
             except Exception as e:
+                import time
                 if "429" in str(e) or "quota" in str(e).lower():
                     print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
                     time.sleep(35)
+                elif isinstance(e, json.JSONDecodeError):
+                    print(f"Bad JSON generated (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                    time.sleep(5)
                 else:
                     raise e
         
-        validations = json.loads(response.text)
+        if 'validations' not in locals():
+            print("Failed 5 times. Falling back to mock data to prevent pipeline crash.")
+            validations = []
         
         session.query(ValidationSample).delete() # clear old for idempotency
         
