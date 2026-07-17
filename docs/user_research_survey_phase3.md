@@ -1,84 +1,69 @@
-# User Research Survey: Blinkit Customer Support & Refunds
+# User Research Survey: Category Trial & High-Value Items
 
-**Target Segment:** High-value shoppers and digital payment users.
-**Core Theme to Validate:** Broken Refund and Customer Support Ecosystem.
+**Target Segment:** Occasional non-grocery and high-ticket buyers.
+**Core Theme to Validate:** Friction in High-Value & Non-Grocery Categories (Category Adoption Avoidance)
 
 ---
 
 ## Section 1: Screener & Basic Usage
-*Description: Understanding the user's current relationship with Blinkit to ensure they fit our high-value target segment.*
+*Description: Understanding the user's current relationship with Blinkit to ensure they fit our target segment.*
 
-**1. How often do you use quick-commerce apps (Blinkit, Zepto, Swiggy Instamart) in a typical month?**
+**1. How often do you use quick-commerce apps (Blinkit, Zepto, Swiggy Instamart) for daily groceries or fresh produce?**
 *(Multiple Choice)*
-- [ ] Less than 5 times
-- [ ] 5 - 10 times
-- [ ] 10 - 20 times
-- [ ] More than 20 times
+- [ ] Rarely or Never
+- [ ] 1-3 times a month
+- [ ] 1-2 times a week
+- [ ] Almost daily
 
-**2. What is your typical average order value when shopping on Blinkit?**
-*(Multiple Choice)*
-- [ ] Under ₹300
-- [ ] ₹300 - ₹800
-- [ ] ₹800 - ₹1,500
-- [ ] Over ₹1,500
+**2. Which of the following categories have you EVER purchased on Blinkit?**
+*(Checkboxes)*
+- [ ] Fresh Produce (Fruits & Vegetables)
+- [ ] Dairy & Breakfast
+- [ ] Snacks & Beverages
+- [ ] Personal Care & Beauty
+- [ ] Electronics & Appliances
+- [ ] Apparel & Home Goods
 
-**3. What is your preferred method of payment on Blinkit?**
+**3. When was the last time you bought an unfamiliar brand or tried a completely new product category on a quick-commerce app?**
 *(Multiple Choice)*
-- [ ] UPI (GPay, PhonePe, Paytm, etc.)
-- [ ] Credit / Debit Card
-- [ ] Blinkit Wallet / Sodexo
-- [ ] Cash on Delivery (COD)
+- [ ] Within the last week
+- [ ] Within the last month
+- [ ] More than 6 months ago
+- [ ] I stick strictly to the exact same items I know
 
 ---
 
 ## Section 2: Core Experience & Friction
-*Description: Probing into the specific friction points around refunds and support without asking leading questions.*
+*Description: Probing into the specific friction points around adopting new, high-value categories.*
 
-**4. Have you ever received a missing, expired, or damaged item in your Blinkit order?**
+**4. You mentioned you primarily buy groceries. Have you ever considered buying something more expensive (like Electronics, Grooming appliances, or Premium Beauty) on Blinkit but decided NOT to?**
 *(Multiple Choice)*
-- [ ] Yes, frequently
-- [ ] Yes, occasionally
-- [ ] No, never *(Skip to Section 4)*
+- [ ] Yes, recently
+- [ ] Yes, a while ago
+- [ ] No, I have never considered it *(Skip to Section 4)*
 
-**5. Think about the last time something was wrong with your order. How easy was it to get a resolution (refund or replacement) through the Blinkit app?**
-*(Linear Scale: 1 to 5)*
-- 1: Extremely difficult and frustrating
-- 2: Somewhat difficult
-- 3: Neutral
-- 4: Easy
-- 5: Extremely easy and seamless
-
-**6. Walk us through exactly what happened during that support experience. What did you try to do, and what was the outcome?**
+**5. Walk us through exactly what happened in that moment of consideration. What were you looking at, and what was the main reason you abandoned the purchase?**
 *(Paragraph / Long Answer)*
 - *(Provide a text box for the user to explain their story)*
 
-**7. If you received a partial refund or Blinkit Cash instead of a full refund to your original payment method, how did that make you feel?**
+**6. When comparing Blinkit to platforms like Amazon or Flipkart for high-value items, what is the biggest perceived risk with using Blinkit?**
 *(Paragraph / Long Answer)*
 - *(Provide a text box)*
-- *Optional Hint text: Did it affect your trust in the platform?*
+- *Optional Hint text: Is it about return policies, authenticity, or something else?*
 
 ---
 
 ## Section 3: Trust & Future Adoption
-*Description: Understanding how this friction impacts their willingness to buy high-value items.*
+*Description: Understanding what it takes to convert habitual grocery buyers into category explorers.*
 
-**8. Blinkit now sells electronics, beauty products, and high-value appliances. How likely are you to purchase a high-value item (over ₹2,000) on Blinkit?**
+**7. How much do you agree with this statement: "I trust Blinkit for my daily milk and bread, but I don't trust them with a ₹5,000 electronics purchase."**
 *(Linear Scale: 1 to 5)*
-- 1: Very unlikely
-- 2: Unlikely
+- 1: Strongly Disagree
+- 2: Disagree
 - 3: Neutral
-- 4: Likely
-- 5: Very likely
+- 4: Agree
+- 5: Strongly Agree
 
-**9. If you selected 1, 2, or 3 in the previous question, what is the main reason holding you back?**
-*(Checkboxes / Multiple Selection)*
-- [ ] I don't trust the delivery partners with expensive items.
-- [ ] I am worried I won't be able to get a refund if the item is defective.
-- [ ] I can't check the item physically before accepting it.
-- [ ] Customer support is too hard to reach if something goes wrong.
-- [ ] The prices/fees are higher than on Amazon or Flipkart.
-- [ ] Other: ________________
-
-**10. What is the ONE thing Blinkit could change about its customer support that would make you feel completely safe buying expensive items from them?**
+**8. If you selected 4 or 5 above, what is the ONE thing Blinkit could change or communicate better that would completely eliminate that fear?**
 *(Paragraph / Long Answer)*
 - *(Provide a text box)*
