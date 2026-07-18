@@ -139,7 +139,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 | Task orchestration | Celery + Redis | Part 1 ingestion, Part 4 background jobs if needed |
 | Scraping | `google-play-scraper`, `BeautifulSoup`, `Playwright` (MouthShut, CC), JSON parsing (App Store) | Part 1 |
 | Pre-filter | TF-IDF (scikit-learn) | Part 1 |
-| LLM | Gemini 1.5 Flash API | Part 1 extraction, Part 4 agent reasoning |
+| LLM | Groq (Llama 3.3 70B) | Part 1 extraction/clustering/validation, Part 4 agent reasoning — switched from Gemini 1.5 Flash (deprecated/removed from the API) after the Gemini free tier's 20-requests/day cap made a multi-thousand-review batch run infeasible |
 | Storage | PostgreSQL | Part 1 themes/evidence, Part 4 synthetic user profiles |
 | API layer | FastAPI | Part 1 query endpoint, Part 4 MVP endpoint |
 | Automation | n8n (optional) | Scheduling Part 1 ingestion, could trigger Part 4 nudge generation on a cadence |

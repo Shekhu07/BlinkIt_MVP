@@ -18,28 +18,28 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 - [x] Confirm Blinkit's current Play Store package ID (App Store dropped due to strict bot protection)
 - [x] Register Reddit API app (Dropped: Scoping to Play Store / MouthShut / CC only)
 - [x] Stand up Postgres schema for Part 1 (raw_reviews, filtered_reviews, extractions, themes, theme_evidence, validation_samples, company_disclosures)
-- [ ] Reuse Celery + Redis config from existing news-tracker project
-- [ ] Confirm Gemini 1.5 Flash API access via Google AI Studio for both Part 1 extraction and Part 4 agent reasoning
-- [ ] Block out interview recruitment channels for Part 2 (personal network, online communities, paid panel if needed) — start early since scheduling 5–6 interviews takes lead time
+- [ ] Reuse Celery + Redis config from existing news-tracker project (Redis is running via docker-compose for the Postgres/Redis stack, but the Part 1 scripts run as direct Python invocations, not yet wired through Celery tasks)
+- [x] Confirm Gemini API access via Google AI Studio — **confirmed but switched off**: Gemini's free tier caps at 20 requests/day (and "Gemini 1.5 Flash" itself is deprecated/removed from the API entirely as of 2026-07-18). Moved to **Groq** (`llama-3.1-8b-instant` / `llama-3.3-70b-versatile`) for both Part 1 extraction and the planned Part 4 agent reasoning — see architecture.md §7.
+- [x] Block out interview recruitment channels for Part 2 (personal network, online communities) — see `interview_recruitment_kit.md` for outreach templates; actual recruitment execution still pending (Phase 3)
 
 ### Phase 1 — Discovery Engine Build (Days 2–8)
 *(Detailed sub-tasks in the Part 1–specific implementation plan; summarized here)*
-- [x] Days 2–4: Ingestion — Play Store, Google Maps, App Store, ConsumerComplaints (via 11k+ `MASTER_Blinkit_Reviews.json`); deduped
-- [x] Days 4–5: Pre-filtering (TF-IDF)
-- [x] Days 5–7: LLM extraction (batched Gemini 1.5 Flash calls, structured JSON)
-- [x] Days 7–8: Theme clustering + ranking
-- [x] **Milestone**: by end of Day 8, have a ranked theme list with evidence — this determines your Part 2 segment choice, so don't let this slip
+- [x] Days 2–4: Ingestion — Play Store, Google Maps, App Store, ConsumerComplaints (via 11k+ `MASTER_Blinkit_Reviews.json`); deduped — 15,820 raw reviews in Postgres
+- [x] Days 4–5: Pre-filtering (heuristic filter — short/5-star reviews dropped) — 4,740 filtered reviews
+- [x] Days 5–7: LLM extraction (Two-Step Gated Schema, batched Groq `llama-3.1-8b-instant` calls, structured JSON) — **re-run for real 2026-07-18** end-to-end over all 4,740 filtered reviews (the original run had silently stalled at 150/4,740 on Gemini's free-tier quota); 1,094 gate-passing extractions (~23%)
+- [x] Days 7–8: Theme clustering + ranking — **redesigned 2026-07-18** to cluster real category×behavior_type combinations with deterministic, DB-backed `evidence_count` (not LLM-estimated). Top theme: **"Poor Quality and Unreliable Products," 770/1,094 evidence (70%)**, stable across repeated independent runs. See `docs/architecture.md` §3.1 and §7.
+- [x] **Milestone**: ranked theme list with real evidence — done, see above. This is now the actual, evidence-backed Part 2 segment basis (not the earlier assumption).
 
 ### Phase 2 — Validation + Supplementary Signal (Day 9, parallel)
-- [x] Sample-validate top themes (human + optional LLM-judge cross-check), log agreement rate
-- [x] Manually review last 2–3 Eternal earnings call transcripts, log corroborating/contradicting points against themes
+- [x] Sample-validate top themes (LLM-judge cross-check against a held-out theme-relevant sample, not random reviews) — **fixed and re-run 2026-07-18**; original script validated against arbitrary raw reviews (mostly unrelated 5-star "good"/"nice" noise). Real result: 16/20 confirmed, 4/20 unclear, 0 contradicted.
+- [x] Review Eternal (Blinkit's parent) Q4 FY26 earnings call transcript (real, fetched 2026-07-18 from investor relations, not fabricated), log corroborating/contradicting points against the real top theme — result: transcript doesn't directly address quality/refund friction (an honest, expected finding per §5 Cross-Project Risks below), but does confirm non-grocery assortment expansion is a real strategic growth driver for Eternal, useful for Phase 4's business-case argument.
 
 ### Phase 3 — User Research (Days 8–13, overlapping with late Phase 1/2)
-- [x] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question)
-- [x] Days 9–11: Recruit and schedule 5–6 interviewees matching the segment *(mocked for prototype)*
-- [x] Days 11–13: Conduct interviews, take notes/recordings (with consent) *(mocked for prototype)*
-- [x] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — this is the direct input to Part 3
-- [ ] **Risk flag**: interview scheduling is usually the slowest part of any research plan — start recruitment outreach as early as Day 8, don't wait for Phase 1 to fully close first
+- [x] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question) — **redone 2026-07-18 against the real Part 1 theme** ("Poor Quality and Unreliable Products," 770 evidence) after the original extraction turned out to be running on incomplete/mock data; see `part2_research_tracker.md` and `interview_recruitment_kit.md`
+- [ ] Days 9–11: Recruit and schedule 5–6 interviewees matching the segment — **not started for real; `mock_interview_notes.md` was a prototype placeholder, not actual recruitment.** Use `interview_recruitment_kit.md` outreach templates.
+- [ ] Days 11–13: Conduct interviews, take notes/recordings (with consent) — **not started**
+- [ ] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — **not started; depends on real interviews above**
+- [ ] **Risk flag**: interview scheduling is usually the slowest part of any research plan — start recruitment outreach immediately, this is now the critical path blocking Phase 4
 
 ### Phase 4 — Problem Definition Synthesis (Days 13–14)
 - [ ] Write the problem statement covering: target segment, root cause, existing workarounds, why it creates user value, why it makes business sense (pull in Eternal concall corroboration here)
@@ -49,7 +49,7 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 ### Phase 5 — AI-Native MVP Build (Days 14–19)
 - [ ] Day 14–15: Build synthetic user profile dataset (5–10 profiles reflecting the Part 2 segment's real behavior patterns) — clearly label as synthetic
 - [ ] Day 15–16: Build the friction-matching layer (maps a user profile to the closest Part 1/3 theme)
-- [ ] Day 16–17: Build the Gemini agent layer — generates the nudge + reasoning, constrained to reference the matched friction theme (not generic copy)
+- [ ] Day 16–17: Build the Groq agent layer (switched from Gemini — see Phase 0) — generates the nudge + reasoning, constrained to reference the matched friction theme (not generic copy)
 - [ ] Day 17–18: Build the delivery layer (FastAPI endpoint + minimal front end)
 - [ ] Day 18–19: Deploy to production (reuse ArthaAI's HuggingFace Spaces pattern or equivalent), test end-to-end live
 - [ ] **Milestone**: by end of Day 19, MVP is live at a stable URL

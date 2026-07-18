@@ -1,8 +1,7 @@
 import os
 import json
 import time
-import google.generativeai as genai
-import typing_extensions as typing
+from groq import Groq
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, String, Text, Float, Boolean, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -10,15 +9,15 @@ from sqlalchemy.dialects.postgresql import insert
 
 load_dotenv()
 
-# Setup Gemini
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY or GEMINI_API_KEY == "your_gemini_api_key_here":
-    print("ERROR: GEMINI_API_KEY is not set correctly in .env file.")
+# Setup Groq (switched from Gemini: free-tier Gemini caps at 20 requests/day per model,
+# nowhere near enough for a multi-thousand-review batch run)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY or GROQ_API_KEY == "your_groq_api_key_here":
+    print("ERROR: GROQ_API_KEY is not set correctly in .env file.")
     exit(1)
 
-genai.configure(api_key=GEMINI_API_KEY)
-# Use Gemini 1.5 Flash for high throughput
-model = genai.GenerativeModel('gemini-flash-latest')
+client = Groq(api_key=GROQ_API_KEY)
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 # DB Setup
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://blinkit_user:blinkit_password@localhost:5432/blinkit_discovery")
@@ -43,15 +42,6 @@ class Extraction(Base):
     sentiment = Column(String(100))
     confidence = Column(Float)
 
-class SingleExtraction(typing.TypedDict):
-    filtered_review_id: int
-    mentions_category_behavior: bool
-    behavior_type: str
-    category_mentioned: str
-    underlying_reason: str
-    sentiment: str
-    confidence: float
-
 def extract_insights():
     print("Connecting to DB...")
     session = SessionLocal()
@@ -59,21 +49,18 @@ def extract_insights():
     try:
         batch_count = 0
         while True:
-            if batch_count >= 3:
-                print("Reached batch limit. Done for now.")
-                break
             batch_count += 1
             print("Querying extracted_ids...")
             extracted_ids = [e.filtered_review_id for e in session.query(Extraction.filtered_review_id).all()]
             print(f"Found {len(extracted_ids)} extracted_ids.")
             print("Querying reviews_to_process...")
-            reviews_to_process = session.query(FilteredReview).filter(~FilteredReview.id.in_(extracted_ids)).order_by(FilteredReview.id.desc()).limit(50).all()
+            reviews_to_process = session.query(FilteredReview).filter(~FilteredReview.id.in_(extracted_ids)).order_by(FilteredReview.id.desc()).limit(15).all()
             
             if not reviews_to_process:
                 print("No new reviews to process. Done!")
                 break
 
-            print(f"Found {len(reviews_to_process)} reviews to extract from. Sending to Gemini...")
+            print(f"Found {len(reviews_to_process)} reviews to extract from. Sending to Groq...")
             
             batch_text = "Here are the reviews to analyze:\n\n"
             for r in reviews_to_process:
@@ -90,34 +77,45 @@ def extract_insights():
                 "category_mentioned (groceries | personal_care | pet_supplies | baby_products | electronics | household_essentials | snacks_beverages | other | unspecified), "
                 "underlying_reason (one sentence, paraphrased), and sentiment (frustration | neutral_observation | satisfaction | curiosity). "
                 "If mentions_category_behavior is false, leave other fields blank or default. "
-                "Maintain the Review ID provided."
+                "Maintain the Review ID provided. "
+                'Respond ONLY with a JSON object of the exact shape {"extractions": [{"filtered_review_id": int, '
+                '"mentions_category_behavior": bool, "behavior_type": str, "category_mentioned": str, '
+                '"underlying_reason": str, "sentiment": str, "confidence": float}, ...]}.'
             )
 
+            extractions_data = None
             for attempt in range(5):
                 try:
-                    response = model.generate_content(
-                        f"{prompt}\n\n{batch_text}",
-                        generation_config=genai.GenerationConfig(
-                            response_mime_type="application/json",
-                            response_schema=list[SingleExtraction],
-                            temperature=0.1
-                        )
+                    response = client.chat.completions.create(
+                        model=GROQ_MODEL,
+                        messages=[
+                            {"role": "system", "content": prompt},
+                            {"role": "user", "content": batch_text}
+                        ],
+                        response_format={"type": "json_object"},
+                        temperature=0.1,
+                        max_completion_tokens=3500
                     )
-                    extractions_data = json.loads(response.text)
+                    extractions_data = json.loads(response.choices[0].message.content).get("extractions", [])
+                    if len(extractions_data) < len(reviews_to_process):
+                        print(f"WARNING: model returned {len(extractions_data)}/{len(reviews_to_process)} — possible truncation.")
                     break
+                except json.JSONDecodeError:
+                    print(f"Bad JSON (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                    time.sleep(5)
                 except Exception as e:
-                    import time
-                    if "429" in str(e) or "quota" in str(e).lower():
-                        print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
-                        time.sleep(35)
-                    elif isinstance(e, json.JSONDecodeError):
-                        print(f"Bad JSON (attempt {attempt+1}/5). Retrying in 5 seconds...")
-                        time.sleep(5)
+                    if "rate_limit" in str(e).lower() or "429" in str(e):
+                        print(f"Rate limited (attempt {attempt+1}/5). Waiting 20 seconds...")
+                        time.sleep(20)
                     else:
                         raise e
-            
-            print(f"Gemini processed {len(extractions_data)} reviews in batch!")
-            
+
+            if extractions_data is None:
+                print("All 5 attempts failed. Stopping run cleanly — no stale data re-inserted.")
+                break
+
+            print(f"Groq processed {len(extractions_data)} reviews in batch!")
+
             inserted = 0
             rejected = 0
             for data in extractions_data:

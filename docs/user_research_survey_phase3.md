@@ -1,3 +1,5 @@
+> **SUPERSEDED** — written before the real Part 1 extraction/clustering run confirmed the actual top theme. Use `phase3_google_form.md` instead, which targets the real evidence-backed theme ("Poor Quality and Unreliable Products," 770 evidence) rather than the "high-value items" hypothesis below. Kept for reference only.
+
 # User Research Survey: Category Trial & High-Value Items
 
 **Target Segment:** Occasional non-grocery and high-ticket buyers.

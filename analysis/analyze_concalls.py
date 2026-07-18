@@ -1,16 +1,15 @@
 import os
 import json
 import time
-import google.generativeai as genai
-import typing_extensions as typing
+from groq import Groq
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-flash-latest')
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://blinkit_user:blinkit_password@localhost:5432/blinkit_discovery")
 engine = create_engine(DATABASE_URL)
@@ -22,6 +21,7 @@ class Theme(Base):
     id = Column(Integer, primary_key=True)
     theme_name = Column(String(255))
     description = Column(Text)
+    evidence_count = Column(Integer)
 
 class CompanyDisclosure(Base):
     __tablename__ = "company_disclosures"
@@ -31,68 +31,78 @@ class CompanyDisclosure(Base):
     theme_id = Column(Integer)
     signal_type = Column(String(50))
 
-class ConcallSignal(typing.TypedDict):
-    source_document: str
-    content_snippet: str
-    signal_type: str # 'corroborates', 'contradicts', 'unrelated'
-
 def analyze_concalls():
     session = SessionLocal()
     try:
-        top_theme = session.query(Theme).order_by(Theme.id.desc()).first()
+        top_theme = session.query(Theme).order_by(Theme.evidence_count.desc(), Theme.id.desc()).first()
         if not top_theme:
             print("No themes found.")
             return
 
-        mock_concalls = [
+        # Real excerpts from Eternal Limited's Q4 FY26 earnings call (April 28, 2026), fetched and
+        # transcribed 2026-07-18. Source: https://b.zmtcdn.com/investor-relations/Q4FY26-earnings-call-transcript.pdf
+        # NOTE: analyst calls stay at the financial-metrics level — there is no direct management
+        # commentary on product quality, damaged/expired items, or refund/support friction in this
+        # transcript. That's a real, honest finding (see edge-cases.md's anticipated "concall data thin"
+        # risk), not a gap to paper over with invented quotes. What IS real and relevant: management
+        # explicitly ties future growth to non-grocery assortment expansion, which is the same
+        # category-adoption question Part 1 is investigating — if quality/trust friction is real and
+        # unaddressed, it's a headwind to a strategy Eternal is already betting on.
+        real_concalls = [
             {
-                "source_document": "Q4_2025_Earnings_Call",
-                "text": "Analyst: Can you talk about the category expansion strategy? CEO: We are seeing great traction in groceries, but non-grocery items like electronics have a slightly higher return rate which has caused some friction in customer trust. We are working on streamlining our return and refund processes to build more confidence."
+                "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+                "text": "Analyst (Jignanshu Gor, Bernstein): 'as a large part of our growth narrative from here on depends in some sense on either growing the non-grocery assortment and going outside of the metro cities.'"
             },
             {
-                "source_document": "Q1_2026_Earnings_Call",
-                "text": "CEO: The quick commerce model is robust. Average order value is climbing as users get used to the convenience. However, we've paused expansion into high-value electronics in Tier 2 cities temporarily because the post-purchase support infrastructure isn't quite there yet to handle disputes quickly."
+                "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+                "text": "Akshant Goyal (CFO), on the 60% CAGR growth guidance: 'It's a function of assortment expansion, geographical expansion as well as more demand densification in the cities where we are present today and we might also get into newer cities.'"
+            },
+            {
+                "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+                "text": "Akshant Goyal (CFO), on declining orders-per-customer (3.6 to 3.35): 'We haven't seen too much impact on customer retention... Most of this is on account of the acceleration in new customer addition that we have seen in the last couple of quarters.'"
             }
         ]
 
         concall_text = ""
-        for mc in mock_concalls:
+        for mc in real_concalls:
             concall_text += f"Document: {mc['source_document']}\nText: {mc['text']}\n---\n"
 
         prompt = (
-            f"Analyze the following earnings call excerpts against this user friction theme:\n"
+            f"Analyze the following real earnings call excerpts against this user friction theme:\n"
             f"Theme: {top_theme.theme_name}\n"
             f"Theme Description: {top_theme.description}\n\n"
             f"For each excerpt, determine if it 'corroborates', 'contradicts', or is 'unrelated' to the theme. "
+            f"Be conservative — only mark 'corroborates' if the excerpt specifically addresses product "
+            f"quality, returns, refunds, or customer trust/support. An excerpt about category expansion "
+            f"strategy in general is 'unrelated' to a quality/trust theme unless it explicitly connects "
+            f"the two — don't stretch an indirect business-strategy mention into false corroboration.\n"
             f"Return a JSON list of objects.\n\n"
             f"Excerpts:\n{concall_text}"
         )
 
+        signals = None
         for attempt in range(5):
             try:
-                response = model.generate_content(
-                    prompt,
-                    generation_config=genai.GenerationConfig(
-                        response_mime_type="application/json",
-                        response_schema=list[ConcallSignal],
-                        temperature=0.1
-                    )
+                response = client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt + '\n\nRespond ONLY with a JSON object of the exact shape {"signals": [{"source_document": str, "content_snippet": str, "signal_type": str}, ...]}.'}],
+                    response_format={"type": "json_object"},
+                    temperature=0.1
                 )
-                signals = json.loads(response.text)
+                signals = json.loads(response.choices[0].message.content).get("signals", [])
                 break
+            except json.JSONDecodeError:
+                print(f"Bad JSON generated (attempt {attempt+1}/5). Retrying in 5 seconds...")
+                time.sleep(5)
             except Exception as e:
-                import time
-                if "429" in str(e) or "quota" in str(e).lower():
-                    print(f"Rate limited (attempt {attempt+1}/5). Waiting 35 seconds...")
-                    time.sleep(35)
-                elif isinstance(e, json.JSONDecodeError):
-                    print(f"Bad JSON generated (attempt {attempt+1}/5). Retrying in 5 seconds...")
-                    time.sleep(5)
+                if "rate_limit" in str(e).lower() or "429" in str(e):
+                    print(f"Rate limited (attempt {attempt+1}/5). Waiting 20 seconds...")
+                    time.sleep(20)
                 else:
                     raise e
-        
-        if 'signals' not in locals():
-            print("Failed 5 times. Falling back to mock data to prevent pipeline crash.")
+
+        if signals is None:
+            print("Failed 5 times. Falling back to empty signal set — not silently mocked.")
             signals = []
         
         session.query(CompanyDisclosure).delete() # clear old for idempotency

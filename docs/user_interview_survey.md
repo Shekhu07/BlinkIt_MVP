@@ -1,8 +1,10 @@
+> **SUPERSEDED** — use `phase3_google_form.md` for actual recruitment/deployment; it's the Google-Forms-ready build of this same real theme, with proper branching logic. This file is kept as the longer-form semi-structured interview version (useful as a live-call backup guide, but not formatted for Forms).
+
 # Blinkit Category Expansion & Support Survey
 *Form Type: Semi-Structured Interview / Survey*
 
 **Context (for the interviewer/form description):**
-We are conducting research to understand how users feel about buying non-grocery items (like electronics, personal care, and high-value goods) on Blinkit, and how customer support experiences influence those decisions.
+We are conducting research to understand how users feel about buying across different categories on Blinkit (groceries, electronics, personal care, snacks, household items — not just high-value goods), and how product-quality and customer support experiences influence those decisions. Real Part 1 evidence spans price points and categories roughly proportional to category volume, so don't lead respondents toward "expensive item" framing — the friction shows up on everyday items too (e.g. rotten vegetables, expired snacks) just as much as electronics.
 
 ---
 
@@ -24,7 +26,7 @@ We are conducting research to understand how users feel about buying non-grocery
 - [ ] Home Needs & Cleaning
 - [ ] Toys & Gifting
 
-**3. Have you ever purchased a "high-value" item (above ₹1,000) or non-grocery item (like electronics/appliances) on Blinkit?**
+**3. Have you ever purchased something outside the categories you buy most often on Blinkit (e.g. electronics, personal care, household items, if you mainly buy groceries/snacks)?**
 - [ ] Yes, frequently
 - [ ] Yes, but only once or twice
 - [ ] No, never considered it
@@ -45,7 +47,7 @@ We are conducting research to understand how users feel about buying non-grocery
 - [ ] 4 - somewhat easy
 - [ ] 5 - Extremely easy and fast (Instant refund, no hassle)
 
-**6. Did this specific customer support experience change your willingness to buy expensive items on Blinkit in the future?**
+**6. Did this specific customer support experience change your willingness to try other categories on Blinkit in the future (not just expensive items — includes groceries/snacks too)?**
 - [ ] Yes, I am much more hesitant now
 - [ ] No, it didn't change my habits
 - [ ] Yes, it actually made me trust them more
@@ -72,14 +74,14 @@ We are conducting research to understand how users feel about buying non-grocery
 
 ## Section 4: Hypothesis 3 - Building Category Expansion Trust
 
-**9. On a scale of 1 to 5, how much do you agree with the following statement: *"I trust Blinkit's automated chat-bot to handle a refund for an item worth ₹2,000 as easily as it handles a missing ₹50 packet of milk."***
+**9. On a scale of 1 to 5, how much do you agree with the following statement: *"I trust Blinkit's automated chat-bot to handle a refund for a category I don't usually buy (electronics, personal care, etc.) as easily as it handles a missing ₹50 packet of milk."***
 - [ ] 1 - Strongly Disagree
 - [ ] 2 - Disagree
 - [ ] 3 - Neutral
 - [ ] 4 - Agree
 - [ ] 5 - Strongly Agree
 
-**10. What specific feature or guarantee would make you completely confident in buying expensive electronics or premium cosmetics on Blinkit? (Rank top 2)**
+**10. What specific feature or guarantee would make you completely confident trying a category you don't currently buy on Blinkit? (Rank top 2)**
 - [ ] "No Questions Asked" instant refund policy for items up to ₹3,000
 - [ ] A dedicated human support agent instead of a chat bot for high-value orders
 - [ ] Option to test the product in front of the delivery partner before accepting
