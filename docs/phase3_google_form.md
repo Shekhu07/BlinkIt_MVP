@@ -33,7 +33,7 @@ Structured for direct copy-paste into Google Forms, including section breaks and
 - 45+
 - Prefer not to say
 
-**2. Which city tier do you live in?**
+**2. Which Tier City do you live in?**
 `[Multiple choice]`
 - Tier 1
 - Tier 2

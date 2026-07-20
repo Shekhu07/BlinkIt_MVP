@@ -33,7 +33,7 @@ function buildPhase3Form() {
     .setRequired(true);
 
   form.addMultipleChoiceItem()
-    .setTitle('2. Which city tier do you live in?')
+    .setTitle('2. Which Tier City do you live in?')
     .setChoiceValues(['Tier 1', 'Tier 2', 'Tier 3'])
     .setRequired(true);
 
