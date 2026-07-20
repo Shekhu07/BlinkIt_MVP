@@ -24,16 +24,31 @@ function buildPhase3Form() {
 
   // ---------------- Section 1 ----------------
   form.addPageBreakItem()
-    .setTitle('Section 1: About Your Shopping Habits')
-    .setHelpText('A few quick questions to understand your usage.');
+    .setTitle('Section 1: About You & Your Shopping Habits')
+    .setHelpText('A few quick background and usage questions.');
 
   form.addMultipleChoiceItem()
-    .setTitle('1. How often do you currently order from Blinkit?')
+    .setTitle('1. Age range')
+    .setChoiceValues(['Under 18', '18–24', '25–34', '35–44', '45+', 'Prefer not to say'])
+    .setRequired(true);
+
+  form.addMultipleChoiceItem()
+    .setTitle('2. Which city tier do you live in?')
+    .setChoiceValues(['Tier 1', 'Tier 2', 'Tier 3'])
+    .setRequired(true);
+
+  form.addMultipleChoiceItem()
+    .setTitle('3. What do you do for a living?')
+    .setChoiceValues(['Working professional', 'Student', 'Business', 'Self Employed', 'Freelancer'])
+    .setRequired(true);
+
+  form.addMultipleChoiceItem()
+    .setTitle('4. How often do you currently order from Blinkit?')
     .setChoiceValues(['Daily', '2–3 times a week', 'Once a week', 'A few times a month', 'Rarely / Never'])
     .setRequired(true);
 
   form.addCheckboxItem()
-    .setTitle('2. Which categories do you typically buy on Blinkit? (Select all that apply)')
+    .setTitle('5. Which categories do you typically buy on Blinkit? (Select all that apply)')
     .setChoiceValues([
       'Groceries & Staples',
       'Fresh Fruits & Vegetables',
@@ -42,13 +57,14 @@ function buildPhase3Form() {
       'Electronics & Appliances',
       'Household Essentials & Cleaning',
       'Baby Products',
-      'Pet Supplies'
+      'Pet Supplies',
+      'Paan Corner'
     ])
     .showOtherOption(true)
     .setRequired(true);
 
   form.addMultipleChoiceItem()
-    .setTitle('3. In the last month, would you say you mostly stick to the same categories, or have you tried something new?')
+    .setTitle('6. In the last month, would you say you mostly stick to the same categories, or have you tried something new?')
     .setChoiceValues(['Mostly the same categories', 'Tried one or two new things', 'I regularly explore new categories'])
     .setRequired(true);
 
@@ -59,25 +75,58 @@ function buildPhase3Form() {
 
   // Choices (and the branching) are wired up after Sections 3 & 4 exist below,
   // since Google Forms branching needs a reference to the target page.
-  var q4 = form.addMultipleChoiceItem()
-    .setTitle('4. In the last 3 months, has a Blinkit order arrived damaged, expired, wrong, missing an item, fake/duplicate, or otherwise not as expected?')
+  var q7 = form.addMultipleChoiceItem()
+    .setTitle('7. In the last 3 months, has a Blinkit order arrived damaged, expired, wrong, missing an item, fake/duplicate, or otherwise not as expected?')
     .setRequired(true);
 
-  // ---------------- Section 3 (only reached if Q4 = Yes) ----------------
+  // ---------------- Section 3 (only reached if Q7 = Yes) ----------------
   var section3 = form.addPageBreakItem()
     .setTitle('Section 3: Tell Us What Happened')
-    .setHelpText('(Only shown if Q4 = Yes)');
+    .setHelpText('(Only shown if Q7 = Yes)');
 
-  form.addParagraphTextItem()
-    .setTitle('5. What happened, exactly? Which category was it, and what went wrong?')
+  form.addMultipleChoiceItem()
+    .setTitle('8. Which category was this order in?')
+    .setChoiceValues([
+      'Groceries & Staples',
+      'Fresh Fruits & Vegetables',
+      'Snacks & Beverages',
+      'Personal Care & Cosmetics',
+      'Electronics & Appliances',
+      'Household Essentials & Cleaning',
+      'Baby Products',
+      'Pet Supplies',
+      'Paan Corner'
+    ])
+    .showOtherOption(true)
+    .setRequired(true);
+
+  form.addMultipleChoiceItem()
+    .setTitle('9. What went wrong with the order?')
+    .setChoiceValues([
+      'Item arrived damaged',
+      'Item arrived expired',
+      'Wrong item delivered',
+      'Item(s) missing from order',
+      'Fake / duplicate product'
+    ])
+    .showOtherOption(true)
+    .setRequired(true);
+
+  form.addMultipleChoiceItem()
+    .setTitle('10. How did Blinkit\'s support team resolve this issue?')
+    .setChoiceValues([
+      'Full refund issued',
+      'Replacement item sent',
+      'Partial refund',
+      'Complaint logged but not resolved',
+      'No response / no action taken',
+      'I did not contact support'
+    ])
+    .showOtherOption(true)
     .setRequired(true);
 
   form.addParagraphTextItem()
-    .setTitle('6. What did you do next, and how did Blinkit\'s support/refund process handle it?')
-    .setRequired(true);
-
-  form.addParagraphTextItem()
-    .setTitle('7. Did that experience change how you shop on Blinkit afterward — categories you now avoid, or things you double-check before ordering?')
+    .setTitle('11. Has this changed how you shop on Blinkit since then? (e.g. categories you now avoid — including ones unrelated to what went wrong — or things you double-check before ordering)')
     .setRequired(true);
 
   // ---------------- Section 4 (everyone lands here) ----------------
@@ -88,13 +137,22 @@ function buildPhase3Form() {
       'does not mention quality, refunds, or trust.'
     );
 
-  form.addParagraphTextItem()
-    .setTitle('8. Is there a category on Blinkit you don\'t currently buy but have thought about trying? What\'s stopped you so far?')
+  form.addCheckboxItem()
+    .setTitle('12. Which category(ies) on Blinkit have you thought about trying but haven\'t bought yet? (Select all that apply)')
+    .setChoiceValues([
+      'Groceries & Staples',
+      'Fresh Fruits & Vegetables',
+      'Snacks & Beverages',
+      'Personal Care & Cosmetics',
+      'Electronics & Appliances',
+      'Household Essentials & Cleaning',
+      'Baby Products',
+      'Pet Supplies',
+      'Paan Corner',
+      'None — I\'ve tried everything I\'m interested in'
+    ])
+    .showOtherOption(true)
     .setRequired(true);
-
-  form.addParagraphTextItem()
-    .setTitle('9. (If you answered Yes to Q4) Would that past experience make you hesitant to try a completely different, unrelated category on Blinkit? Why or why not?')
-    .setRequired(false);
 
   // ---------------- Section 5 ----------------
   form.addPageBreakItem()
@@ -102,25 +160,26 @@ function buildPhase3Form() {
     .setHelpText('Rate how much you agree with each statement.');
 
   form.addScaleItem()
-    .setTitle('10. "If something goes wrong with my order, I trust Blinkit to resolve it quickly and fairly."')
+    .setTitle('13. "If something goes wrong with my order, I trust Blinkit to resolve it quickly and fairly."')
     .setBounds(1, 5)
     .setLabels('Strongly Disagree', 'Strongly Agree')
     .setRequired(true);
 
   form.addScaleItem()
-    .setTitle('11. "A bad experience in one category makes me more hesitant to try other categories on Blinkit."')
+    .setTitle('14. "A bad experience in one category makes me more hesitant to try other categories on Blinkit."')
     .setBounds(1, 5)
     .setLabels('Strongly Disagree', 'Strongly Agree')
     .setRequired(true);
 
   form.addCheckboxItem()
-    .setTitle('12. What would make you more confident trying a category you don\'t currently buy on Blinkit? (Pick up to 2)')
+    .setTitle('15. What would make you more confident trying a category you don\'t currently buy on Blinkit? (Pick up to 2)')
     .setChoiceValues([
       'A clear "no questions asked" return/refund guarantee',
       'Better visible quality/freshness guarantees (e.g. certified, verified brand tags)',
       'Seeing other buyers\' reviews/ratings for that specific item',
       'A human support agent instead of a chatbot for issues',
       'Option to inspect before accepting delivery',
+      'Great offers/discounts/promos on first purchase in that category',
       'Nothing in particular — I just don\'t need those categories'
     ])
     .showOtherOption(true)
@@ -133,22 +192,22 @@ function buildPhase3Form() {
     .setHelpText('Almost done — just a couple more things.');
 
   form.addParagraphTextItem()
-    .setTitle('13. Anything else about your Blinkit experience you\'d like to share?')
+    .setTitle('16. Anything else about your Blinkit experience you\'d like to share?')
     .setRequired(false);
 
   form.addMultipleChoiceItem()
-    .setTitle('14. Would you be open to a quick 10–15 min follow-up call if we have more questions?')
+    .setTitle('17. Would you be open to a quick 10–15 min follow-up call if we have more questions?')
     .setChoiceValues(['Yes', 'No'])
     .setRequired(true);
 
   form.addTextItem()
-    .setTitle('15. If yes, best way to reach you (phone/email) — optional, only used for this research')
+    .setTitle('18. If yes, best way to reach you (phone/email) — optional, only used for this research')
     .setRequired(false);
 
-  // ---------------- Wire up Section 2's branching gate (Q4) ----------------
-  q4.setChoices([
-    q4.createChoice('Yes', section3),
-    q4.createChoice('No', section4)
+  // ---------------- Wire up Section 2's branching gate (Q7) ----------------
+  q7.setChoices([
+    q7.createChoice('Yes', section3),
+    q7.createChoice('No', section4)
   ]);
   // Section 3 falls through to Section 4 by default (next page in sequence),
   // matching "After this section: Continue to Section 4" in the spec.
