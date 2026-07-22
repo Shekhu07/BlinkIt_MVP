@@ -1,0 +1,238 @@
+{
+  "_meta": {
+    "description": "Real Part 1 AI discovery-engine results, exported from Postgres. NOT synthetic \u2014 these are the actual pipeline outputs cited across docs/.",
+    "generated_by": "discovery/export_results.py"
+  },
+  "funnel": {
+    "raw_reviews": 15820,
+    "filtered_reviews": 4740,
+    "extractions_total": 4740,
+    "gate_pass": 1094
+  },
+  "source_mix": [
+    {
+      "source": "play_store",
+      "n": 8058
+    },
+    {
+      "source": "google_maps",
+      "n": 4098
+    },
+    {
+      "source": "unknown_master",
+      "n": 2532
+    },
+    {
+      "source": "app_store",
+      "n": 530
+    },
+    {
+      "source": "mouthshut",
+      "n": 520
+    },
+    {
+      "source": "consumer_complaints",
+      "n": 76
+    },
+    {
+      "source": "reddit",
+      "n": 6
+    }
+  ],
+  "themes": [
+    {
+      "id": 26,
+      "theme_name": "Poor Quality and Unreliable Products",
+      "description": "Users avoid certain categories due to receiving low-quality or damaged products.",
+      "user_segment": "General Users",
+      "evidence_count": 770,
+      "evidence_share": 0.704,
+      "sample_evidence": [
+        {
+          "review": "it's selling expired products through the app.",
+          "source": "play_store",
+          "category": "snacks_beverages",
+          "behavior_type": "category_avoidance",
+          "reason": "it's selling expired products through the app."
+        },
+        {
+          "review": "selling expired product and no options for refund",
+          "source": "play_store",
+          "category": "snacks_beverages",
+          "behavior_type": "category_avoidance",
+          "reason": "selling expired products and no refund options"
+        },
+        {
+          "review": "not good no handling fee in other app that's the problem",
+          "source": "play_store",
+          "category": "personal_care",
+          "behavior_type": "category_avoidance",
+          "reason": "handling fee is not present in other apps"
+        },
+        {
+          "review": "this app is very very bad in this app electronic items is defective and damaged",
+          "source": "play_store",
+          "category": "electronics",
+          "behavior_type": "category_avoidance",
+          "reason": "the electronic items sold on this app are defective and damaged"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "theme_name": "Convenience and Price Sensitivity",
+      "description": "Users prefer certain categories due to convenience and price sensitivity.",
+      "user_segment": "Budget-Conscious Users",
+      "evidence_count": 114,
+      "evidence_share": 0.104,
+      "sample_evidence": [
+        {
+          "review": "Rotton fruits supply many a times. ",
+          "source": "unknown_master",
+          "category": "groceries",
+          "behavior_type": "repeat_purchase",
+          "reason": "The user repeatedly receives rotten fruits when ordering from the grocery category."
+        },
+        {
+          "review": "Good delivery but I got it in 20 min",
+          "source": "google_maps",
+          "category": "unspecified",
+          "behavior_type": "repeat_purchase",
+          "reason": "The customer had a positive experience with delivery."
+        },
+        {
+          "review": "It's good for buying groceries items",
+          "source": "google_maps",
+          "category": "groceries",
+          "behavior_type": "repeat_purchase",
+          "reason": "The customer finds the app good for buying groceries items."
+        },
+        {
+          "review": "Fresh items and fast delivery too good",
+          "source": "google_maps",
+          "category": "unspecified",
+          "behavior_type": "repeat_purchase",
+          "reason": "The customer was satisfied with the freshness of items and the speed of delivery."
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "theme_name": "Discovery Friction and Limited Options",
+      "description": "Users struggle to discover new products or categories due to various issues.",
+      "user_segment": "Tech-Savvy Users",
+      "evidence_count": 78,
+      "evidence_share": 0.071,
+      "sample_evidence": [
+        {
+          "review": "thoda costly pdtda hai ispe har saman",
+          "source": "play_store",
+          "category": "groceries",
+          "behavior_type": "discovery_friction",
+          "reason": "The app is too costly, which may deter users from trying it."
+        },
+        {
+          "review": "packing mein aur improvement karna chahiye",
+          "source": "play_store",
+          "category": "groceries",
+          "behavior_type": "discovery_friction",
+          "reason": "The packing needs improvement, which may deter users from trying the app."
+        },
+        {
+          "review": "they can add new features and less the prices in their product",
+          "source": "play_store",
+          "category": "electronics",
+          "behavior_type": "discovery_friction",
+          "reason": "The customer suggests adding new features and reducing prices, which is a reason for not discovering new products."
+        },
+        {
+          "review": "It's Nice work but  in stores groceries are arranged wrong purposed",
+          "source": "google_maps",
+          "category": "groceries",
+          "behavior_type": "discovery_friction",
+          "reason": "The customer found that groceries were arranged wrongly in the store."
+        }
+      ]
+    }
+  ],
+  "behavior_distribution": [
+    {
+      "behavior_type": "category_avoidance",
+      "n": 842
+    },
+    {
+      "behavior_type": "repeat_purchase",
+      "n": 124
+    },
+    {
+      "behavior_type": "discovery_friction",
+      "n": 101
+    },
+    {
+      "behavior_type": "new_category_trial",
+      "n": 19
+    },
+    {
+      "behavior_type": "unknown",
+      "n": 7
+    }
+  ],
+  "category_distribution": [
+    {
+      "category": "groceries",
+      "n": 563
+    },
+    {
+      "category": "unspecified",
+      "n": 136
+    },
+    {
+      "category": "electronics",
+      "n": 117
+    },
+    {
+      "category": "snacks_beverages",
+      "n": 112
+    },
+    {
+      "category": "household_essentials",
+      "n": 48
+    },
+    {
+      "category": "personal_care",
+      "n": 29
+    },
+    {
+      "category": "electronic_items",
+      "n": 8
+    },
+    {
+      "category": "unknown",
+      "n": 7
+    }
+  ],
+  "validation": {
+    "total": 20,
+    "breakdown": {
+      "confirmed": 16,
+      "unclear": 4
+    }
+  },
+  "company_disclosures": [
+    {
+      "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+      "signal_type": "unrelated",
+      "content_snippet": "as a large part of our growth narrative from here on depends in some sense on either growing the non-grocery assortment and going outside of the metro cities."
+    },
+    {
+      "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+      "signal_type": "unrelated",
+      "content_snippet": "It's a function of assortment expansion, geographical expansion as well as more demand densification in the cities where we are present today and we might also get into newer cities."
+    },
+    {
+      "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
+      "signal_type": "unrelated",
+      "content_snippet": "We haven't seen too much impact on customer retention... Most of this is on account of the acceleration in new customer addition that we have seen in the last couple of quarters."
+    }
+  ]
+}
