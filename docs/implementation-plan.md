@@ -87,10 +87,10 @@ Deadline     : 4 Aug 2026, 3:59:00 PM IST
 
 | Deliverable | Phase | Notes |
 |---|---|---|
-| [Link] Discovery workflow, testable | Phase 1/2 | **Built 2026-07-23** in `discovery/` — two-tab Gradio app (Live Extractor runs the real Two-Step Gated extraction on any pasted review; Results Explorer shows the real funnel/themes/validation/concall from `discovery/data/results.json`). Deploy-ready via HF Gradio SDK (free); blocked only on the fellow creating the Space + adding `GROQ_API_KEY`. |
+| [Link] Discovery workflow, testable | Phase 1/2 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine — two-tab Gradio app (Live Extractor runs the real Two-Step Gated extraction on any pasted review; Results Explorer shows the real funnel/themes/validation/concall). Source in `discovery/`. |
 | 1-slider on workflow (inside deck) | Phase 6 | Summarizes Part 1 pipeline |
 | 10-slide PDF deck | Phase 6 | Full narrative across all 4 parts |
-| [Link] Deployed MVP/agent | Phase 5 | **DONE** — live on HF Gradio Space (`mvp/`, Category Nudge Agent) |
+| [Link] Deployed MVP/agent | Phase 5 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent — Category Nudge Agent on HF Gradio Space. Source in `mvp/`. |
 
 ---
 
