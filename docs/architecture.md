@@ -115,7 +115,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 
 ```
 ┌────────────────┐     ┌───────────────────┐     ┌─────────────────────┐     ┌──────────────────┐
-│ Synthetic/mock  │ --> │ Friction-Matching  │ --> │ Gemini Agent          │ --> │ API endpoint /     │
+│ Synthetic/mock  │ --> │ Friction-Matching  │ --> │ Groq Agent            │ --> │ API endpoint /     │
 │ user order data │     │ Layer (rules +     │     │ (generates the        │     │ lightweight UI      │
 │                 │     │ theme lookup)      │     │ nudge copy + reason)  │     │ (deployed, live)     │
 └────────────────┘     └───────────────────┘     └─────────────────────┘     └──────────────────┘
@@ -123,7 +123,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 
 - **Data layer**: synthetic order histories (5–10 representative user profiles built from Part 2 segment insights) stored in Postgres/JSON — clearly labeled as synthetic in the deck, this is standard for fellowship-scale MVPs without production data access
 - **Friction-matching layer**: maps a user profile's behavior pattern to the closest theme from Part 1's theme store
-- **Agent layer**: Gemini API call that generates the actual nudge text and reasoning, constrained to reference the matched friction theme — this is where the "AI-native" requirement is satisfied, not just calling an LLM for the sake of it
+- **Agent layer**: Groq API call (`llama-3.3-70b-versatile`) that generates the actual nudge text and reasoning, constrained to reference the matched friction theme — this is where the "AI-native" requirement is satisfied, not just calling an LLM for the sake of it
 - **Delivery layer**: a minimal FastAPI endpoint + simple front end (Streamlit or a lightweight HTML page) — this must be **deployed to production** per the deliverable requirement (e.g., Render/Railway/HuggingFace Spaces — reuse whatever hosting pattern you used for ArthaAI)
 
 ### 6.3 Why this MVP choice over alternatives

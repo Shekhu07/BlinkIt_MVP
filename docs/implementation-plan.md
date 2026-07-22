@@ -15,7 +15,7 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 ## 2. Phase-by-Phase Plan
 
 ### Phase 0 — Setup (Day 1)
-- [x] Confirm Blinkit's current Play Store package ID (App Store dropped due to strict bot protection)
+- [x] Confirm Blinkit's current Play Store package ID (live App Store re-scraping dropped due to strict bot protection, but real historical App Store data — 530 rows — was ingested via `data/blinkit_reviews.json` and the master JSON dump; see CLAUDE.md)
 - [x] Register Reddit API app (Dropped: Scoping to Play Store / MouthShut / CC only)
 - [x] Stand up Postgres schema for Part 1 (raw_reviews, filtered_reviews, extractions, themes, theme_evidence, validation_samples, company_disclosures)
 - [ ] Reuse Celery + Redis config from existing news-tracker project (Redis is running via docker-compose for the Postgres/Redis stack, but the Part 1 scripts run as direct Python invocations, not yet wired through Celery tasks)
@@ -33,6 +33,7 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 ### Phase 2 — Validation + Supplementary Signal (Day 9, parallel)
 - [x] Sample-validate top themes (LLM-judge cross-check against a held-out theme-relevant sample, not random reviews) — **fixed and re-run 2026-07-18**; original script validated against arbitrary raw reviews (mostly unrelated 5-star "good"/"nice" noise). Real result: 16/20 confirmed, 4/20 unclear, 0 contradicted.
 - [x] Review Eternal (Blinkit's parent) Q4 FY26 earnings call transcript (real, fetched 2026-07-18 from investor relations, not fabricated), log corroborating/contradicting points against the real top theme — result: transcript doesn't directly address quality/refund friction (an honest, expected finding per §5 Cross-Project Risks below), but does confirm non-grocery assortment expansion is a real strategic growth driver for Eternal, useful for Phase 4's business-case argument.
+- [x] **Updated 2026-07-22**: reviewed Eternal's Q1FY27 shareholders' letter (quarter ended June 30, 2026, published 2026-07-22 — the fellow's own copy) — this closes the Q4 FY26 gap: management now explicitly quantifies inventory losses from expiry/damage/loss-in-transit (1.8% of NOV, concentrated in perishables), directly corroborating the Part 1 top theme with company-reported data, not just an inferred strategic dependency. Also carries current assortment-expansion commentary from Blinkit's CEO and retention-cohort data that tempers the survey's competitor-switching finding. See `problem_statement.md` §5 and `analyze_concalls.py`.
 
 ### Phase 3 — User Research (Days 8–13, overlapping with late Phase 1/2)
 - [x] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question) — **redone 2026-07-18 against the real Part 1 theme** ("Poor Quality and Unreliable Products," 770 evidence) after the original extraction turned out to be running on incomplete/mock data; see `part2_research_tracker.md` and `interview_recruitment_kit.md`
@@ -47,12 +48,13 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 - [x] **Milestone**: problem statement is locked — see `problem_statement.md`. This defines exactly what Part 4's MVP must address (§6 of that doc).
 
 ### Phase 5 — AI-Native MVP Build (Days 14–19)
-- [ ] Day 14–15: Build synthetic user profile dataset (5–10 profiles reflecting the Part 2 segment's real behavior patterns) — clearly label as synthetic
-- [ ] Day 15–16: Build the friction-matching layer (maps a user profile to the closest Part 1/3 theme)
-- [ ] Day 16–17: Build the Groq agent layer (switched from Gemini — see Phase 0) — generates the nudge + reasoning, constrained to reference the matched friction theme (not generic copy)
-- [ ] Day 17–18: Build the delivery layer (FastAPI endpoint + minimal front end)
-- [ ] Day 18–19: Deploy to production (reuse ArthaAI's HuggingFace Spaces pattern or equivalent), test end-to-end live
-- [ ] **Milestone**: by end of Day 19, MVP is live at a stable URL
+- [x] **Scope decision (2026-07-22)**: nudge mechanic = refund/return guarantee callout + quality/freshness-verification signal, combined into one nudge (Q15 top two drivers, see `problem_statement.md` §6). Pre-acceptance-inspection option (Q15 tied-third driver) is deferred as a **backlog item for later**, not part of the Phase 5 build — revisit only if time remains after the Milestone below is hit.
+- [x] Day 14–15: Build synthetic user profile dataset (5–10 profiles reflecting the Part 2 segment's real behavior patterns) — clearly label as synthetic — **done 2026-07-23**: 8 profiles in `mvp/data/synthetic_profiles.json`, each tied to a real Part 2 pattern (unresolved incident, resolved-but-eroding, packaging failure, low-intent/no-incident, platform-churn risk); file `_meta.SYNTHETIC=true`
+- [x] Day 15–16: Build the friction-matching layer (maps a user profile to the closest Part 1/3 theme) — **done**: `mvp/friction_matching.py`, deterministic rule-based (no LLM); maps to `mvp/data/friction_themes.json` (real locked Part 1 numbers), with an honest out-of-primary-scope path for no-incident/low-intent users
+- [x] Day 16–17: Build the Groq agent layer (switched from Gemini — see Phase 0) — generates the nudge + reasoning, constrained to reference the matched friction theme (not generic copy) — **done**: `mvp/agent.py`, Groq `llama-3.3-70b-versatile`, JSON-mode, leads with refund guarantee + quality/freshness signal per the scope decision; tested live against the Groq API
+- [x] Day 17–18: Build the delivery layer (FastAPI endpoint + minimal front end) — **done**: two variants — `mvp/app.py` (Gradio UI, the free HF Spaces entrypoint) and `mvp/app_fastapi.py` (FastAPI + HTML with a JSON `/api/nudge` endpoint, for local/API use and Render). Both smoke-tested end-to-end locally against live Groq.
+- [x] Day 18–19: Deploy to production (reuse ArthaAI's HuggingFace Spaces pattern or equivalent), test end-to-end live — **DONE 2026-07-23**: live on a HuggingFace Gradio Space, returning nudges end-to-end (friction match → live Groq call → nudge). **Switched from Docker SDK**: HF gates Docker behind a paid plan on the fellow's account, so the delivery layer was ported to the free Gradio SDK. Deployed on **ZeroGPU** hardware (CPU-basic was not selectable on the account) — the app is CPU-only, so `app.py` registers a no-op `@spaces.GPU` function purely to pass ZeroGPU's startup check. `GROQ_API_KEY` set as a Space secret.
+- [x] **Milestone**: MVP is live at a stable URL — **DONE 2026-07-23**. (Paste the final Space URL into the deck + deliverables checklist in Phase 6.)
 
 ### Phase 6 — Deck Build (Days 19–22)
 - [ ] Structure the 10-slide deck around the cross-part traceability thread (see architecture.md §8) rather than one slide per part in isolation
