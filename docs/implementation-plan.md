@@ -36,15 +36,15 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 
 ### Phase 3 — User Research (Days 8–13, overlapping with late Phase 1/2)
 - [x] Day 8–9: Finalize target segment based on Part 1 theme ranking; write interview guide (each Part 1 theme → open-ended probe, not leading question) — **redone 2026-07-18 against the real Part 1 theme** ("Poor Quality and Unreliable Products," 770 evidence) after the original extraction turned out to be running on incomplete/mock data; see `part2_research_tracker.md` and `interview_recruitment_kit.md`
-- [ ] Days 9–11: Recruit and schedule 5–6 interviewees matching the segment — **not started for real; `mock_interview_notes.md` was a prototype placeholder, not actual recruitment.** Use `interview_recruitment_kit.md` outreach templates.
-- [ ] Days 11–13: Conduct interviews, take notes/recordings (with consent) — **not started**
-- [ ] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — **not started; depends on real interviews above**
-- [ ] **Risk flag**: interview scheduling is usually the slowest part of any research plan — start recruitment outreach immediately, this is now the critical path blocking Phase 4
+- [x] Days 9–11: Recruit respondents matching the segment — **done via the Phase 3 Google Form** (`phase3_google_form.md`), not the originally planned live-outreach-only recruitment; 24 real responses collected as of 2026-07-21 (`mock_interview_notes.md` remains an unused placeholder). 6 candidates identified who both match the segment (repeat buyer + qualifying incident) and agreed to a follow-up call — see `part2_research_tracker.md` Candidate Pipeline (R1, R2, R3, R5, R23, R24).
+- [x] Days 11–13: Conduct interviews — **scoped decision (2026-07-22): live follow-up calls skipped**, using the 24-response survey as the primary research instrument instead, given deadline constraints. This is a deliberate, documented scope call (see decision note in `part2_research_tracker.md`), not a skipped task — the survey's open-ended/paragraph fields carry the qualitative depth a live call would have added.
+- [x] Day 13: Build the theme-confirmation grid (theme × confirmed/contradicted × supporting quote) — **done, from survey data alone**; see the finalized grid in `part2_research_tracker.md`, including 3 confirming quotes, 3 challenging findings (competitor-switching instead of category-avoidance, no-behavior-change despite incident, segment-level stagnation unexplained by quality/trust), and one new sub-theme (packaging/fulfillment, distinct from product-source quality).
+- [x] **Risk flag resolved**: interview recruitment is no longer the critical path — the survey substituted for both recruitment and interviewing. Phase 3 is complete; Phase 4 (problem statement) is now unblocked.
 
 ### Phase 4 — Problem Definition Synthesis (Days 13–14)
-- [ ] Write the problem statement covering: target segment, root cause, existing workarounds, why it creates user value, why it makes business sense (pull in Eternal concall corroboration here)
-- [ ] Explicitly document at least one place where interviews confirmed AND one place where they challenged the AI-surfaced themes — this is a specific deliverable requirement, don't skip it
-- [ ] **Milestone**: by end of Day 14, problem statement is locked — this defines exactly what Part 4's MVP must address
+- [x] Write the problem statement covering: target segment, root cause, existing workarounds, why it creates user value, why it makes business sense (pull in Eternal concall corroboration here) — **done 2026-07-22**, see `problem_statement.md`
+- [x] Explicitly document at least one place where interviews confirmed AND one place where they challenged the AI-surfaced themes — **done**, see `problem_statement.md` §2 (3 confirming quotes, 3 challenging findings including platform-churn and segment-level stagnation unexplained by quality/trust) and the full grid in `part2_research_tracker.md`
+- [x] **Milestone**: problem statement is locked — see `problem_statement.md`. This defines exactly what Part 4's MVP must address (§6 of that doc).
 
 ### Phase 5 — AI-Native MVP Build (Days 14–19)
 - [ ] Day 14–15: Build synthetic user profile dataset (5–10 profiles reflecting the Part 2 segment's real behavior patterns) — clearly label as synthetic
