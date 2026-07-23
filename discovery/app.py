@@ -52,6 +52,13 @@ RESULTS = json.load(open(Path(__file__).parent / "data" / "results.json"))
 # Reddit rows are mock/placeholder (see CLAUDE.md) — never shown as real data.
 SOURCE_MIX = [s for s in RESULTS["source_mix"] if s["source"] != "reddit"]
 
+# Display labels only — counts are never altered. `unknown_master` is the catch-all bucket in
+# ingest_master_json.py for rows in MASTER_Blinkit_Reviews.json that carry no `source` field at
+# all (2,532 rows). Showing the raw internal key implied a named platform; "source not recorded"
+# is what it actually is. These rows are real scraped reviews with unrecorded provenance — not
+# mock — so they stay in the corpus and in the funnel rather than being hidden.
+SOURCE_LABELS = {"unknown_master": "source not recorded"}
+
 EXAMPLES = [
     "it's selling expired products through the app so I stopped ordering fruits here",
     "Delivery was 10 minutes late and the delivery guy was rude",
@@ -427,7 +434,7 @@ def results_html():
     mx = max(s["n"] for s in SOURCE_MIX)
     shades = ["#141414", "#4a4a4a", "#6a6a6a", "#6b6b6b", "#a0a0a0", "#6f6f6f"]
     src_rows = "".join(f"""
-        <div style="display:flex;align-items:center;gap:10px"><span style="width:132px;color:#666">{esc(s['source'])}</span>
+        <div style="display:flex;align-items:center;gap:10px"><span style="width:132px;color:#666">{esc(SOURCE_LABELS.get(s['source'], s['source']))}</span>
         <div style="flex:1;height:11px;background:#f3f3f3;border-radius:6px;overflow:hidden">
         <div style="height:100%;width:{round(100*s['n']/mx)}%;background:{shades[min(i,5)]};border-radius:6px"></div></div>
         <span style="width:52px;text-align:right;color:#6b6b6b;font-size:11.5px">{s['n']:,}</span></div>"""
@@ -502,7 +509,10 @@ def results_html():
   <div class="dc-grid3" style="display:grid;grid-template-columns:1.3fr 1fr .75fr;gap:14px;margin-bottom:16px">
     <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
       <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Source mix</div>
-      <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">{src_rows}</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">{src_rows}</div>
+      <div style="font-size:11px;color:#6f6f6f;margin-top:13px;line-height:1.45">“Source not
+        recorded” = real scraped reviews whose originating platform was not captured in the
+        source dump. Kept in the corpus and the funnel rather than dropped.</div></div>
     <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
       <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Behavior type</div>
       <div style="display:flex;height:14px;border-radius:7px;overflow:hidden">{bar}</div>

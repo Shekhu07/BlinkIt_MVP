@@ -33,6 +33,12 @@ All results are **real pipeline output**, exported to `data/results.json` — no
 is needed at runtime. (Mock `reddit` rows are excluded from the source display per project
 data-integrity rules.)
 
+**On the "source not recorded" bar (2,532 rows, 16% of the corpus):** these are real scraped
+reviews from `MASTER_Blinkit_Reviews.json` that carry no `source` field, bucketed as
+`unknown_master` by `ingest_master_json.py`. They are review text with unrecorded provenance —
+not mock data — so they stay in the corpus and the funnel and are labelled honestly in the UI
+rather than shown under a platform name or quietly dropped.
+
 ## Design vs. data (important)
 
 The visual design is imported from the **"Blinkit Discovery Engine redesign"** Claude Design

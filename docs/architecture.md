@@ -108,7 +108,7 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 
 **"Category Nudge Agent"** — an AI agent that:
 1. Takes a user's recent basket/order history (mocked/synthetic data if you don't have Blinkit's real order data — this is expected and fine for a fellowship MVP)
-2. Cross-references it against the validated friction themes from Part 1+3 (i.e. the "Post-Purchase Support & Refund Friction" theme; the nudge leads with a strong support/return guarantee — rather than just a generic "try this!" banner)
+2. Cross-references it against the validated friction themes from Part 1+3 (the real top theme, **"Poor Quality and Unreliable Products"** — 770/1,094 gate-passing extractions; the nudge leads with a refund/return guarantee plus a quality/freshness signal, the two top-ranked Q15 confidence drivers — rather than just a generic "try this!" banner)
 3. Outputs a specific, reasoned category suggestion + the *reason* framed to counter the specific friction identified — this is the part that makes it "AI-native" rather than a static rules-based recommender: the reasoning is generated per-user based on which theme applies to them, not a fixed lookup table
 
 ### 6.2 Component architecture
