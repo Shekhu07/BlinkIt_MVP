@@ -54,46 +54,85 @@ EXAMPLES = [
 
 INK, YELLOW, BG = "#141414", "#f8cb46", "#f6f6f4"
 
-CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap');
+# Fonts must be injected into <head> — Gradio ignores @import inside the css= param.
+HEAD = """
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+"""
 
-.gradio-container{max-width:1100px !important;margin:0 auto !important;
-  background:#f6f6f4 !important;font-family:'Plus Jakarta Sans',system-ui,sans-serif !important;padding:0 !important}
-.gradio-container *{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
-footer{display:none !important}
-.dc-head{background:#f8cb46;padding:24px 40px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+# Force light theme — HF renders dark by system preference, which fights the design.
+FORCE_LIGHT = """
+function(){const u=new URL(window.location);
+if(u.searchParams.get('__theme')!=='light'){u.searchParams.set('__theme','light');
+window.location.replace(u.href);}}
+"""
+
+CSS = """
+:root{color-scheme:light}
+html,body,.gradio-container{background:#f6f6f4 !important}
+body,.gradio-container,.gradio-container *,button,input,textarea{
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif !important}
+.gradio-container{max-width:1100px !important;margin:0 auto !important;padding:0 !important;
+  color:#141414 !important;box-shadow:0 0 0 1px #ececec}
+.gradio-container .prose,.gradio-container p,.gradio-container span,.gradio-container div{color:inherit}
+footer,.footer,.show-api,.built-with,.settings{display:none !important}
+
+/* strip Gradio chrome so our own cards are the only surfaces */
+.block,.form,.gr-box,.gr-group,.panel,.gr-panel,.styler,.wrap.svelte-1parkyl{
+  background:transparent !important;border:none !important;box-shadow:none !important;padding:0 !important}
+.gradio-container .gap{gap:0 !important}
+.dc-body .block{margin:0 !important}
+
+/* header */
+.dc-head{background:#f8cb46 !important;padding:22px 40px !important;align-items:center !important;
+  border:none !important;border-radius:0 !important;flex-wrap:wrap;gap:16px !important;margin:0 !important}
+.dc-head .block{background:transparent !important}
 .dc-logo{width:46px;height:46px;border-radius:13px;background:#141414;display:flex;
-  align-items:center;justify-content:center;font-size:25px}
+  align-items:center;justify-content:center;font-size:25px;flex:none}
+.dc-brand{display:flex;align-items:center;gap:16px}
 .dc-title{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1;color:#141414}
 .dc-title span{font-weight:600;opacity:.72}
 .dc-sub{font-size:13px;font-weight:600;color:#5a4b06;margin-top:5px}
-.dc-body{padding:34px 40px 10px}
+
+/* pill tabs inside the header */
+.dc-tabs{background:rgba(20,20,20,.10);padding:5px !important;border-radius:12px !important;
+  gap:8px !important;flex:none !important;min-width:0 !important;width:auto !important}
+.dc-tabs{justify-content:flex-end !important;flex-wrap:nowrap !important}
+.dc-tabs button{border:none !important;box-shadow:none !important;font-size:13.5px !important;
+  padding:9px 18px !important;border-radius:9px !important;min-width:0 !important;
+  white-space:nowrap !important;width:auto !important;flex:none !important}
+.dc-tabs button.secondary{background:transparent !important;color:#4a3d05 !important;font-weight:600 !important}
+.dc-tabs button.primary{background:#141414 !important;color:#f8cb46 !important;font-weight:700 !important}
+
+.dc-body{padding:34px 40px 10px !important}
 .dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#9a8a2a}
 .dc-h2{font-weight:700;font-size:20px;letter-spacing:-.01em;color:#141414}
-.dc-lede{font-size:14px;color:#666;max-width:640px;line-height:1.5;margin:8px 0 4px}
-.dc-lede code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#efeee9;padding:2px 6px;border-radius:5px}
-.dc-card{background:#fff;border-radius:18px;border:1px solid #ececec;padding:22px;
-  box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.dc-lede{font-size:14px;color:#666 !important;max-width:640px;line-height:1.5;margin:8px 0 4px}
+.dc-lede code{font-family:'JetBrains Mono',monospace !important;font-size:12px;background:#efeee9;
+  padding:2px 6px;border-radius:5px}
+.dc-card{background:#fff !important;border-radius:18px !important;border:1px solid #ececec !important;
+  padding:22px !important;box-shadow:0 2px 12px rgba(0,0,0,.04) !important}
+.dc-card>*{background:transparent !important}
 .dc-label{font-size:12px;font-weight:700;color:#8a8a8a;margin-bottom:9px;letter-spacing:.02em}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .dc-anim{animation:fadeup .3s ease}
 
-/* tabs -> pill style */
-.tab-nav{background:rgba(20,20,20,.08);padding:5px;border-radius:12px;display:inline-flex !important;
-  gap:8px;border:none !important;margin:0 40px}
-.tab-nav button{border:none !important;background:transparent !important;color:#4a3d05 !important;
-  font-weight:600 !important;font-size:13.5px !important;padding:9px 18px !important;border-radius:9px !important}
-.tab-nav button.selected{background:#141414 !important;color:#f8cb46 !important;font-weight:700 !important}
-
 /* inputs */
 #rev textarea{background:#faf9f6 !important;border:1px solid #eee !important;border-radius:12px !important;
-  padding:14px 16px !important;font-size:14px !important;line-height:1.5 !important;color:#333 !important;min-height:96px}
+  padding:14px 16px !important;font-size:14px !important;line-height:1.5 !important;color:#333 !important;
+  min-height:96px;box-shadow:none !important}
+#rev textarea::placeholder{color:#b3b3b3 !important}
 #go{background:#f8cb46 !important;color:#141414 !important;font-weight:800 !important;font-size:14px !important;
-  padding:11px 28px !important;border:none !important;border-radius:12px !important;box-shadow:none !important}
-.ex-btn button, button.ex-btn{border:1px solid #eee !important;border-radius:10px !important;padding:10px 13px !important;
+  padding:11px 28px !important;border:none !important;border-radius:12px !important;box-shadow:none !important;
+  margin:14px 0 0 auto !important;width:auto !important;min-width:0 !important;flex:none !important;
+  align-self:flex-end !important;display:block !important}
+.ex-btn{border:1px solid #eee !important;border-radius:10px !important;padding:10px 13px !important;
   font-size:13px !important;color:#444 !important;background:#fcfcfa !important;text-align:left !important;
-  font-weight:500 !important;line-height:1.4 !important;box-shadow:none !important}
-.ex-btn button:hover, button.ex-btn:hover{border-color:#f8cb46 !important;background:#fffdf3 !important}
+  font-weight:500 !important;line-height:1.4 !important;box-shadow:none !important;width:100% !important;
+  justify-content:flex-start !important;display:block !important;margin-bottom:8px !important;
+  white-space:normal !important;height:auto !important;min-height:0 !important}
+.ex-btn:hover{border-color:#f8cb46 !important;background:#fffdf3 !important}
 """
 
 
@@ -290,8 +329,8 @@ def results_html():
 </div>"""
 
 
-HEADER = f"""
-<div class="dc-head">
+BRAND = f"""
+<div class="dc-brand">
   <div class="dc-logo">⚡</div>
   <div><div class="dc-title">blinkit <span>discovery engine</span></div>
   <div class="dc-sub">Why users don't explore new categories — mined from
@@ -306,39 +345,57 @@ FOOTER = """
 </div>"""
 
 
-with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, theme=gr.themes.Base()) as demo:
-    gr.HTML(HEADER)
-    with gr.Tabs():
-        with gr.Tab("Live Extractor"):
-            with gr.Column(elem_classes="dc-body"):
-                gr.HTML(
-                    '<div style="display:flex;align-items:center;gap:11px;margin-bottom:8px">'
-                    '<span class="dc-eyebrow">STEP DEMO</span>'
-                    '<span class="dc-h2">Two-Step Gated extraction, live</span></div>'
-                    '<div class="dc-lede" style="margin-bottom:14px">Paste a review. Step 1 gates it on whether '
-                    "it's about category-adoption behavior at all; Step 2 extracts structured fields. Exact prompt "
-                    'from the batch pipeline, on Groq <code>llama-3.1-8b-instant</code>.</div>')
-                with gr.Row(equal_height=False):
-                    with gr.Column(scale=1):
-                        with gr.Group(elem_classes="dc-card"):
-                            gr.HTML('<div class="dc-label">REVIEW TEXT</div>')
-                            inp = gr.Textbox(
-                                elem_id="rev", show_label=False, lines=4, container=False,
-                                placeholder="e.g. I stopped buying fruits here after getting a rotten batch")
-                            btn = gr.Button("Extract →", elem_id="go", variant="primary")
-                            gr.HTML('<div style="font-size:11px;font-weight:700;color:#b0b0b0;'
-                                    'letter-spacing:.08em;margin:18px 0 8px">TRY AN EXAMPLE</div>')
-                            ex_btns = [gr.Button(e, elem_classes="ex-btn", size="sm") for e in EXAMPLES]
-                    with gr.Column(scale=1):
-                        out = gr.HTML(EMPTY_HTML)
-                btn.click(run_extract, inputs=inp, outputs=out)
-                inp.submit(run_extract, inputs=inp, outputs=out)
-                for b, text in zip(ex_btns, EXAMPLES):
-                    b.click(lambda t=text: t, outputs=inp).then(run_extract, inputs=inp, outputs=out)
-        with gr.Tab("Results Explorer"):
-            with gr.Column(elem_classes="dc-body"):
-                gr.HTML(results_html())
+with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
+               js=FORCE_LIGHT, theme=gr.themes.Base()) as demo:
+    # ---- header: brand + pill tabs, all inside the yellow bar ----
+    with gr.Row(elem_classes="dc-head"):
+        gr.HTML(BRAND)
+        with gr.Row(elem_classes="dc-tabs"):
+            t_ex = gr.Button("Live Extractor", variant="primary", size="sm")
+            t_res = gr.Button("Results Explorer", variant="secondary", size="sm")
+
+    # ---- panel 1: live extractor ----
+    with gr.Column(elem_classes="dc-body", visible=True) as panel_ex:
+        gr.HTML(
+            '<div style="display:flex;align-items:center;gap:11px;margin-bottom:8px">'
+            '<span class="dc-eyebrow">STEP DEMO</span>'
+            '<span class="dc-h2">Two-Step Gated extraction, live</span></div>'
+            '<div class="dc-lede" style="margin-bottom:18px">Paste a review. Step 1 gates it on whether '
+            "it's about category-adoption behavior at all; Step 2 extracts structured fields. Exact prompt "
+            'from the batch pipeline, on Groq <code>llama-3.1-8b-instant</code>.</div>')
+        with gr.Row(equal_height=False):
+            with gr.Column(scale=1, elem_classes="dc-card"):
+                gr.HTML('<div class="dc-label">REVIEW TEXT</div>')
+                inp = gr.Textbox(
+                    elem_id="rev", show_label=False, lines=4, container=False,
+                    placeholder="e.g. I stopped buying fruits here after getting a rotten batch")
+                btn = gr.Button("Extract →", elem_id="go", variant="primary")
+                gr.HTML('<div style="font-size:11px;font-weight:700;color:#b0b0b0;letter-spacing:.08em;'
+                        'margin:26px 0 10px;clear:both">TRY AN EXAMPLE</div>')
+                ex_btns = [gr.Button(e, elem_classes="ex-btn", size="sm") for e in EXAMPLES]
+            with gr.Column(scale=1):
+                out = gr.HTML(EMPTY_HTML)
+
+    # ---- panel 2: results explorer ----
+    with gr.Column(elem_classes="dc-body", visible=False) as panel_res:
+        gr.HTML(results_html())
+
     gr.HTML(FOOTER)
+
+    # ---- wiring ----
+    btn.click(run_extract, inputs=inp, outputs=out)
+    inp.submit(run_extract, inputs=inp, outputs=out)
+    for b, text in zip(ex_btns, EXAMPLES):
+        b.click(lambda t=text: t, outputs=inp).then(run_extract, inputs=inp, outputs=out)
+
+    def _show(which):
+        return (gr.update(visible=which == "ex"), gr.update(visible=which == "res"),
+                gr.update(variant="primary" if which == "ex" else "secondary"),
+                gr.update(variant="primary" if which == "res" else "secondary"))
+
+    _tabs_out = [panel_ex, panel_res, t_ex, t_res]
+    t_ex.click(lambda: _show("ex"), outputs=_tabs_out)
+    t_res.click(lambda: _show("res"), outputs=_tabs_out)
 
 
 if __name__ == "__main__":
