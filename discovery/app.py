@@ -70,10 +70,14 @@ window.location.replace(u.href);}}
 
 CSS = """
 :root{color-scheme:light}
-html,body,.gradio-container{background:#f6f6f4 !important}
-/* every surface we draw inherits from a known-good ink, so nothing depends on
-   Gradio's theme colour (which made headings invisible in dark mode) */
-.dc-body,.dc-body>*{color:#141414 !important}
+html,body,.gradio-container,.dark .gradio-container{background:#f6f6f4 !important}
+/* THEME-PROOFING — must stay ABOVE the class rules below.
+   Every element defaults to our ink, so nothing can inherit Gradio's theme colour
+   (that is what made headings invisible). Deliberately NOT !important: our own
+   class rules below and inline styles (e.g. white text on the dark cards) still
+   win normally. This holds even if the force-light redirect is blocked in HF's
+   iframe, so the design no longer depends on it. */
+.gradio-container *,.dark .gradio-container *{color:#141414}
 body,.gradio-container,.gradio-container *,button,input,textarea{
   font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif !important}
 .gradio-container{max-width:1100px !important;margin:0 auto !important;padding:0 !important;
@@ -92,7 +96,7 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
   border:none !important;border-radius:0 !important;flex-wrap:wrap;gap:16px !important;margin:0 !important}
 .dc-head .block{background:transparent !important}
 .dc-logo{width:46px;height:46px;border-radius:13px;background:#141414;display:flex;
-  align-items:center;justify-content:center;font-size:25px;flex:none}
+  align-items:center;justify-content:center;font-size:25px;flex:none;color:#f8cb46}
 .dc-brand{display:flex;align-items:center;gap:16px}
 .dc-title{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1;color:#141414}
 .dc-title span{font-weight:600;opacity:.72}
