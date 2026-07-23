@@ -28,6 +28,27 @@ All results are **real pipeline output**, exported to `data/results.json` — no
 is needed at runtime. (Mock `reddit` rows are excluded from the source display per project
 data-integrity rules.)
 
+## Design vs. data (important)
+
+The visual design is imported from the **"Blinkit Discovery Engine redesign"** Claude Design
+project. The design *chrome* (layout, brand palette, typography, components, interactions) is
+reproduced faithfully — but every **number** comes from the real pipeline export
+(`data/results.json`), never from the mockup, which carried placeholder values. Corrections made:
+
+| Mockup value | Real value shipped |
+|---|---|
+| 15,800 raw reviews | **15,820** |
+| 4,200 after filter | **4,740** |
+| Themes: Packaging & Fulfillment Damage 142 / Unresolved Complaints 88 / Low Category Intent 66 / Competitor Switching 28 | **Convenience & Price Sensitivity 114 · Discovery Friction & Limited Options 78** (the real clustered themes) |
+| 84% LLM-judge validation | **80% (16/20 confirmed, 0 contradicted)** |
+| Behavior split: avoidance 61 / trial 22 / consideration 11 / switching 6 | **Real distribution** from `behavior_distribution` |
+| Illustrative source-mix bars | **Real per-source counts** (mock `reddit` rows excluded) |
+| Invented evidence quotes | **Real review rows** joined from the DB |
+
+The mockup also simulated extraction with a client-side heuristic and canned results; the shipped
+app performs a **real Groq call** per request. Keeping real vs. mock unambiguous is a hard project
+requirement (see `CLAUDE.md`).
+
 ## Architecture
 
 ```
