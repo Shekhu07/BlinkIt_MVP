@@ -71,6 +71,9 @@ window.location.replace(u.href);}}
 CSS = """
 :root{color-scheme:light}
 html,body,.gradio-container{background:#f6f6f4 !important}
+/* every surface we draw inherits from a known-good ink, so nothing depends on
+   Gradio's theme colour (which made headings invisible in dark mode) */
+.dc-body,.dc-body>*{color:#141414 !important}
 body,.gradio-container,.gradio-container *,button,input,textarea{
   font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif !important}
 .gradio-container{max-width:1100px !important;margin:0 auto !important;padding:0 !important;
@@ -106,7 +109,7 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-tabs button.primary{background:#141414 !important;color:#f8cb46 !important;font-weight:700 !important}
 
 .dc-body{padding:34px 40px 10px !important}
-.dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#9a8a2a}
+.dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#756512}
 .dc-h2{font-weight:700;font-size:20px;letter-spacing:-.01em;color:#141414}
 .dc-lede{font-size:14px;color:#666 !important;max-width:640px;line-height:1.5;margin:8px 0 4px}
 .dc-lede code{font-family:'JetBrains Mono',monospace !important;font-size:12px;background:#efeee9;
@@ -114,7 +117,7 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-card{background:#fff !important;border-radius:18px !important;border:1px solid #ececec !important;
   padding:22px !important;box-shadow:0 2px 12px rgba(0,0,0,.04) !important}
 .dc-card>*{background:transparent !important}
-.dc-label{font-size:12px;font-weight:700;color:#8a8a8a;margin-bottom:9px;letter-spacing:.02em}
+.dc-label{font-size:12px;font-weight:700;color:#6b6b6b;margin-bottom:9px;letter-spacing:.02em}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .dc-anim{animation:fadeup .3s ease}
 
@@ -133,6 +136,26 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
   justify-content:flex-start !important;display:block !important;margin-bottom:8px !important;
   white-space:normal !important;height:auto !important;min-height:0 !important}
 .ex-btn:hover{border-color:#f8cb46 !important;background:#fffdf3 !important}
+
+/* loading state — Gradio's default spinner is hidden by our chrome reset */
+.dc-body .generating,.dc-body .progress-text{background:transparent !important;color:#756512 !important;
+  font-size:12px !important;font-weight:700 !important;letter-spacing:.06em}
+
+/* responsive — the design is a fixed 1100px canvas; collapse gracefully below it */
+@media (max-width:900px){
+  .dc-head{padding:18px 20px !important}
+  .dc-body{padding:24px 20px 10px !important}
+  .dc-title{font-size:20px}
+  .dc-sub{font-size:12px}
+  .dc-grid3{grid-template-columns:1fr !important}
+  .dc-funnel{flex-direction:column !important}
+  .dc-funnel .dc-arrow{transform:rotate(90deg);align-self:center}
+  .dc-cols{flex-direction:column !important}
+}
+@media (max-width:620px){
+  .dc-head{flex-direction:column;align-items:flex-start !important}
+  .dc-tabs{width:100% !important;justify-content:flex-start !important}
+}
 """
 
 
@@ -142,9 +165,9 @@ def esc(t):
 
 # ---------------- Tab 1: Live Extractor ----------------
 EMPTY_HTML = """
-<div style="border:1.5px dashed #e0e0e0;border-radius:18px;padding:40px 24px;text-align:center;color:#b0b0b0">
-  <div style="font-size:34px">⚡</div>
-  <div style="font-size:13.5px;margin-top:10px;line-height:1.5">Enter a review and hit Extract to watch the<br>Two-Step Gated Schema run.</div>
+<div style="border:1.5px dashed #e0e0e0;border-radius:18px;padding:40px 24px;text-align:center;color:#6f6f6f">
+  <div style="font-size:34px;color:#f8cb46">⚡</div>
+  <div style="font-size:13.5px;margin-top:10px;line-height:1.5;color:#6f6f6f">Enter a review and hit Extract to watch the<br>Two-Step Gated Schema run.</div>
 </div>"""
 
 
@@ -195,12 +218,12 @@ def run_extract(review_text):
   </div>
   <div style="border:1px solid #ececec;background:#fff;border-radius:16px;padding:18px 20px;
     box-shadow:0 2px 12px rgba(0,0,0,.04)">
-    <div style="font-weight:800;font-size:13px;color:#8a8a8a;letter-spacing:.02em;margin-bottom:12px">
+    <div style="font-weight:800;font-size:13px;color:#6b6b6b;letter-spacing:.02em;margin-bottom:12px">
       STEP 2 · STRUCTURED FIELDS</div>
     <div style="display:flex;flex-wrap:wrap;gap:7px">{chip_html}</div>
     <div style="font-size:13px;color:#555;margin-top:13px;line-height:1.5"><b>Underlying reason:</b>
       {esc(r.get('underlying_reason'))}</div>
-    <div style="font-size:11px;color:#a3a3a3;margin-top:12px;font-family:'JetBrains Mono',monospace">
+    <div style="font-size:11px;color:#6f6f6f;margin-top:12px;font-family:'JetBrains Mono',monospace">
       model · {esc(r.get('_model'))}</div>
   </div>
 </div>"""
@@ -225,7 +248,8 @@ def results_html():
     for i, t in enumerate(themes):
         share = round(100 * t["evidence_share"])
         fill = YELLOW if i == 0 else ("#efd582" if i == 1 else "#e9d9a0")
-        name = (f"<b>{esc(t['theme_name'])}</b>" if i == 0 else f"<span>{esc(t['theme_name'])}</span>")
+        name = (f'<b style="color:#141414">{esc(t["theme_name"])}</b>' if i == 0
+                else f'<span style="color:#3d3d3d">{esc(t["theme_name"])}</span>')
         weight = "700" if i == 0 else "600"
         color = "#141414" if i == 0 else "#666"
         theme_rows.append(f"""
@@ -235,12 +259,12 @@ def results_html():
         <div style="height:100%;width:{share}%;background:{fill};border-radius:8px"></div></div></div>""")
 
     mx = max(s["n"] for s in SOURCE_MIX)
-    shades = ["#141414", "#4a4a4a", "#6a6a6a", "#8a8a8a", "#a0a0a0", "#b0b0b0"]
+    shades = ["#141414", "#4a4a4a", "#6a6a6a", "#6b6b6b", "#a0a0a0", "#6f6f6f"]
     src_rows = "".join(f"""
         <div style="display:flex;align-items:center;gap:10px"><span style="width:132px;color:#666">{esc(s['source'])}</span>
         <div style="flex:1;height:11px;background:#f3f3f3;border-radius:6px;overflow:hidden">
         <div style="height:100%;width:{round(100*s['n']/mx)}%;background:{shades[min(i,5)]};border-radius:6px"></div></div>
-        <span style="width:52px;text-align:right;color:#8a8a8a;font-size:11.5px">{s['n']:,}</span></div>"""
+        <span style="width:52px;text-align:right;color:#6b6b6b;font-size:11.5px">{s['n']:,}</span></div>"""
         for i, s in enumerate(SOURCE_MIX))
 
     beh = RESULTS["behavior_distribution"]
@@ -253,19 +277,24 @@ def results_html():
         f'{round(100*b["n"]/tot_b)}%</span>' for i, b in enumerate(beh))
 
     top = themes[0]
+    seen, uniq = set(), []
+    for e in top["sample_evidence"]:
+        key = e["review"].strip().lower()[:40]
+        if key not in seen:
+            seen.add(key); uniq.append(e)
     ev = "".join(f"""
         <div style="border-left:3px solid {YELLOW};padding:2px 0 2px 14px">
           <div style="font-family:'Newsreader',serif;font-size:16px;font-style:italic;color:#2a251b;line-height:1.5">
             “{esc(e['review'].strip())}”</div>
-          <div style="font-size:11.5px;color:#a3a3a3;margin-top:4px">{esc(e['source'])} · {esc(e['category'])} · {esc(e['behavior_type'])}</div>
-        </div>""" for e in top["sample_evidence"][:3])
+          <div style="font-size:11.5px;color:#6f6f6f;margin-top:4px">{esc(e['source'])} · {esc(e['category'])} · {esc(e['behavior_type'])}</div>
+        </div>""" for e in uniq[:3])
 
     d = RESULTS["company_disclosures"][0] if RESULTS["company_disclosures"] else None
     corro = ""
     if d:
         corro = f"""
     <div style="background:#fdf6dd;border:1px solid #f0e2a8;border-radius:18px;padding:20px 22px">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:#9a8a2a;margin-bottom:9px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:#756512;margin-bottom:9px">
         CORROBORATED BY EARNINGS CALL — {esc(d['source_document'].replace('_',' '))}</div>
       <div style="font-family:'Newsreader',serif;font-size:17px;line-height:1.5;color:#3a3320">
         “{esc(d['content_snippet'].strip())}”</div>
@@ -279,17 +308,17 @@ def results_html():
   <div class="dc-lede" style="margin-bottom:24px">Aggregate output of the full pipeline run — deterministic,
     DB-backed evidence counts. Not synthetic.</div>
 
-  <div style="display:flex;gap:14px;align-items:stretch;margin-bottom:16px">
+  <div class="dc-funnel" style="display:flex;gap:14px;align-items:stretch;margin-bottom:16px">
     <div style="flex:1;background:#fff;border:1px solid #ececec;border-radius:16px;padding:18px 20px">
-      <div style="font-size:30px;font-weight:800;letter-spacing:-.02em">{f['raw_reviews']:,}</div>
-      <div style="font-size:12.5px;color:#8a8a8a;font-weight:600;margin-top:3px">raw reviews scraped</div>
+      <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:#141414">{f['raw_reviews']:,}</div>
+      <div style="font-size:12.5px;color:#6b6b6b;font-weight:600;margin-top:3px">raw reviews scraped</div>
       <div style="height:9px;border-radius:5px;background:{YELLOW};margin-top:14px"></div></div>
-    <div style="display:flex;align-items:center;color:#c9c9c9;font-size:22px">→</div>
+    <div class="dc-arrow" style="display:flex;align-items:center;color:#9a9a9a;font-size:22px">→</div>
     <div style="flex:1;background:#fff;border:1px solid #ececec;border-radius:16px;padding:18px 20px">
-      <div style="font-size:30px;font-weight:800;letter-spacing:-.02em">{f['filtered_reviews']:,}</div>
-      <div style="font-size:12.5px;color:#8a8a8a;font-weight:600;margin-top:3px">after heuristic filter</div>
+      <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:#141414">{f['filtered_reviews']:,}</div>
+      <div style="font-size:12.5px;color:#6b6b6b;font-weight:600;margin-top:3px">after heuristic filter</div>
       <div style="height:9px;border-radius:5px;background:#f2d979;margin-top:14px;width:{w_filt}%"></div></div>
-    <div style="display:flex;align-items:center;color:#c9c9c9;font-size:22px">→</div>
+    <div class="dc-arrow" style="display:flex;align-items:center;color:#9a9a9a;font-size:22px">→</div>
     <div style="flex:1;background:#141414;border-radius:16px;padding:18px 20px;color:#fff">
       <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:{YELLOW}">{f['gate_pass']:,}</div>
       <div style="font-size:12.5px;color:#cfcfcf;font-weight:600;margin-top:3px">gate-passing extractions</div>
@@ -297,19 +326,19 @@ def results_html():
   </div>
 
   <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:22px 24px;margin-bottom:16px">
-    <div style="font-weight:800;font-size:15px;margin-bottom:18px">Ranked themes
-      <span style="font-weight:600;color:#a3a3a3;font-size:12.5px">· share of gate-passing extractions</span></div>
+    <div style="font-weight:800;font-size:15px;margin-bottom:18px;color:#141414">Ranked themes
+      <span style="font-weight:600;color:#6f6f6f;font-size:12.5px">· share of gate-passing extractions</span></div>
     <div style="display:flex;flex-direction:column;gap:15px">{''.join(theme_rows)}</div>
-    <div style="font-size:11.5px;color:#b0b0b0;margin-top:16px">All counts are DB row-counts from the pipeline
+    <div style="font-size:11.5px;color:#6f6f6f;margin-top:16px">All counts are DB row-counts from the pipeline
       export — never LLM-estimated.</div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1.3fr 1fr .75fr;gap:14px;margin-bottom:16px">
+  <div class="dc-grid3" style="display:grid;grid-template-columns:1.3fr 1fr .75fr;gap:14px;margin-bottom:16px">
     <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
-      <div style="font-weight:800;font-size:13.5px;margin-bottom:14px">Source mix</div>
+      <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Source mix</div>
       <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">{src_rows}</div></div>
     <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
-      <div style="font-weight:800;font-size:13.5px;margin-bottom:14px">Behavior type</div>
+      <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Behavior type</div>
       <div style="display:flex;height:14px;border-radius:7px;overflow:hidden">{bar}</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:12px;color:#666">{legend}</div></div>
     <div style="background:#141414;border-radius:18px;padding:20px;color:#fff;display:flex;flex-direction:column;
@@ -323,7 +352,7 @@ def results_html():
   </div>
 
   <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:22px 24px;margin-bottom:16px">
-    <div style="font-weight:800;font-size:13.5px;margin-bottom:14px">Sample evidence — {esc(top['theme_name'])}</div>
+    <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Sample evidence — {esc(top['theme_name'])}</div>
     <div style="display:flex;flex-direction:column;gap:12px">{ev}</div></div>
   {corro}
 </div>"""
@@ -338,7 +367,7 @@ BRAND = f"""
 </div>"""
 
 FOOTER = """
-<div style="padding:18px 40px 26px;border-top:1px solid #ececec;font-size:11.5px;color:#a3a3a3;
+<div style="padding:18px 40px 26px;border-top:1px solid #ececec;font-size:11.5px;color:#6f6f6f;
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
   <span>Blinkit Category-Adoption Discovery Engine · Part 1</span>
   <span style="font-family:'JetBrains Mono',monospace">Two-Step Gated Schema · Groq llama-3.1-8b-instant</span>
@@ -347,6 +376,9 @@ FOOTER = """
 
 with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
                js=FORCE_LIGHT, theme=gr.themes.Base()) as demo:
+    # Font <link> repeated in-body: Gradio's head= does not always reach the served
+    # page on Spaces, and browsers honour stylesheet links in the body too.
+    gr.HTML(HEAD)
     # ---- header: brand + pill tabs, all inside the yellow bar ----
     with gr.Row(elem_classes="dc-head"):
         gr.HTML(BRAND)
@@ -370,7 +402,7 @@ with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
                     elem_id="rev", show_label=False, lines=4, container=False,
                     placeholder="e.g. I stopped buying fruits here after getting a rotten batch")
                 btn = gr.Button("Extract →", elem_id="go", variant="primary")
-                gr.HTML('<div style="font-size:11px;font-weight:700;color:#b0b0b0;letter-spacing:.08em;'
+                gr.HTML('<div style="font-size:11px;font-weight:700;color:#6f6f6f;letter-spacing:.08em;'
                         'margin:26px 0 10px;clear:both">TRY AN EXAMPLE</div>')
                 ex_btns = [gr.Button(e, elem_classes="ex-btn", size="sm") for e in EXAMPLES]
             with gr.Column(scale=1):
