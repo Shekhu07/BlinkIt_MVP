@@ -175,6 +175,53 @@ Performance after the pass: discovery FCP 84 ms / load 415 ms; MVP FCP 44 ms / l
 
 ---
 
+## Q: The gate rejects support/delivery/pricing complaints — but those could also stop users buying from other categories, right? (2026-07-23)
+
+Yes, and the gate is built to catch that — it rejects service complaints only *"with no explicit
+tie to category trial/avoidance."* The mechanism passes whenever the reviewer states it.
+
+**Evidence that it does pass.** In the real export (`discovery/data/results.json`):
+- Theme #2 is **"Convenience and Price Sensitivity" — 114 extractions, 10%** of gate-passing.
+  Pricing is on the gate's own rejection list and still produced the second-largest theme,
+  because those reviewers tied it to what they buy.
+- Theme #3, "Discovery Friction and Limited Options" (78, 7%), likewise.
+- 5 of the 12 sample-evidence rows attached to passing themes contain refund/delivery/price
+  language. (Indicative only — sample evidence, not a measurement over the full corpus.)
+
+**The real limitation, stated honestly.** The gate measures **stated attribution, not actual
+causation**. It catches the mechanism when a reviewer says the quiet part out loud, and misses it
+when the effect is real but unarticulated — which is the common case. Someone who quietly stopped
+browsing new categories after three late deliveries writes *"delivery is always late"*, full stop.
+That review is rejected and their suppressed exploration is invisible to Part 1. So the bias has a
+known direction: **Part 1 systematically undercounts service-mediated category avoidance**, and
+the 70% for quality is a share of *stated* barriers, not of all barriers.
+
+**Why loosening the gate still isn't the fix.** An ungated delivery complaint from someone who
+consequently stopped exploring, and one from someone who is annoyed but still buying happily
+across eight categories, read identically. The distinguishing information isn't in the text, so
+no prompt can recover it — and since service complaints dominate review corpora by base rate,
+admitting them swamps the ranking on prevalence alone (exactly the failure of the original
+ungated run, `architecture.md` §3.1). It trades a known undercount for an unknown overcount.
+
+**Part 2 is the correction.** The undercount needed a different instrument — one that asks users
+directly instead of waiting for them to volunteer the causal link. It found what this question
+predicts (`problem_statement.md` §2, §4):
+- **Q15's top driver is a "no questions asked" return/refund guarantee — 11/25 picks**, ahead of
+  visible quality/freshness guarantees at 9. A *support* attribute ranks first as an exploration unlock.
+- The respondent who stopped exploring entirely was the one whose complaint **went unresolved**.
+- **6 of 13** incident-havers reported no behaviour change, most having been refunded or replaced —
+  support quality is the moderator determining whether a quality failure generalises into avoidance.
+- A distinct **packaging/fulfillment** sub-cause surfaced (stationery crushed under groceries) —
+  a fulfillment failure, not a product-source defect, causing category-specific avoidance.
+
+**Framing for the deck / a challenge in review**: reviews are good at telling you *what breaks
+trust in a category*; they are bad at telling you *what would restore enough of it to try
+something new*. Part 1 answers the first, Part 2 the second, and the MVP acts on the second —
+which is why the shipped nudge leads with a refund/return guarantee rather than a quality claim.
+The undercount is acknowledged, its direction is known, and Part 2 exists partly to correct it.
+
+---
+
 ## Q: Which nudge-mechanic options remain open?
 
 Of the four Q15-driver nudge mechanics: **Option 1 (refund guarantee) + Option 2 (quality/freshness)** are combined and shipped live. **Option 3 (social-proof / item reviews)** and the two §3 targeting variants (essentials-retreat, platform-churn) are unpursued. **Option 4 (pre-acceptance inspection nudge, Q15 tied-third, 5/25 picks)** is the deliberately-deferred backlog item the user has said they still want to try — the next Phase 5 experiment. See memory `project_phase5_mvp.md`.
