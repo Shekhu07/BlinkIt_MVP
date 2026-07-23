@@ -18,6 +18,11 @@ categories**. This Space makes that engine interactive:
   Step 1 gates on relevance to category-adoption behavior (rejecting refund/delivery/pricing
   noise), Step 2 extracts structured fields. Exact prompt from the batch pipeline
   (`analysis/extract_themes.py`), on Groq `llama-3.1-8b-instant`.
+- **Bulk Run** — paste up to **50** of your own reviews (one per line, or CSV / JSON) and push
+  them through the *same* guardrails the real corpus went through: dedup → heuristic prefilter
+  → Two-Step Gate → deterministic category×behavior grouping. Every dropped row comes back
+  labelled with the guardrail that dropped it and why. Scoped entirely to that run — it never
+  touches `data/results.json` or the real Part 1 numbers.
 - **Results Explorer** — the real aggregate findings: pipeline funnel
   (15,820 → 4,740 → 1,094 gate-passing), ranked themes with deterministic DB-backed evidence
   counts (top: **Poor Quality and Unreliable Products, 770/1,094 ≈ 70%**), sample real
@@ -54,7 +59,29 @@ requirement (see `CLAUDE.md`).
 ```
 data/results.json  ─►  Results Explorer tab   (static, real aggregate findings)
 pasted review      ─►  extractor.py  ─► Groq  ─►  Live Extractor tab   (real-time gated extraction)
+pasted batch (≤50) ─►  batch.py      ─► Groq  ─►  Bulk Run tab         (dedup → prefilter → gate → grouping)
 ```
+
+`extractor.py` owns `GATE_SPEC`, the single copy of the gate wording in this app; `batch.py`
+composes its multi-review prompt from the same constant so the two paths cannot drift.
+
+### Two constraints on the Bulk Run tab, both deliberate
+
+**The 50-row cap.** This Space and the MVP Space share one free-tier Groq key. An uncapped
+batch could exhaust the quota and take *both* submission links offline, so oversized input is
+rejected with an explicit error rather than truncated.
+
+**Pasted text, not a file upload.** On the Gradio version these Spaces run (4.44.1 /
+gradio_client 1.3.0), wiring `gr.File` or `gr.UploadButton` as an **event input** crashes app
+startup — API-schema generation raises `TypeError: argument of type 'bool' is not iterable` and
+the server never binds. `show_api=False` does not avoid it; the file component renders fine
+until it is attached to a `.click()`. Fixing it properly needs a Gradio 5.x bump, which is not
+worth the blast radius on a live submission link. `batch.parse_reviews()` therefore accepts CSV
+text, JSON text, or plain newline-separated reviews — the same three shapes a file would have
+carried. **If Gradio is ever upgraded here, re-test a file component before assuming it works.**
+
+Theme *naming* is deliberately not run on a bulk batch: naming macro-themes off ≤50 rows would
+manufacture findings. Stage 3 stops at deterministic (category × behavior_type) row counts.
 
 ## Run locally
 

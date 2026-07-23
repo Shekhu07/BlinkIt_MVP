@@ -56,6 +56,15 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 - [x] Day 18–19: Deploy to production (reuse ArthaAI's HuggingFace Spaces pattern or equivalent), test end-to-end live — **DONE 2026-07-23**: live on a HuggingFace Gradio Space, returning nudges end-to-end (friction match → live Groq call → nudge). **Switched from Docker SDK**: HF gates Docker behind a paid plan on the fellow's account, so the delivery layer was ported to the free Gradio SDK. Deployed on **ZeroGPU** hardware (CPU-basic was not selectable on the account) — the app is CPU-only, so `app.py` registers a no-op `@spaces.GPU` function purely to pass ZeroGPU's startup check. `GROQ_API_KEY` set as a Space secret.
 - [x] **Milestone**: MVP is live at a stable URL — **DONE 2026-07-23**. (Paste the final Space URL into the deck + deliverables checklist in Phase 6.)
 - [x] **Post-launch UI pass (2026-07-23)**: both live apps redesigned from Claude Design projects into one shared visual language (see `architecture.md` §6.4). The MVP is now an operator console + phone mockup; the discovery app is a two-tab console. In both, the mockups' invented numbers/copy were replaced with the real pipeline export and live LLM output — substitutions tabulated in `mvp/README.md` and `discovery/README.md`. `agent.py`'s output schema was extended (headline/body/refund_line/fresh_line/cta/product/why_user/why_category) with the five hard rules unchanged; `data/synthetic_profiles.json` gained display-only fields, still labelled SYNTHETIC. Verified headlessly: 0 WCAG AA contrast failures, identical light/dark render, no mobile overflow.
+- [x] **Bulk Run tab on the discovery app (2026-07-23)**: evaluators can paste up to 50 of their
+  own reviews and run them through the same guardrails as the real corpus — dedup → prefilter
+  heuristics → Two-Step Gate → deterministic category×behavior counts — with every dropped row
+  labelled by the guardrail that removed it (`discovery/batch.py`, `architecture.md` §6.5). Answers
+  "can the workflow be tested, or only its output read?" Deliberately capped and non-persistent:
+  the shared free-tier Groq key is protected by a hard 50-row error, nothing writes to
+  `results.json`, and theme *naming* is not run on a sample that small. Headline numbers unchanged.
+  Note: this had to take **pasted text rather than a file upload** — `gr.File` as an event input
+  crashes app startup on the pinned Gradio (see the new hardening rule in `architecture.md` §6.4).
 
 ### Phase 6 — Deck Build (Days 19–22)
 - [ ] Structure the 10-slide deck around the cross-part traceability thread (see architecture.md §8) rather than one slide per part in isolation
@@ -88,7 +97,7 @@ Deadline     : 4 Aug 2026, 3:59:00 PM IST
 
 | Deliverable | Phase | Notes |
 |---|---|---|
-| [Link] Discovery workflow, testable | Phase 1/2 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine — two-tab Gradio app (Live Extractor runs the real Two-Step Gated extraction on any pasted review; Results Explorer shows the real funnel/themes/validation/concall). Source in `discovery/`. |
+| [Link] Discovery workflow, testable | Phase 1/2 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine — three-tab Gradio app (Live Extractor runs the real Two-Step Gated extraction on any pasted review; Bulk Run pushes up to 50 evaluator-supplied reviews through the full guardrail chain; Results Explorer shows the real funnel/themes/validation/concall). Source in `discovery/`. |
 | 1-slider on workflow (inside deck) | Phase 6 | Summarizes Part 1 pipeline |
 | 10-slide PDF deck | Phase 6 | Full narrative across all 4 parts |
 | [Link] Deployed MVP/agent | Phase 5 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent — Category Nudge Agent on HF Gradio Space. Source in `mvp/`. |

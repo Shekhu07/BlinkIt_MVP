@@ -5,6 +5,10 @@ evaluator can watch the discovery engine's core step work in real time.
 Same model as the batch pipeline: Groq llama-3.1-8b-instant. Same gate + schema.
 Do not change the gate or its wording without updating analysis/extract_themes.py
 and the docs — the gate is the core design decision (see CLAUDE.md).
+
+GATE_SPEC below is the single source of the gate wording for this app: batch.py
+composes its own multi-review prompt from the same constant, so the single-review
+and bulk paths can never drift apart.
 """
 import json
 import os
@@ -16,10 +20,10 @@ load_dotenv()
 
 GROQ_MODEL = "llama-3.1-8b-instant"
 
-# Verbatim Step-1 gate + Step-2 schema from analysis/extract_themes.py, reworded for a
-# single review (the pipeline batches 15 at a time; here we send exactly one).
-SYSTEM_PROMPT = (
-    "You are an AI extracting specific user behavior from a single review. "
+# Verbatim Step-1 gate + Step-2 schema from analysis/extract_themes.py. Shared by the
+# single-review path (below) and the bulk path (batch.py) so there is exactly one copy
+# of the gate wording in this app.
+GATE_SPEC = (
     "Step 1 - Relevance Gate: Check if the text relates to: why a user keeps buying the same category, "
     "why a user has not tried an unfamiliar category, how users discover new products/categories, "
     "a specific moment of considering/trying/rejecting a category, trust or risk about trying something unfamiliar, "
@@ -29,6 +33,12 @@ SYSTEM_PROMPT = (
     "category_mentioned (groceries | personal_care | pet_supplies | baby_products | electronics | household_essentials | snacks_beverages | other | unspecified), "
     "underlying_reason (one sentence, paraphrased), and sentiment (frustration | neutral_observation | satisfaction | curiosity). "
     "If mentions_category_behavior is false, leave other fields blank or default. "
+)
+
+# Single-review wording (the pipeline batches 15 at a time; here we send exactly one).
+SYSTEM_PROMPT = (
+    "You are an AI extracting specific user behavior from a single review. "
+    + GATE_SPEC +
     'Respond ONLY with a JSON object of the exact shape {"mentions_category_behavior": bool, '
     '"behavior_type": str, "category_mentioned": str, "underlying_reason": str, '
     '"sentiment": str, "confidence": float}.'

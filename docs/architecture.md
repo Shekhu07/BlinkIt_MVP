@@ -152,6 +152,33 @@ rest of the project.
 - Force light mode via `js=`, but do not depend on it — the redirect can be blocked inside
   HF's iframe.
 - ZeroGPU Spaces refuse to boot without a `@spaces.GPU` function; both apps register a no-op.
+- **Do not wire `gr.File` / `gr.UploadButton` as an event input** on the pinned Gradio
+  (4.44.1 / gradio_client 1.3.0). API-schema generation raises
+  `TypeError: argument of type 'bool' is not iterable`, the startup self-check fails, and the
+  app never binds a port — a boot-time crash, not a cosmetic bug. `show_api=False` does not
+  avoid it, and the component renders fine until it is attached to a `.click()`. The discovery
+  app's Bulk Run tab takes **pasted text** (CSV / JSON / one-per-line) for exactly this reason.
+  Re-test before assuming a Gradio upgrade fixes it.
+
+### 6.5 Evaluator-run bulk mode (discovery app)
+The discovery Space has a third tab, **Bulk Run**, so an evaluator can test the *workflow* and
+not only read pre-computed findings. It re-implements the real guardrail chain in-memory
+(`discovery/batch.py`): Stage 0 dedup (same md5 key as `ingest_master_json.py`), Stage 1 the
+`prefilter.py` heuristics (empty / <5 words / rating==5), Stage 2 the Two-Step Gate batched 15
+per call as in `extract_themes.py`, Stage 3 deterministic (category × behavior_type) counts.
+Every dropped row is returned with the guardrail that dropped it — the filtering *is* the demo.
+
+Three scope limits, all deliberate:
+- **50-row cap**, enforced as an error rather than a silent truncation. Both Spaces share one
+  free-tier Groq key; an uncapped run could exhaust the quota and take both submission links
+  offline.
+- **No theme naming.** Stage 3 stops at row counts; naming macro-themes off ≤50 rows would
+  manufacture findings. The real themes come from 1,094 gate-passing extractions.
+- **No persistence.** Nothing writes to `data/results.json`, Postgres, or any artifact; the
+  headline funnel (15,820 / 4,740 / 1,094 / 770) is unaffected by anything an evaluator runs.
+
+`GATE_SPEC` in `discovery/extractor.py` is the single copy of the gate wording in that app;
+both the single-review and bulk prompts compose from it, so they cannot drift.
 
 ### 6.3 Why this MVP choice over alternatives
 - A pure "workflow" (no agentic reasoning) would satisfy the letter of the requirement but under-deliver on "AI-native" — the brief explicitly lists "an AI agent" as one acceptable MVP form, and an agent that reasons per-user about *why* a nudge is relevant is a stronger product story than a static recommendation widget

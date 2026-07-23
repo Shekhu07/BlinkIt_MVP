@@ -1,9 +1,14 @@
 """Discovery-Workflow demo — the second required live link (Part 1 AI engine).
 
-Two tabs:
+Three tabs:
   1. Live Extractor    — paste any review, watch the REAL Two-Step Gated extraction run
                          (live Groq call, not a canned/heuristic response).
-  2. Results Explorer   — the REAL aggregate findings, rendered from data/results.json.
+  2. Bulk Run           — upload up to 50 of your own reviews and push them through the
+                         SAME guardrails (dedup -> heuristic filter -> gate -> grouping);
+                         every dropped row is reported with the guardrail that dropped it.
+                         Results are the evaluator's own run and never touch the real
+                         Part 1 numbers.
+  3. Results Explorer   — the REAL aggregate findings, rendered from data/results.json.
 
 Visual design imported from the "Blinkit Discovery Engine redesign" Claude Design project.
 Design chrome is reproduced faithfully; all NUMBERS are taken from the real pipeline export,
@@ -20,6 +25,8 @@ from pathlib import Path
 import gradio as gr
 from dotenv import load_dotenv
 
+import batch as batchmod
+from batch import MAX_ROWS, UploadError
 from extractor import extract_one
 
 load_dotenv()
@@ -141,6 +148,28 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
   white-space:normal !important;height:auto !important;min-height:0 !important}
 .ex-btn:hover{border-color:#f8cb46 !important;background:#fffdf3 !important}
 
+/* bulk run */
+#bulk textarea{background:#faf9f6 !important;border:1px solid #eee !important;border-radius:12px !important;
+  padding:14px 16px !important;font-family:'JetBrains Mono',monospace !important;font-size:12px !important;
+  line-height:1.55 !important;color:#333 !important;min-height:240px;box-shadow:none !important}
+#bulk textarea::placeholder{color:#b3b3b3 !important}
+#gobulk{background:#f8cb46 !important;color:#141414 !important;font-weight:800 !important;
+  font-size:14px !important;padding:11px 28px !important;border:none !important;border-radius:12px !important;
+  box-shadow:none !important;margin:14px 0 0 !important;width:auto !important;min-width:0 !important;
+  flex:none !important}
+#sample{background:#fcfcfa !important;border:1px solid #eee !important;border-radius:12px !important;
+  color:#444 !important;font-weight:600 !important;font-size:13px !important;padding:11px 18px !important;
+  box-shadow:none !important;margin:14px 0 0 10px !important;width:auto !important;min-width:0 !important;
+  flex:none !important}
+#sample:hover{border-color:#f8cb46 !important;background:#fffdf3 !important}
+.dc-rows{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding-right:4px}
+.dc-row{border:1px solid #ececec;border-radius:12px;padding:12px 14px;background:#fff}
+.dc-row.drop{background:#fdf7f7;border-color:#eedada}
+.dc-quote{font-size:12.5px;color:#3d3d3d;line-height:1.45}
+.dc-why{font-size:11.5px;color:#8a5a5a;margin-top:6px;line-height:1.45}
+.dc-stage{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#a63c3c;
+  letter-spacing:.02em}
+
 /* loading state — Gradio's default spinner is hidden by our chrome reset */
 .dc-body .generating,.dc-body .progress-text{background:transparent !important;color:#756512 !important;
   font-size:12px !important;font-weight:700 !important;letter-spacing:.06em}
@@ -233,7 +262,140 @@ def run_extract(review_text):
 </div>"""
 
 
-# ---------------- Tab 2: Results Explorer (REAL numbers) ----------------
+# ---------------- Tab 2: Bulk Run (the EVALUATOR's own data) ----------------
+BULK_PLACEHOLDER = (
+    "Paste up to 50 reviews, one per line — e.g.\n\n"
+    "I stopped buying fruits here after a rotten batch arrived\n"
+    "Delivery was late and the rider was rude\n"
+    "Never tried their pet range, no ratings on the items")
+
+# Deliberately mixed: contains a duplicate, two sub-5-word rows, a 5-star row and two
+# pure service complaints, so every guardrail visibly fires on one click.
+SAMPLE_BULK = """content,rating,source,author
+"it's selling expired products through the app so I stopped ordering fruits here",1,playstore,anon1
+"Delivery was 10 minutes late and the delivery guy was rude",2,playstore,anon2
+"I never buy electronics from here, too scared it'll arrive damaged",2,maps,anon3
+"good",5,playstore,anon4
+"nice app",4,playstore,anon5
+"Absolutely love this app, everything arrives on time and fresh always",5,playstore,anon6
+"it's selling expired products through the app so I stopped ordering fruits here",1,playstore,anon1
+"I only order the same groceries every week, never tried anything else on the app",3,maps,anon7
+"Refund has not been processed for 15 days now, customer care is useless",1,mouthshut,anon8
+"After the dairy I ordered arrived spoilt I stopped buying any perishables from quick commerce",1,mouthshut,anon9
+"Wanted to try their pet food range but reviews on the items are missing so I skipped it",3,maps,anon10
+"""
+
+BULK_EMPTY = f"""
+<div style="border:1.5px dashed #e0e0e0;border-radius:18px;padding:40px 24px;text-align:center;color:#6f6f6f">
+  <div style="font-size:34px;color:#f8cb46">📄</div>
+  <div style="font-size:13.5px;margin-top:10px;line-height:1.5;color:#6f6f6f">Paste up to {MAX_ROWS} reviews to run
+    them through<br>dedup → heuristic filter → gate → grouping.</div>
+</div>"""
+
+
+def _step_card(n, label, value, sub, dark=False):
+    bg, bd = ("#141414", "#141414") if dark else ("#fff", "#ececec")
+    num = YELLOW if dark else INK
+    lab = "#cfcfcf" if dark else "#6b6b6b"
+    return (f'<div style="flex:1;min-width:120px;background:{bg};border:1px solid {bd};border-radius:16px;'
+            f'padding:15px 17px">'
+            f'<div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">{esc(n)}</div>'
+            f'<div style="font-size:26px;font-weight:800;letter-spacing:-.02em;color:{num};margin-top:5px">{value:,}</div>'
+            f'<div style="font-size:12px;color:{lab};font-weight:600;margin-top:2px">{esc(label)}</div>'
+            f'<div style="font-size:11px;color:#8a8a8a;margin-top:5px;line-height:1.4">{esc(sub)}</div></div>')
+
+
+def _row_card(r, dropped):
+    body = esc((r["content"] or "")[:220] + ("…" if len(r["content"] or "") > 220 else ""))
+    if dropped:
+        return (f'<div class="dc-row drop"><div class="dc-stage">{esc(r["stage"])}</div>'
+                f'<div class="dc-quote" style="margin-top:5px">“{body}”</div>'
+                f'<div class="dc-why">{esc(r["reason"])}</div></div>')
+    chips = "".join(
+        f'<span style="background:{bg};color:{fg};font-size:11px;font-weight:700;padding:4px 9px;'
+        f'border-radius:20px">{esc(v)}</span>'
+        for bg, fg, v in (("#141414", YELLOW, r.get("behavior_type")),
+                          ("#fdf3d0", "#7a6410", r.get("category")),
+                          ("#fde8e8", "#b23c3c", r.get("sentiment")))
+        if v not in (None, ""))
+    reason = esc(r.get("underlying_reason") or "")
+    return (f'<div class="dc-row"><div class="dc-quote">“{body}”</div>'
+            f'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">{chips}</div>'
+            + (f'<div style="font-size:11.5px;color:#5a6b5f;margin-top:7px;line-height:1.45">'
+               f'<b>Reason:</b> {reason}</div>' if reason else "") + "</div>")
+
+
+def run_bulk(text, progress=gr.Progress()):
+    if not text or not text.strip():
+        return BULK_EMPTY
+    if "GROQ_API_KEY" not in os.environ:
+        return _err("GROQ_API_KEY is not configured on the server (add it in Settings → Secrets).")
+    try:
+        res = batchmod.run(text, progress=progress)
+    except UploadError as e:
+        return _err(e)
+    except Exception as e:  # noqa: BLE001
+        return _err(f"Unexpected failure: {e}")
+
+    total, n_drop = res["total"], len(res["dropped"])
+    n_kept, n_pass, n_rej = len(res["kept"]), len(res["passed"]), len(res["rejected"])
+
+    funnel = "".join((
+        _step_card("PASTED", "rows submitted", total, f"cap {MAX_ROWS}"),
+        _step_card("STAGE 0–1", "after guardrails", n_kept,
+                   f"{n_drop} dropped by dedup / heuristic filter"),
+        _step_card("STAGE 2", "gate-passing", n_pass,
+                   f"{n_rej} rejected by the relevance gate", dark=True)))
+
+    rate = f"{round(100 * n_pass / n_kept)}%" if n_kept else "—"
+    combo_rows = "".join(
+        f'<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;'
+        f'border-bottom:1px solid #f2f2f2"><span style="color:#3d3d3d">{esc(c["category"])} · '
+        f'{esc(c["behavior_type"])}</span><span style="font-weight:700;color:#141414">{c["count"]}</span></div>'
+        for c in res["combos"]) or '<div style="font-size:12.5px;color:#6f6f6f">No rows passed the gate.</div>'
+
+    dropped_html = "".join(_row_card(r, True) for r in res["dropped"] + res["rejected"]) or \
+        '<div style="font-size:12.5px;color:#6f6f6f">Nothing was dropped — every row cleared all guardrails.</div>'
+    kept_html = "".join(_row_card(r, False) for r in res["passed"]) or \
+        '<div style="font-size:12.5px;color:#6f6f6f">No rows passed the gate.</div>'
+
+    rating_note = "" if res["has_rating"] else (
+        '<div style="font-size:11.5px;color:#8a6a2a;background:#fdf6dd;border:1px solid #f0e2a8;'
+        'border-radius:10px;padding:9px 12px;margin-bottom:14px">No <code>rating</code> column found — '
+        "the 5-star drop rule could not be applied to this input. All other guardrails ran.</div>")
+
+    return f"""
+<div class="dc-anim">
+  <div style="background:#fdf6dd;border:1px solid #f0e2a8;border-radius:12px;padding:10px 14px;
+    font-size:11.5px;color:#756512;font-weight:600;margin-bottom:16px">YOUR RUN — scoped to the reviews you
+    just pasted. It does not modify the real Part 1 corpus or the numbers in Results Explorer.</div>
+  {rating_note}
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px">{funnel}</div>
+  <div style="font-size:11.5px;color:#6f6f6f;margin:10px 0 20px">Gate pass rate on your input:
+    <b style="color:#141414">{rate}</b> · the full 15,820-review corpus ran at ~23% ·
+    model <span style="font-family:'JetBrains Mono',monospace">{esc(res['model'])}</span></div>
+
+  <div class="dc-cols" style="display:flex;gap:14px;align-items:flex-start">
+    <div style="flex:1;min-width:0;background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
+      <div style="font-weight:800;font-size:13.5px;color:#141414;margin-bottom:4px">Dropped ({n_drop + n_rej})</div>
+      <div style="font-size:11.5px;color:#6f6f6f;margin-bottom:13px">Each row names the guardrail that removed it.</div>
+      <div class="dc-rows">{dropped_html}</div></div>
+    <div style="flex:1;min-width:0;background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
+      <div style="font-weight:800;font-size:13.5px;color:#141414;margin-bottom:4px">Gate-passing ({n_pass})</div>
+      <div style="font-size:11.5px;color:#6f6f6f;margin-bottom:13px">Structured fields from Step 2.</div>
+      <div class="dc-rows">{kept_html}</div></div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px;margin-top:14px">
+    <div style="font-weight:800;font-size:13.5px;color:#141414;margin-bottom:4px">Category × behavior grouping</div>
+    <div style="font-size:11.5px;color:#6f6f6f;margin-bottom:10px">Deterministic row counts, same as
+      <code>cluster_themes.py</code>. Theme <i>naming</i> is deliberately not run on a sample this small —
+      naming macro-themes off ≤{MAX_ROWS} rows would manufacture findings.</div>
+    {combo_rows}</div>
+</div>"""
+
+
+# ---------------- Tab 3: Results Explorer (REAL numbers) ----------------
 def results_html():
     f = RESULTS["funnel"]
     themes = RESULTS["themes"]
@@ -388,6 +550,7 @@ with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
         gr.HTML(BRAND)
         with gr.Row(elem_classes="dc-tabs"):
             t_ex = gr.Button("Live Extractor", variant="primary", size="sm")
+            t_bulk = gr.Button("Bulk Run", variant="secondary", size="sm")
             t_res = gr.Button("Results Explorer", variant="secondary", size="sm")
 
     # ---- panel 1: live extractor ----
@@ -412,7 +575,37 @@ with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
             with gr.Column(scale=1):
                 out = gr.HTML(EMPTY_HTML)
 
-    # ---- panel 2: results explorer ----
+    # ---- panel 2: bulk run ----
+    with gr.Column(elem_classes="dc-body", visible=False) as panel_bulk:
+        gr.HTML(
+            '<div style="display:flex;align-items:center;gap:11px;margin-bottom:8px">'
+            '<span class="dc-eyebrow">RUN IT YOURSELF</span>'
+            '<span class="dc-h2">Push your own reviews through the pipeline</span></div>'
+            f'<div class="dc-lede" style="margin-bottom:18px">Paste up to {MAX_ROWS} reviews — one per line, '
+            'or as CSV / JSON. They run through the same guardrails as the real corpus — '
+            'dedup, the heuristic filter, then the Two-Step Gate — and every row that gets dropped comes back '
+            'labelled with the guardrail that dropped it.</div>')
+        with gr.Row(equal_height=False):
+            with gr.Column(scale=1, elem_classes="dc-card"):
+                gr.HTML('<div class="dc-label">REVIEWS — ONE PER LINE, OR PASTE CSV / JSON</div>')
+                bulk_inp = gr.Textbox(
+                    elem_id="bulk", show_label=False, lines=12, container=False,
+                    placeholder=BULK_PLACEHOLDER)
+                with gr.Row():
+                    bulk_btn = gr.Button("Run pipeline →", elem_id="gobulk", variant="primary")
+                    sample_btn = gr.Button("Load sample", elem_id="sample", size="sm")
+                gr.HTML(
+                    '<div style="font-size:11.5px;color:#6f6f6f;line-height:1.55;margin-top:18px">'
+                    '<b style="color:#141414">Accepted shapes.</b> Plain reviews one per line; or CSV with a '
+                    '<code>content</code> header (also <code>review</code> / <code>text</code>); or a JSON '
+                    'list. Optional <code>rating</code>, <code>source</code>, <code>author</code> columns — '
+                    'without <code>rating</code> the 5-star drop rule cannot run.<br><br>'
+                    f'<b style="color:#141414">Why the {MAX_ROWS}-row cap.</b> This Space and the MVP share one '
+                    'free-tier Groq key; an uncapped run could exhaust it and take both demos offline.</div>')
+            with gr.Column(scale=1):
+                bulk_out = gr.HTML(BULK_EMPTY)
+
+    # ---- panel 3: results explorer ----
     with gr.Column(elem_classes="dc-body", visible=False) as panel_res:
         gr.HTML(results_html())
 
@@ -424,13 +617,18 @@ with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
     for b, text in zip(ex_btns, EXAMPLES):
         b.click(lambda t=text: t, outputs=inp).then(run_extract, inputs=inp, outputs=out)
 
-    def _show(which):
-        return (gr.update(visible=which == "ex"), gr.update(visible=which == "res"),
-                gr.update(variant="primary" if which == "ex" else "secondary"),
-                gr.update(variant="primary" if which == "res" else "secondary"))
+    bulk_btn.click(run_bulk, inputs=bulk_inp, outputs=bulk_out)
+    sample_btn.click(lambda: SAMPLE_BULK, outputs=bulk_inp)
 
-    _tabs_out = [panel_ex, panel_res, t_ex, t_res]
+    def _show(which):
+        panels = [gr.update(visible=which == k) for k in ("ex", "bulk", "res")]
+        tabs = [gr.update(variant="primary" if which == k else "secondary")
+                for k in ("ex", "bulk", "res")]
+        return panels + tabs
+
+    _tabs_out = [panel_ex, panel_bulk, panel_res, t_ex, t_bulk, t_res]
     t_ex.click(lambda: _show("ex"), outputs=_tabs_out)
+    t_bulk.click(lambda: _show("bulk"), outputs=_tabs_out)
     t_res.click(lambda: _show("res"), outputs=_tabs_out)
 
 
