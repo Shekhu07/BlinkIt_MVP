@@ -123,6 +123,58 @@ Full buildable spec written to `docs/concept_trust_concierge_agent.md`, stamped 
 
 ---
 
+## Q: Import the Claude Design redesigns and implement them (2026-07-23).
+
+Two Claude Design projects were imported via the DesignSync tool and implemented:
+- "Blinkit Discovery Engine redesign" → `discovery/app.py` (two-tab console: Live Extractor + Results Explorer)
+- "Blinkit category nudge agent redesign" → `mvp/app.py` (operator console + phone mockup)
+
+**Both mockups contained invented data that contradicted the real project numbers.** Design
+chrome was implemented faithfully; every number and all copy came from the real pipeline
+export or live LLM output instead. Substitutions:
+
+| Mockup value | Shipped |
+|---|---|
+| Discovery: 15,800 raw / 4,200 filtered | **15,820 / 4,740** |
+| Discovery: "Packaging & Fulfillment Damage 142", "Unresolved Complaints 88", "Low Category Intent 66", "Competitor Switching 28" | The **real clustered themes** (Convenience & Price Sensitivity 114, Discovery Friction 78) |
+| Discovery: 84% validation | **80% (16/20 confirmed, 0 contradicted)** |
+| Discovery: client-side heuristic with canned extraction results | **Real Groq call** per request |
+| MVP: hard-coded nudge copy/headlines/reasoning per persona | **Live Groq generation** each click |
+| MVP: confidence scores 88% / 81% / 84% / 79% | **Real Part 1 theme evidence share** (770/1,094 = 70%); out-of-scope users show "out of primary scope" |
+| MVP: product prices / MRP / % off | **Dropped** — labelled "Illustrative demo item" rather than inventing pricing |
+| MVP: invented personas | The existing **8 synthetic profiles**, extended with display-only fields, still labelled SYNTHETIC |
+
+**Why it matters**: `CLAUDE.md` makes real-vs-mock a hard requirement, and the project has a
+history of a mock-data incident that had to be unwound. Shipping the mockups' numbers would
+have repeated it, and the discovery mock's fake extractor would have turned a "testable"
+deliverable into a fake demo.
+
+**A good side effect**: the MVP's honest out-of-scope path is now visible *in the product* —
+a low-intent user with no incident shows "out of primary scope" plus a banner stating the
+trust fix does not apply, rather than that caveat living only in the docs.
+
+---
+
+## Q: The Spaces didn't look like the design / text was invisible — what was wrong?
+
+Diagnosed by rendering headlessly (Playwright) rather than guessing. Root causes, all now
+fixed and recorded in `architecture.md` §6.4:
+1. **Fonts silently fell back to Arial** — Gradio ignores `@import` inside `css=`, and `head=`
+   does not reliably reach the served page on Spaces. Fix: emit the font `<link>` in-body.
+2. **Invisible headings** — elements without an explicit colour inherited Gradio's theme
+   colour. Fix: a base `.gradio-container *{color:<ink>}` rule declared above the class rules
+   (deliberately not `!important`, so class rules and inline styles still win).
+3. **Design depended on a force-light JS redirect** that HF's iframe can block. Now
+   theme-proof: verified identical rendering with dark forced and the redirect defeated.
+4. **Gradio chrome** (grey block/group backgrounds) bled through the cards; stripped.
+5. **Contrast**: the mockups' muted greys failed WCAG AA (down to 2.0:1). Darkened while
+   keeping the visual hierarchy — **0 failures** now on both apps.
+6. **No responsive handling** (fixed-width canvases); breakpoints added, no mobile overflow.
+
+Performance after the pass: discovery FCP 84 ms / load 415 ms; MVP FCP 44 ms / load 405 ms.
+
+---
+
 ## Q: Which nudge-mechanic options remain open?
 
 Of the four Q15-driver nudge mechanics: **Option 1 (refund guarantee) + Option 2 (quality/freshness)** are combined and shipped live. **Option 3 (social-proof / item reviews)** and the two §3 targeting variants (essentials-retreat, platform-churn) are unpursued. **Option 4 (pre-acceptance inspection nudge, Q15 tied-third, 5/25 picks)** is the deliberately-deferred backlog item the user has said they still want to try — the next Phase 5 experiment. See memory `project_phase5_mvp.md`.

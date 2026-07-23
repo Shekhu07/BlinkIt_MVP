@@ -124,7 +124,34 @@ Given the problem (category-repetition, discovery friction) and your existing Fa
 - **Data layer**: synthetic order histories (5–10 representative user profiles built from Part 2 segment insights) stored in Postgres/JSON — clearly labeled as synthetic in the deck, this is standard for fellowship-scale MVPs without production data access
 - **Friction-matching layer**: maps a user profile's behavior pattern to the closest theme from Part 1's theme store
 - **Agent layer**: Groq API call (`llama-3.3-70b-versatile`) that generates the actual nudge text and reasoning, constrained to reference the matched friction theme — this is where the "AI-native" requirement is satisfied, not just calling an LLM for the sake of it
-- **Delivery layer**: a minimal FastAPI endpoint + simple front end (Streamlit or a lightweight HTML page) — this must be **deployed to production** per the deliverable requirement (e.g., Render/Railway/HuggingFace Spaces — reuse whatever hosting pattern you used for ArthaAI)
+- **Delivery layer** (as built): a **Gradio** app deployed free on HuggingFace Spaces. The
+  originally planned FastAPI + Streamlit/HTML combination was replaced because HF gated the
+  Docker SDK behind a paid plan; the FastAPI variant is retained as `mvp/app_fastapi.py` for
+  local/API use. UI is an operator console (synthetic-user picker → profile → agent reasoning)
+  beside a phone mockup of the in-app nudge — see §6.4.
+
+### 6.4 UI design system (both deployed apps)
+Both live deliverables share one visual language, imported from Claude Design projects
+("Blinkit Discovery Engine redesign" and "Blinkit category nudge agent redesign"):
+Blinkit yellow (`#F8CD1B`/`#f8cb46`) on near-black ink, Plus Jakarta Sans, rounded white
+cards on a warm grey canvas, and a dark panel for machine reasoning.
+
+**Design chrome is reproduced faithfully, but never the mockups' numbers or copy.** Both
+mockups shipped with invented data (the discovery mock had 4,200 filtered / fabricated
+secondary themes / 84% validation; the MVP mock had invented confidence scores and product
+pricing). All of it was replaced with the real pipeline export and live LLM output, and the
+substitutions are tabulated in each app's README. This is the same real-vs-mock rule as the
+rest of the project.
+
+**Gradio hardening rules — regressions here are easy and were hit repeatedly:**
+- Gradio ignores `@import` inside the `css=` param, and `head=` does not reliably reach the
+  served page on Spaces. Emit the font `<link>` **in-body** via `gr.HTML`.
+- Never rely on colour inheritance: Gradio's theme colour makes unstyled text invisible.
+  Declare a base `.gradio-container *{color:<ink>}` rule **above** the class rules (not
+  `!important`, so class rules and inline styles still win).
+- Force light mode via `js=`, but do not depend on it — the redirect can be blocked inside
+  HF's iframe.
+- ZeroGPU Spaces refuse to boot without a `@spaces.GPU` function; both apps register a no-op.
 
 ### 6.3 Why this MVP choice over alternatives
 - A pure "workflow" (no agentic reasoning) would satisfy the letter of the requirement but under-deliver on "AI-native" — the brief explicitly lists "an AI agent" as one acceptable MVP form, and an agent that reasons per-user about *why* a nudge is relevant is a stronger product story than a static recommendation widget
