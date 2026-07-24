@@ -139,7 +139,7 @@ statement of the limits. Evaluators reward the honesty.
 - **Live now:** the discovery workflow (test the extraction) and the Category Nudge Agent
   (generate a nudge) — both public.
 - **The metric it moves:** new-category trial rate in the nudged cohort — measurable as an A/B lift.
-- **Next steps:** pre-acceptance-inspection nudge; churn-save agent; move beyond synthetic data.
+- **Next steps:** checkout cart-filler micro-trial for low-intent users (the segment this MVP doesn't target); pre-acceptance-inspection nudge; churn-save agent; move beyond synthetic data.
 **Data callouts:** both links as prominent buttons + QRs.
 **Layout:** two link cards up top; metric + next-steps beneath.
 **Speaker notes:** Close on reachability — two working links, a clear metric, and honest next
