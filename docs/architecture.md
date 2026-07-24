@@ -152,6 +152,13 @@ rest of the project.
 - Force light mode via `js=`, but do not depend on it — the redirect can be blocked inside
   HF's iframe.
 - ZeroGPU Spaces refuse to boot without a `@spaces.GPU` function; both apps register a no-op.
+- **Native `gr.Dropdown` options go dark-on-dark under forced dark mode.** Gradio's option
+  rows carry Tailwind `dark:` variants (e.g. `dark:bg-gray-600`); our theme-proofing forces
+  dark ink even under `.dark`, so when HF's iframe forces dark mode the option text becomes
+  invisible. Pin the field + options list to a light surface in **both** themes:
+  `.gradio-container ul.options, .dark .gradio-container ul.options { background:#fff !important }`
+  (and the `li`, `li *`, and `.selected/.active/:hover` states). Same root cause as the
+  colour-inheritance rule — Gradio's own component chrome doesn't inherit our light surface.
 - **Do not wire `gr.File` / `gr.UploadButton` as an event input** on the pinned Gradio
   (4.44.1 / gradio_client 1.3.0). API-schema generation raises
   `TypeError: argument of type 'bool' is not iterable`, the startup self-check fails, and the
