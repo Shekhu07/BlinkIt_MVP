@@ -86,6 +86,22 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 > - 🟡 Residual: the deck's `tinyurl` links resolve to `…/spaces/Abhishek292000/…`, exposing the
 >   fellow's name in the address bar on click. The deck file itself is clean.
 
+> **Progress update (2026-07-25).** The deck is being **rebuilt through Claude Design Labs** rather
+> than patched in `build_deck.py`; the committed `.pptx` above is now the fallback, not the
+> candidate. Landed since the 07-23 audit:
+> - `docs/deck_design_prompt.md` — the full Design Labs brief for the 10-slide deck, plus a second
+>   **screenshot-placement prompt** specifying which capture goes on which slide. Written to the
+>   10-slide limit, so it resolves the 🔴 11-slide blocker by folding the workflow 1-slider into
+>   the main sequence rather than appending an appendix.
+> - `deck/screenshots/` — 14 real captures of both live Spaces (4 discovery, 10 MVP), indexed in
+>   `deck/screenshots/README.md`. These are live-app screenshots, not mockups.
+> - **1.8%-of-NOV figure omitted** from `deck_spec.md` / `deck_outline.md` / `deck_design_prompt.md`
+>   — not reproducible from this repo (see the provenance caveat in `problem_statement.md` §5).
+>   The deck's concall corroboration is the Q4FY26 quotes only.
+>
+> Still open: generating the deck itself from these prompts, then re-running the compliance check
+> (slide count, 14 pt floor, anonymity, <40 MB, link HTTP 200) against the new file.
+
 - [ ] Structure the 10-slide deck around the cross-part traceability thread (see architecture.md §8) rather than one slide per part in isolation
 - [ ] Draft slide titles as key messages, not labels (per guideline: state the finding, don't just say "Problem")
 - [ ] Build the 1-slider explaining the Part 1 workflow (separate from the main 10, embedded inside the deck per instructions)

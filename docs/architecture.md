@@ -73,6 +73,8 @@ Data Sources (Play Store, App Store [JSON dump], MouthShut, ConsumerComplaints, 
 
 **Downstream implication for segment/theme selection**: no segment or theme should be locked in for Part 2 recruitment until the gated re-extraction has run and produced a theme ranking that plausibly connects to category-adoption behavior specifically, not general app service quality.
 
+**A v2 prompt exists but is deliberately NOT wired in (2026-07-25).** `docs/extraction_prompt_v2_proposal.md` holds an expanded schema covering all eight of the PRD's discovery questions rather than the four this gate asks. It is kept **on record only**: adopting it would re-run extraction and move the 1,094 gate-passing / 770 top-theme headline, which is cited across the docs, the deck, and both deployed Spaces. Treat it as a documented "what we'd do with more runway", not as pending work — do not wire it in without also re-running the pipeline, re-exporting `discovery/data/results.json`, and updating every downstream number.
+
 ---
 
 ## 4. Part 2 — User Research (Structure, Not Infra)

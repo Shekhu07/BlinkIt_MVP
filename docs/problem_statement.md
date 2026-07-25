@@ -65,6 +65,14 @@ None of these require inventing a new need — they're asking Blinkit to extend 
 
 **Updated 2026-07-22 with Eternal's Q1FY27 shareholders' letter** (quarter ended June 30, 2026, published 2026-07-22 — the most current available at time of writing). This supersedes the earlier Q4 FY26 concall as primary evidence; the Q4 FY26 quotes are retained below since they still hold and add historical continuity.
 
+> **Provenance caveat (2026-07-25).** The Q1FY27 excerpts below are **hand-transcribed** from a
+> letter PDF that is not checked into this repo, and `analysis/analyze_concalls.py` has not been
+> re-run since they were added — so `company_disclosures` and `discovery/data/results.json` still
+> contain only the three Q4FY26 excerpts. These quotes are therefore **not reproducible from this
+> repo or visible in the live discovery app**. They are sound for reasoning here, but for that
+> reason the "1.8% of NOV" figure is deliberately **omitted from the deck** (see `deck_spec.md`
+> Slide 4); the deck leans on the Q4FY26 quotes, which are reproducible end to end.
+
 **Direct confirmation that category/assortment expansion is an active, current growth lever** — not just an analyst's inference, but Blinkit's own CEO describing a live initiative:
 > Albinder Dhindsa (Blinkit CEO), Q1FY27 shareholders' letter: *"We continue to focus our efforts on our three pillars of long-term growth - assortment expansion, geographical expansion, and demand densification... Going forward, premiumisation through launch of 'gourmet' stores in select locations in top eight cities will also contribute to assortment expansion on the platform. These gourmet stores offer our customers the ability to buy curated premium brands across categories."*
 
