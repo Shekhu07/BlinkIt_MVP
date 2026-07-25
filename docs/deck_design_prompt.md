@@ -198,8 +198,17 @@ it says what it does not know. Preserve that — do not smooth the caveats away.
 - Any per-user confidence score — the only defensible "confidence" figure is the real theme
   evidence share (770/1,094 = 70%).
 - Any product pricing presented as real Blinkit pricing.
-- The Eternal "1.8% of NOV inventory losses" figure UNLESS the source document is attached —
-  it is currently unverified in this project.
+- The Eternal "1.8% of NOV inventory losses" figure. DECIDED 2026-07-24: omitted, unverified.
+
+## The company corroboration you MAY use (real, DB-backed, live in the discovery app)
+From Eternal's Q4 FY26 earnings call (28 Apr 2026):
+- Analyst: "a large part of our growth narrative from here on depends in some sense on either
+  growing the non-grocery assortment and going outside of the metro cities."
+- CFO: "It's a function of assortment expansion, geographical expansion as well as more demand
+  densification in the cities where we are present today."
+Use these to make the business case: the company's own stated growth path depends on customers
+widening into non-grocery categories — which is exactly the behaviour this project unblocks.
+Also state the honest gap: the call does NOT directly discuss product-quality or refund friction.
 ```
 
 ---
@@ -210,10 +219,12 @@ it says what it does not know. Preserve that — do not smooth the caveats away.
 the way the Spotify deck does — the workflow explainer is folded into slide 3 rather than
 living as a separate appendix slide.
 
-**2. The `1.8% of NOV` figure.** It's cited in `deck_spec.md` as a data callout but has no
-source document in the repo, was never run into the database, and I could not verify it.
-Either attach the Q1FY27 shareholders' letter or drop it from the deck. The prompt currently
-tells the designer to omit it.
+**2. The `1.8% of NOV` figure — DECIDED 2026-07-24: omitted.** It had no source document in the
+repo and was never run into the database, so it was not reproducible. `deck_spec.md` and
+`deck_outline.md` Slide 4 / Slide 7 now use the **Q4 FY26 assortment-expansion commentary**
+instead, which is DB-backed and rendered live in the discovery app. The figure still appears in
+`problem_statement.md` §5 and in `analyze_concalls.py` — those are Part 3 / pipeline artifacts,
+not deck inputs, and are left untouched pending a separate decision.
 
 ## After Claude Design returns the slides
 Check, in this order: exactly 10 slides · no name anywhere · nothing under 14pt ·

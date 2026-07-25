@@ -41,11 +41,13 @@ Live links to embed:
 - *From Part 1.*
 
 ## Slide 4 — Part 1: is the finding trustworthy?
-**Title:** *"The finding holds up — validated by an LLM judge and echoed in Blinkit's own numbers."*
-- **LLM-judge validation: 16/20 confirmed, 0 contradicted** (held-out theme-relevant sample).
-- **Company corroboration:** Eternal Q1FY27 letter — **inventory losses 1.8% of NOV**, concentrated
-  in perishables (expiry/damage), the exact categories the reviews flagged.
+**Title:** *"The finding holds up — validated by an LLM judge and aligned with Eternal's own growth narrative."*
+- **LLM-judge validation: 16/20 confirmed, 4 unclear, 0 contradicted** (held-out theme-relevant sample).
+- **Company corroboration:** Eternal's Q4 FY26 earnings call names **non-grocery assortment
+  expansion** as a core growth dependency — the widening this project is trying to unlock.
+- **Honest gap:** the call doesn't directly address quality/refund friction. State it.
 - Takeaway: the AI theme is independently corroborated, not just model output.
+- *(The "1.8% of NOV" figure is omitted — unverified, see the decision note in `deck_spec.md` Slide 4.)*
 - *Still Part 1 → sets up why we took it to real users.*
 
 ## Slide 5 — Part 2: user research CONFIRMS and CHALLENGES the AI *(mandatory slide)*
@@ -68,12 +70,12 @@ Live links to embed:
 - *From Part 3 = Part 1 theme + Part 2 nuance combined.*
 
 ## Slide 7 — Part 3: why solving it matters (user + business)
-**Title:** *"Users already told us the fix — and it aligns with Blinkit's own P&L."*
+**Title:** *"Users already told us the fix — and it sits directly on Eternal's stated growth path."*
 - **User value (Q15, what users said would change their behavior):**
   refund/return guarantee **(11/25)** + visible quality/freshness signal **(9/25)** — the top two.
-- **Business case:** assortment expansion is a stated Blinkit growth pillar (CEO Q1FY27); reducing
-  damage-driven distrust also supports the company's 1.8%-of-NOV inventory-loss line — user fix and
-  cost line point the same way.
+- **Business case:** Eternal's Q4 FY26 call ties growth to **non-grocery assortment expansion**,
+  which only pays off if users actually try those categories — removing the trust barrier is
+  upstream of the company's own stated growth plan.
 - *Still Part 3 → defines exactly what the MVP must do.*
 
 ## Slide 8 — Part 4: the MVP (Category Nudge Agent)

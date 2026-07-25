@@ -58,15 +58,23 @@ surfaced generic complaints. Evaluators can paste any review into the live link 
 gate run.
 
 ## Slide 4 — Part 1: is the finding trustworthy?
-**Title:** The finding holds up — validated by an LLM judge and echoed in Blinkit's own numbers.
+**Title:** The finding holds up — validated by an LLM judge and aligned with Eternal's own growth narrative.
 **Body:**
-- **LLM-judge validation:** 16 / 20 confirmed, 0 contradicted (held-out, theme-relevant sample).
-- **Company corroboration:** Eternal Q1FY27 letter reports **inventory losses ≈ 1.8% of NOV**,
-  concentrated in perishables (expiry / damage) — the same categories the reviews flagged.
-**Data callouts:** `16/20 confirmed · 0 contradicted`; `1.8% of NOV` inventory loss.
-**Layout:** two evidence cards side by side (AI validation | company data).
-**Speaker notes:** This matters because it shows the theme isn't just one model's opinion — an
-independent judge and the company's own P&L point the same way.
+- **LLM-judge validation:** 16 / 20 confirmed, 4 unclear, 0 contradicted (held-out, theme-relevant sample).
+- **Company corroboration:** Eternal's Q4 FY26 earnings call names **non-grocery assortment
+  expansion** as a core growth dependency — the same widening this project is trying to unlock.
+- **Honest gap:** the call does *not* directly discuss product-quality or refund friction. Say so;
+  it's a real limit of the corroboration, not something to paper over.
+**Data callouts:** `16/20 confirmed · 0 contradicted`.
+**Layout:** two evidence cards side by side (AI validation | company commentary).
+**Speaker notes:** This shows the theme isn't just one model's opinion — an independent judge
+confirms it, and the company's own stated growth path depends on the behaviour we're trying to move.
+
+> **Decision (2026-07-24): the "1.8% of NOV" inventory-loss figure is OMITTED from the deck.**
+> It came from a hand-transcribed Q1FY27 shareholders'-letter excerpt with no source document in
+> the repo; `analyze_concalls.py` was never re-run with it, so `company_disclosures` and
+> `results.json` contain only the three Q4FY26 excerpts. The quote above is the corroboration
+> that is actually reproducible from this repo and visible in the live discovery app.
 
 ## Slide 5 — Part 2: user research CONFIRMS *and* CHALLENGES the AI *(mandatory)*
 **Title:** 25 real users: the quality fear is real — but it's only half the story.
@@ -101,8 +109,9 @@ rather than claiming quality explains everyone.
 - **What users said would change their behavior (survey Q15, top two):**
   a "no-questions-asked" refund/return guarantee **(11/25)**, and a visible quality/freshness
   signal **(9/25)**.
-- **Business fit:** assortment expansion is a stated Blinkit growth pillar (CEO, Q1FY27); cutting
-  damage-driven distrust also supports the company's own 1.8%-of-NOV inventory-loss line.
+- **Business fit:** Eternal's own Q4 FY26 call ties future growth to **non-grocery assortment
+  expansion** — which only pays off if users actually try those categories. Removing the trust
+  barrier is upstream of that growth path.
 **Data callouts:** `11/25` and `9/25` as ranked bars.
 **Layout:** user-value bars left; business-case note right.
 **Speaker notes:** The fix isn't invented — users ranked it themselves, and it happens to point
