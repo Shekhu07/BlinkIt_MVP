@@ -1,0 +1,221 @@
+# Claude Design prompt — the 10-slide Blinkit deck
+
+Copy everything inside the fenced block below into Claude Design Labs as a single prompt.
+It is deliberately long: **every real number is embedded in it**, because the three
+previous Claude Design imports on this project all shipped invented figures (fabricated
+A/B lifts, fake confidence scores, invented pricing) that had to be stripped out by hand.
+A prompt that does not carry the data will hallucinate the data.
+
+Reference for the visual density/structure: the NL Spotify case-study deck (10 slides,
+assertion-led titles, 3–4 column layouts, dark emphasis panels, hero stat blocks).
+
+---
+
+```
+You are designing a 10-slide product case-study deck as a set of 16:9 HTML slides.
+
+## Subject
+A PM fellowship graduation project on Blinkit (Indian quick-commerce). The strategic goal:
+increase the % of Monthly Active Customers who purchase from at least one NEW category each
+month. Four parts: (1) an AI discovery engine over 15,820 public reviews, (2) primary user
+research, (3) problem definition, (4) a deployed AI-native MVP called the Category Nudge Agent.
+
+## ABSOLUTE RULE — invent nothing
+Every number, quote, theme name and label you may use is listed in the DATA APPENDIX at the
+end of this prompt. Use ONLY those.
+- Do NOT invent conversion rates, A/B lifts, p-values, sample sizes, confidence scores,
+  funnel percentages, revenue figures, prices, or user counts.
+- Do NOT invent persona names, quotes, or company statements.
+- If a slide feels like it needs a number that is not in the appendix, write the qualitative
+  claim instead, or label the panel "proposed — not yet measured".
+- Placeholder/lorem text is not acceptable anywhere.
+This project's grading depends on real-vs-invented being unambiguous.
+
+## Hard output constraints (these are graded)
+- EXACTLY 10 slides. A title slide, if used, counts as one of the 10. No appendix slide.
+- The fellow's name must appear NOWHERE.
+- Minimum font size 14pt equivalent — nothing smaller, including footnotes and table cells.
+- Colour-blind safe. Never encode meaning in red/green alone; pair colour with a label or icon.
+- All body text must be readable against its background (check contrast on dark panels).
+- 16:9. Dense but not cramped; assume the reader is scanning on a laptop.
+
+## Slide titles are assertions, not labels
+Every slide title must state the finding as a full sentence. "Problem" is wrong.
+"Loyal buyers stop exploring after one bad order" is right. Put a small letterspaced
+uppercase eyebrow above or below each title naming the section.
+
+## Visual system
+- Brand: Blinkit yellow #F8CD1B as the single accent, near-black ink #16130A, warm off-white
+  page #F4F5F3, white cards #FFFFFF with a 1px #E7E8E2 border and ~20px radius.
+- Use a dark panel (#16130A, light text) once or twice per deck for emphasis — hero stats,
+  core insights, guardrails. Do not make every slide dark.
+- Typeface: Plus Jakarta Sans (or a similar geometric sans) throughout. Weights 400/600/800.
+- Layout: 2–4 column grids. Small tables with a filled header row are encouraged.
+- Hero stats: very large numeral, short label beneath, source line under that.
+- Green #146634 for "confirmed/positive", amber #7A6100 for "caveat", but ALWAYS with a word.
+- No emoji as section markers. No gradient hero. No centered-everything.
+
+## The 10 slides
+
+1. TITLE + THE GOAL. The metric being moved, the four-part approach in one line, and the two
+   live links. Keep it sparse — this is the only sparse slide.
+
+2. WHY CATEGORY STAGNATION IS THE PROBLEM WORTH SOLVING. Frame the goal: heavy repeat buyers
+   with narrow baskets. Include the segment size stat (56% of surveyed users self-report
+   sticking to the same categories). Set up that this is a trust problem, not an awareness one.
+
+3. THE AI DISCOVERY ENGINE — HOW IT WORKS. This slide must carry the workflow explanation
+   (it is a required deliverable, so fold it in here rather than a separate appendix slide).
+   Show the 5-stage pipeline as a left-to-right strip: Ingest → Heuristic prefilter →
+   Two-Step Gated extraction (LLM) → Deterministic clustering → LLM-judge validation.
+   Add a panel "what the engine measures" and the live workflow link.
+   Call out the design decision: the relevance GATE. Explain that an early ungated run only
+   surfaced generic service complaints, so extraction now hard-gates on category-adoption
+   relevance before extracting anything.
+
+4. WHAT 15,820 REVIEWS SAID. The funnel (15,820 → 4,740 → 1,094) as three shrinking blocks,
+   the ranked themes with their evidence counts, the source mix, and the validation result.
+   Make the 70% top theme the hero number. Include the honest note that the steep funnel is
+   the gate working, not data loss.
+
+5. USER RESEARCH CONFIRMED *AND* CHALLENGED THE AI (this slide is mandatory — it must show
+   both). Two columns: CONFIRMED (3 verbatim quotes) vs CHALLENGED (the even 6/6 split, the
+   competitor-switching case, the no-incident stuck users, the packaging sub-cause).
+   State the sample honestly: 25 survey responses, no live interviews.
+
+6. PROBLEM FRAMING CANVAS. Five numbered boxes: (1) the true problem, (2) who it's for,
+   (3) how we know, (4) what value solving it creates, (5) why now. Mirror the density of a
+   classic framing canvas — short bold lead-ins, then 1–2 lines each.
+
+7. WHY A TRUST-LED NUDGE, NOT A DISCOUNT. Show the solution options considered and why the
+   chosen one wins — a small comparison table (option / pain solved / whole segment? /
+   differentiated?) plus a "chosen solution" panel. Ground it in the ranked survey drivers:
+   refund guarantee first, quality/freshness signal second.
+
+8. THE MVP, RUNNING. Annotated screenshots of the deployed Category Nudge Agent: the operator
+   console, the phone nudge, the auto-nudge queue, the checkout cart-filler. Callout labels
+   pointing at: deterministic friction matching (no LLM), live LLM nudge generation, the
+   ranked candidate panel, the honest out-of-scope path. Include the live MVP link.
+   Leave four clearly-marked image placeholders sized for phone/console screenshots.
+
+9. HOW IT WORKS + WHERE IT BREAKS. The runtime flow (profile → deterministic friction match →
+   deterministic adjacency ranker → LLM nudge generation → rendered nudge), the key properties,
+   and an edge-cases panel. Emphasise the two integrity rules: the agent may never invent
+   statistics in its copy, and low-intent users are told the trust fix does not apply to them.
+
+10. HOW WE'D KNOW IT WORKED. The primary metric (% MAU purchasing from ≥1 new category that
+    month), a tiered measurement ladder, guardrails, and the honest scope limit — this only
+    addresses the trust-driven share of stagnation, not the low-intent share.
+    Label the whole slide as a plan: no experiment has been run, so show NO result numbers.
+
+## Tone
+Confident, specific, and candid about limits. The strongest thing about this project is that
+it says what it does not know. Preserve that — do not smooth the caveats away.
+
+---
+
+# DATA APPENDIX — the only numbers you may use
+
+## Part 1 — discovery engine (all DB-backed, real)
+- 15,820 raw reviews ingested (deduplicated).
+- Source mix: Play Store 8,058 · Google Maps 4,098 · source-not-recorded 2,532 ·
+  App Store 530 · MouthShut 520 · ConsumerComplaints.in 76.
+  ("source not recorded" = real scraped reviews whose originating platform was never captured.
+  There are also 6 mock reddit rows which are EXCLUDED from all displays — do not show them.)
+- Heuristic prefilter → 4,740 reviews. It drops: empty text (2,254), under 5 words (7,006),
+  and 5-star reviews (1,820).
+- Two-Step Gated LLM extraction → 1,094 gate-passing extractions (~23% of 4,740).
+- Ranked themes (deterministic DB row counts, never LLM-estimated):
+  1. "Poor Quality and Unreliable Products" — 770 of 1,094 (70%)
+  2. "Convenience and Price Sensitivity" — 114 (10%)
+  3. "Discovery Friction and Limited Options" — 78 (7%)
+- Behaviour split among gate-passing: category_avoidance 842 · repeat_purchase 124 ·
+  discovery_friction 101 · new_category_trial 19.
+- Top theme spans categories roughly proportional to volume: groceries 431 · electronics 96 ·
+  snacks & beverages 79 · household essentials 39 · personal care 27.
+- LLM-judge validation on a held-out theme-relevant sample: 16 of 20 confirmed, 4 unclear,
+  0 contradicted (80%).
+- Models: Groq llama-3.1-8b-instant for extraction/clustering/validation;
+  llama-3.3-70b-versatile for the Part 4 agent. (Not Gemini, not OpenAI.)
+
+## Part 2 — primary research (real, N=25 survey; ZERO live interviews)
+- 25 survey responses. Be explicit that live interviews were not conducted.
+- 14/25 (56%) self-report "mostly stick to the same categories" — the target segment.
+- 13/25 (52%) had a bad order in the last 3 months.
+  Failure types: 10 damaged · 1 expired · 1 fake/duplicate · 1 other.
+  Resolution: 9 full refunds · 3 replacements · 1 unresolved.
+- Behaviour-change split among the 13: 6 confirmed a change, 6 reported no change, 1 ambiguous.
+- 6 of the 14 "stuck" respondents had NO incident at all — stagnation there is low intent.
+- Ranked confidence drivers (Q15, "what would make you try a new category", pick up to 2):
+  "No questions asked" refund/return guarantee 11 · Better visible quality/freshness
+  guarantees 9 · Item reviews/ratings 5 · Inspect before accepting delivery 5 ·
+  Human support agent 3 · Intro offers 3 · Nothing in particular 3.
+- 2 respondents raised pricing vs competitors unprompted.
+- Verbatim quotes you may use (do not alter):
+  - "I have stopped exploring new categories on Blinkit. I only order the essential items now
+    if anything urgent." (unresolved puja-item complaint)
+  - "yes I am skeptical of buying electronic products from Blinkit and other similar
+    applications" (damaged electronics)
+  - "I avoid buying any fresh products dairy or perishables items from quick commerce apps."
+    (expired dairy — generalised to the whole category, not just Blinkit)
+  - "I have started using Zepto more" (platform switching instead of category avoidance)
+  - "often packed at the bottom of the bag under heavier groceries" (packaging/fulfilment
+    failure — a distinct sub-cause from product-source quality)
+  - "Nothing in particular — I just don't need those categories" (low-intent, no incident)
+
+## Part 3 — problem statement
+- Target segment: heavy, habitual repeat buyers who default to existing categories.
+- Root cause: a quality/reliability failure (damaged, expired, fake) generalises into
+  category avoidance — or, for some, into leaving the platform entirely.
+- Existing workarounds: retreat to "essentials only", or switch platform (Zepto).
+- HONEST SCOPE LIMIT, must appear on the deck: this addresses only the ~50% of category
+  stagnation that is quality/trust-driven. The low-intent half will not move on this nudge.
+
+## Part 4 — the MVP (Category Nudge Agent, deployed)
+- 8 synthetic user profiles, explicitly labelled SYNTHETIC (no real customer data was
+  available; this is stated in the product UI itself).
+- Deterministic friction-matching layer (rule-based, no LLM) maps a profile to a Part 1 theme.
+- Deterministic adjacency ranker produces the candidate new-category list (integer weights).
+- Live Groq call generates the nudge copy + reasoning per user.
+- Nudge leads with the two top-ranked survey drivers: refund guarantee, then quality/freshness.
+- Three surfaces: operator console · auto-nudge queue · checkout cart-filler.
+- Auto-nudge eligibility gate: cadence is Daily or Weekly AND tenure > 6 months →
+  5 of the 8 synthetic profiles qualify.
+- Cart-filler: free-delivery threshold ₹199 and delivery fee ₹35 are ILLUSTRATIVE demo
+  constants — label them as such if shown.
+- Integrity rules enforced in the agent's prompt: it may never invent statistics, ratings or
+  buyer counts in nudge copy; and for a low-intent user with no incident it must say the trust
+  fix does not apply rather than overclaim.
+
+## Live links (both public, must appear in the deck)
+- Discovery workflow: https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine
+- Deployed MVP: https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent
+(If the deck must not reveal the account name, put these behind shortened links.)
+
+## Things you must NOT put on the deck
+- Any A/B test result, conversion rate, uplift %, or p-value — no experiment has been run.
+- Any live-usage funnel or outcome metric — the MVP has never been shipped to real users.
+- Any per-user confidence score — the only defensible "confidence" figure is the real theme
+  evidence share (770/1,094 = 70%).
+- Any product pricing presented as real Blinkit pricing.
+- The Eternal "1.8% of NOV inventory losses" figure UNLESS the source document is attached —
+  it is currently unverified in this project.
+```
+
+---
+
+## Two things to fix while you're in there
+
+**1. Your current deck is 11 slides; the PRD limit is 10 (hard).** The prompt above solves it
+the way the Spotify deck does — the workflow explainer is folded into slide 3 rather than
+living as a separate appendix slide.
+
+**2. The `1.8% of NOV` figure.** It's cited in `deck_spec.md` as a data callout but has no
+source document in the repo, was never run into the database, and I could not verify it.
+Either attach the Q1FY27 shareholders' letter or drop it from the deck. The prompt currently
+tells the designer to omit it.
+
+## After Claude Design returns the slides
+Check, in this order: exactly 10 slides · no name anywhere · nothing under 14pt ·
+every number traceable to the appendix above · both live links resolve · export under 40MB ·
+filename starting "NL Blinkit".
