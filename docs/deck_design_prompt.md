@@ -226,6 +226,95 @@ instead, which is DB-backed and rendered live in the discovery app. The figure s
 `problem_statement.md` §5 and in `analyze_concalls.py` — those are Part 3 / pipeline artifacts,
 not deck inputs, and are left untouched pending a separate decision.
 
+---
+
+# Prompt 2 — placing the screenshots
+
+Paste this as a **follow-up prompt** once the 10 slides exist (or append it to Prompt 1 if you
+want the frames laid out from the start). The screenshots live in `deck/screenshots/` — upload
+them to Design Labs if it accepts images, otherwise the prompt below builds correctly-sized
+empty frames with the filename printed inside, and you drop the real files in afterwards.
+
+```
+Add the product screenshots to the deck. They are real captures of two deployed apps, so they
+are the proof the work exists — give them room, don't shrink them into thumbnails.
+
+## How to place them
+For each image below I give a FILENAME and an ASPECT RATIO (width ÷ height). Build a frame at
+exactly that ratio. If you cannot embed the image itself, render an empty placeholder frame
+with a 2px dashed #C4C5B9 border, the filename centred inside in 14pt monospace, and the ratio
+beneath it — so the frame can be filled later without the layout shifting.
+
+Never letterbox, never stretch, never crop a placeholder to a different ratio than stated.
+
+## Critical layout warning
+Three of these are FULL-PAGE captures with a very tall 0.61 ratio. On a 16:9 slide a
+0.61-ratio image at full slide height fills only about a third of the width. So:
+- Use the CROPPED images (ratios 0.36–1.09) as the primary visuals.
+- Use a full-page 0.61 image ONLY as a narrow side column, or crop it to its top ~45%
+  (which contains the profile card and the generated nudge) and treat it as ~1.1 ratio.
+- Never place a 0.61 image as a slide's main hero — it will read as a sliver.
+
+## Slide 3 — the discovery engine
+Two frames side by side, equal size, with a bold label above each:
+- LEFT · label "KEPT — category behaviour" · `disc-01-extractor-pass.png` · ratio 1.25
+- RIGHT · label "DROPPED — service complaint" · `disc-02-extractor-reject.png` · ratio 1.25
+Beneath both, one line: "Same engine, same review box — the gate is the difference."
+This pairing IS the slide's argument; give the two frames at least half the slide.
+
+## Slide 4 — what the reviews said
+One frame, right two-thirds of the slide:
+- `disc-04-results-explorer.png` · ratio 0.91
+Left third carries the funnel numbers and the top-theme stat as text. Do not duplicate in text
+any number that is already legible inside the screenshot.
+
+## Slide 8 — the MVP, running (the annotated slide)
+This is the deck's centrepiece. Model it on an annotated product teardown: screenshots in the
+middle, small callout boxes around them, thin leader lines pointing from each callout to the
+part of the UI it describes.
+
+Frames:
+- `mvp-02-phone-nudge.png` · ratio 0.41 · the shopper's view. Place LEFT, full column height.
+- `mvp-03-reasoning-ranked.png` · ratio 0.97 · the agent's reasoning. Place CENTRE.
+- `mvp-07-lockscreen.png` · ratio 0.36 · push payloads. Place RIGHT, full column height.
+
+Callout boxes (each ≤ 12 words, 14pt, white card with a 1px #E7E8E2 border and a thin leader
+line to its target):
+- → phone, at the two coloured strips: "Leads with the two research-ranked trust drivers"
+- → phone, at the product row: "No invented pricing — labelled illustrative"
+- → reasoning card, at the ranked bars: "Deterministic ranker, integer weights — not model confidence"
+- → reasoning card, at the footer: "Copy generated live per user, not templated"
+- → lock screen: "Five users, four different categories — no collapse to one suggestion"
+
+## Slide 9 — how it works and where it breaks
+One frame, left half:
+- `mvp-04-out-of-scope.png` · ratio 1.03
+Callout pointing at the amber banner: "The product itself says when the fix does NOT apply".
+Right half carries the runtime flow and the edge-case list as text.
+Treat this image as the emotional centre of the honesty argument — do not shrink it.
+
+## Optional / reserve frames
+Use only if a slide looks empty; otherwise leave them out rather than padding:
+- `mvp-05-auto-queue.png` · ratio 1.09 · eligibility gate + funnel + queue
+- `mvp-08-cart-filler.png` · ratio 1.02 · checkout filler and candidate pool
+- `mvp-01-console-full.png` · ratio 0.61 · full console (side column or top-45% crop only)
+
+## Screenshot styling
+- Give each frame a 1px #E7E8E2 border, 14px corner radius, and a soft shadow
+  (0 8px 24px rgba(0,0,0,.10)). The apps already have their own rounded cards, so keep the
+  outer frame restrained.
+- Do NOT add browser chrome, fake URL bars, laptop mockups, or drop the images inside a
+  stock device frame — the phone shots already contain their own device frame.
+- Do NOT recolour, filter, or add gradient overlays to the screenshots.
+- Do NOT crop out the "Synthetic demo data" pill or the "Illustrative demo item" label if they
+  fall inside a frame — those labels are deliberate and part of the credibility story.
+
+## Caption rule
+Every frame gets one 14pt caption beneath it, and each caption must say what the reader is
+looking at — never "screenshot of the app". Example: "Live extraction — the gate rejects a
+delivery complaint that isn't tied to a category."
+```
+
 ## After Claude Design returns the slides
 Check, in this order: exactly 10 slides · no name anywhere · nothing under 14pt ·
 every number traceable to the appendix above · both live links resolve · export under 40MB ·
