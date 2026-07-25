@@ -3,3 +3,11 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Raw Phase 3 survey exports — these contain respondent CONTACT DETAILS (Q18 asked for
+# a phone/email for follow-up), and this repo is public. Keep them local only.
+# `part2_research_tracker.md` deliberately holds the analysis under anonymised R-numbers
+# with "real contact info held separately, not in this doc" — this rule enforces that.
+Survey_Responses.pdf
+Your Quick-Commerce Shopping Experience*
+*Form Responses*

@@ -39,15 +39,19 @@ def analyze_concalls():
             print("No themes found.")
             return
 
-        # Real excerpts from Eternal Limited's Q4 FY26 earnings call (April 28, 2026), fetched and
-        # transcribed 2026-07-18. Source: https://b.zmtcdn.com/investor-relations/Q4FY26-earnings-call-transcript.pdf
-        # NOTE: analyst calls stay at the financial-metrics level — there is no direct management
-        # commentary on product quality, damaged/expired items, or refund/support friction in this
-        # transcript. That's a real, honest finding (see edge-cases.md's anticipated "concall data thin"
-        # risk), not a gap to paper over with invented quotes. What IS real and relevant: management
-        # explicitly ties future growth to non-grocery assortment expansion, which is the same
-        # category-adoption question Part 1 is investigating — if quality/trust friction is real and
-        # unaddressed, it's a headwind to a strategy Eternal is already betting on.
+        # Real excerpts from Eternal Limited's Q4 FY26 earnings call (April 28, 2026) and Q1FY27
+        # shareholders' letter (July 22, 2026), the latter supplied directly by the fellow and fetched/
+        # transcribed 2026-07-22. Sources:
+        # - https://b.zmtcdn.com/investor-relations/Q4FY26-earnings-call-transcript.pdf
+        # - Eternal_Limited_Shareholders_Letter_Q1FY27_Results.pdf
+        # NOTE: the Q4FY26 call stayed at the financial-metrics level with no direct commentary on
+        # product quality/damage — that was a real, honest gap (see edge-cases.md). The Q1FY27 letter
+        # closes that gap: management explicitly quantifies inventory losses from expiry/damage/loss in
+        # transit (1.8% of NOV, concentrated in perishables) — direct, independent corroboration of the
+        # Part 1 "Poor Quality and Unreliable Products" theme, not just a category-expansion strategy
+        # inference. Also carries current (not historical) assortment-expansion commentary from Blinkit's
+        # own CEO, plus retention-cohort data that tempers the survey's single competitor-switching
+        # finding (R5) — real evidence should be reported both ways, not cherry-picked.
         real_concalls = [
             {
                 "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
@@ -60,6 +64,18 @@ def analyze_concalls():
             {
                 "source_document": "Eternal_Q4FY26_Earnings_Call_2026-04-28",
                 "text": "Akshant Goyal (CFO), on declining orders-per-customer (3.6 to 3.35): 'We haven't seen too much impact on customer retention... Most of this is on account of the acceleration in new customer addition that we have seen in the last couple of quarters.'"
+            },
+            {
+                "source_document": "Eternal_Limited_Shareholders_Letter_Q1FY27_Results_2026-07-22",
+                "text": "Albinder Dhindsa (Blinkit CEO): 'We continue to focus our efforts on our three pillars of long-term growth - assortment expansion, geographical expansion, and demand densification... Going forward, premiumisation through launch of gourmet stores in select locations in top eight cities will also contribute to assortment expansion on the platform. These gourmet stores offer our customers the ability to buy curated premium brands across categories.'"
+            },
+            {
+                "source_document": "Eternal_Limited_Shareholders_Letter_Q1FY27_Results_2026-07-22",
+                "text": "Akshant Goyal (CFO), on inventory losses: 'Inventory losses for us are about 1.8% of NOV right now, which include losses on account of expiry, shrinkage, damage, loss in transit or pilferage. A large part of these losses are driven by perishable products (including fruits and vegetables) which is an important and large category for us in the quick commerce business.'"
+            },
+            {
+                "source_document": "Eternal_Limited_Shareholders_Letter_Q1FY27_Results_2026-07-22",
+                "text": "Akshant Goyal (CFO), on customer retention: 'Q4 retention (% of customers placing at least 1 order in the 4th quarter after acquisition): average across all cohorts is 46%, with every successive cohort improving - the most recent cohort (Q1FY26) is at 50%... NOV retention compounds even faster - Q4 at 150%, Q8 at 215%, Q12 at 279% average retention for all cohorts.'"
             }
         ]
 
