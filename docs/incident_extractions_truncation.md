@@ -1,7 +1,7 @@
 # Incident audit — loss of the 4,740 `extractions` rows (1,094 gate-passing)
 
 **Audited:** 2026-07-26 · **Incident:** 2026-07-24 11:57:27 UTC (17:27:27 IST)
-**Status:** cause established · **data RESTORED and verified 2026-07-26** (§6.1) · sandbox hazard §8.1 still open
+**Status:** CLOSED — cause established · data **RESTORED and verified** 2026-07-26 (§6.1) · sandbox hazard **fixed** (§8.1)
 
 ---
 
@@ -207,7 +207,15 @@ The sandbox was **not** damaged by the incident; it was the intended target and 
 (truncated 11:57:34, re-extracted 2026-07-26). Restoring production from the dump cannot affect it —
 separate container, volume and port. Three separate issues were found while checking it.
 
-### 8.1 LIVE HAZARD — `prefilter.py` writes to PRODUCTION
+### 8.1 ~~LIVE HAZARD~~ — FIXED 2026-07-26 (sandbox commit `ffdd5ab`)
+
+> **Resolved.** Both offending scripts now call `load_dotenv()` and hard-refuse to start unless
+> `DATABASE_URL` names port 5433; an unset `DATABASE_URL` raises instead of guessing. Verified by
+> forcing a 5432 URL — each exits with its message and touches nothing — while the sandbox `.env`
+> still resolves to 5433 and passes. A second script, **`analysis/mock_themes.py`**, was found to
+> have the same defect and is more dangerous: it calls `session.query(Theme).delete()`, so on 5432
+> it would have wiped the real 770 / 114 / 78 themes and then written mock themes into the real DB.
+> Both are fixed. The original analysis is kept below for the record.
 
 `~/Blinkit_experiment/analysis/prefilter.py` is the **only** pipeline script that never calls
 `load_dotenv`:
