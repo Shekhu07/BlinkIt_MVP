@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS filtered_reviews (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Column order below deliberately matches the live database (pg_attribute.attnum order), so a
+-- rebuilt DB stays COPY-compatible with pg_dump output taken from the live one.
 CREATE TABLE IF NOT EXISTS extractions (
     id SERIAL PRIMARY KEY,
     filtered_review_id INTEGER REFERENCES filtered_reviews(id),
@@ -24,7 +26,23 @@ CREATE TABLE IF NOT EXISTS extractions (
     category VARCHAR(100),
     reason TEXT,
     confidence FLOAT,
-    extracted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    extracted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- REQUIRED by the Two-Step Gated Schema (analysis/extract_themes.py). These were missing from
+    -- this file while present in the live DB, so a fresh `docker-compose up` built a table the
+    -- pipeline could not write to. mentions_category_behavior is the gate itself — the field every
+    -- headline number is filtered on (1,094 of 4,740 rows true).
+    mentions_category_behavior BOOLEAN,
+    sentiment VARCHAR(100),
+
+    -- Added to the live DB on 2026-07-24 for the extraction-prompt v2 experiment
+    -- (docs/extraction_prompt_v2_proposal.md). The committed v1 pipeline never writes these, so
+    -- they are NULL for all 4,740 rows; declared here only so this file matches the real schema.
+    habit_signal VARCHAR(100),
+    discovery_channel VARCHAR(100),
+    info_needed VARCHAR(100),
+    explorer_signal VARCHAR(100),
+    unmet_need TEXT
 );
 
 CREATE TABLE IF NOT EXISTS themes (
