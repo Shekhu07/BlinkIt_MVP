@@ -5,6 +5,21 @@ Imported 2026-07-28 from the Claude Design project **"Blinkit presentation templ
 
 Main file: `Blinkit Category Nudge Case Study.dc.html` — 10 slides, 1920×1080, deck-stage runtime.
 
+## `CLAUDE.md` here is a mirror — sync it by hand
+
+`deck/design/CLAUDE.md` is the design project's instruction file. It serves two purposes: it
+scopes the deck's rules for local work in this directory, and it is the paste source for the
+Design Labs copy.
+
+**It cannot be pushed over the MCP.** `write_files` rejects `CLAUDE.md` and `.claude/` as reserved
+paths regardless of the finalized plan, because they carry instructions to the design agent — an
+agent is not allowed to rewrite the instructions another agent reads. After editing this file,
+open the project in Design Labs, open its `CLAUDE.md`, and paste the contents over. Everything
+else in this directory syncs normally via `write_files`.
+
+Drift here is silent and costly: the Design Labs copy is what constrains every future edit made in
+the canvas, so if it lags, the agent will happily reintroduce a fixed defect.
+
 ## Run it locally
 
 ```bash
