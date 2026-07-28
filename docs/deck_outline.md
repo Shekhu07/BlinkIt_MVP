@@ -56,14 +56,14 @@ Live links to embed:
   *"I only order the essential items now if anything urgent."*
 - **Challenged (3 honest counter-findings):**
   1. One user churned to a **competitor (Zepto)** instead of just avoiding a category.
-  2. **6 of 13** incident-havers reported **no behavior change** (resolution neutralizes it).
-  3. **6 of 14** "stuck" users had **no incident at all** — low intent, not distrust.
+  2. **7 of 15** incident-havers reported **no behavior change** (resolution neutralizes it).
+  3. **8 of 18** "stuck" users had **no incident at all** — low intent, not distrust.
 - This is the confirm-AND-contradict requirement, made explicit.
 - *From Part 2, built directly on the Part 1 theme.*
 
 ## Slide 6 — Part 3: the problem statement
 **Title:** *"Loyal, high-frequency buyers default to what's proven safe — because one bad experience removes the benefit of the doubt."*
-- **Segment:** repeat buyers (56% of respondents "stick to the same categories"), heavy/daily, mainstream.
+- **Segment:** repeat buyers (58% of respondents "stick to the same categories"), heavy/daily, mainstream.
 - **Root cause:** an unresolved quality failure generalizes into category avoidance — for the
   **~50%** of the segment that's trust-driven (honest scoping, not overclaimed).
 - **Workarounds users already use:** "essentials-only" retreat; platform-switching.
@@ -72,7 +72,7 @@ Live links to embed:
 ## Slide 7 — Part 3: why solving it matters (user + business)
 **Title:** *"Users already told us the fix — and it sits directly on Eternal's stated growth path."*
 - **User value (Q15, what users said would change their behavior):**
-  refund/return guarantee **(11/25)** + visible quality/freshness signal **(9/25)** — the top two.
+  refund/return guarantee **(13/31)** + visible quality/freshness signal **(10/31)** — the top two.
 - **Business case:** Eternal's Q4 FY26 call ties growth to **non-grocery assortment expansion**,
   which only pays off if users actually try those categories — removing the trust barrier is
   upstream of the company's own stated growth plan.

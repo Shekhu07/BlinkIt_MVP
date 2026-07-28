@@ -1,7 +1,13 @@
 # Part 3: Problem Statement
 
 ## Status
-Last updated 2026-07-22. Built from Part 1 (AI discovery engine, real Two-Step Gated extraction) and Part 2 (real 25-response Phase 3 survey — see `part2_research_tracker.md` for the full theme-confirmation grid). No mock or placeholder data.
+Last updated 2026-07-28. Built from Part 1 (AI discovery engine, real Two-Step Gated extraction) and Part 2 (real 31-response Phase 3 survey — see `part2_research_tracker.md` for the full theme-confirmation grid). No mock or placeholder data.
+
+> **Sample frozen at N=31 on 2026-07-28.** Six responses arrived after the earlier N=25 cut
+> (five on 2026-07-23, one on 2026-07-25). The form is closed to further responses so the figures
+> cited here, in `part2_research_tracker.md`, in the deck and in `mvp/data/*.json` cannot drift
+> during deck build. Every conclusion below survived the recount; the one substantive change is
+> the Q15 ranking — see §4.
 
 ---
 
@@ -9,7 +15,7 @@ Last updated 2026-07-22. Built from Part 1 (AI discovery engine, real Two-Step G
 
 **Repeat Blinkit buyers who default to their existing categories and rarely explore new ones.**
 
-- In the Phase 3 survey (N=25), **14/25 (56%)** described their recent behavior as "mostly stick to the same categories" — this is the population the growth goal is about (increase % of MAU purchasing from at least one new category monthly).
+- In the Phase 3 survey (N=31), **18/31 (58%)** described their recent behavior as "mostly stick to the same categories" — this is the population the growth goal is about (increase % of MAU purchasing from at least one new category monthly).
 - These are not occasional or lapsed users: most order "Daily" or "2–3 times a week," across staple categories (groceries, fresh produce, snacks). They are heavy, habitual users of the platform who have simply never widened their basket.
 - Demographically unremarkable — spans Tier 1/2/3 cities, students through working professionals, 18–45+. This is a mainstream, not a niche, segment, which matters for the size of the opportunity.
 
@@ -30,9 +36,10 @@ The Phase 3 survey both **confirms** and **complicates** this root cause:
 
 **Challenged** — the mechanism is not uniform, and quality alone doesn't fully explain the segment:
 - One respondent had the identical failure mode (damaged item, fully refunded) but instead of avoiding a category on Blinkit, **switched to a competitor (Zepto) entirely** — a platform-churn risk distinct from, and arguably more severe than, category-adoption stagnation.
-- **6 of 13** respondents who had a qualifying incident reported **no behavior change at all** — an exact even split against the 6 of 13 who did confirm a change — and in at least one case continued actively considering 6+ new categories afterward; resolution (most incidents got a full refund or replacement) often neutralizes the effect.
-- **6 of the 14** "stuck" respondents had **no incident in the last 3 months at all**, yet are still in the target segment — for a meaningful share of the stagnant population, the barrier isn't a personal bad experience, it's simply low intent ("I just don't need those categories").
-- A distinct sub-cause surfaced that isn't about product-source quality: **packaging/fulfillment failure** — fragile items (e.g., stationery) arriving crushed because they were packed under heavier groceries, not because the product itself was defective at the source.
+- **7 of 15** respondents who had a qualifying incident reported **no behavior change at all** — an exact even split against the 7 of 15 who did confirm a change (1 ambiguous) — and in at least one case continued actively considering 6+ new categories afterward; resolution (most incidents got a full refund or replacement) often neutralizes the effect. The split held exactly through the N=25 → N=31 recount, now on a base of 14 unambiguous cases rather than 12.
+- Independently corroborated by **Q14** (*"A bad experience in one category makes me more hesitant to try other categories on Blinkit"*, 1–5): **mean 3.0, with 11/31 agreeing (4–5) and 11/31 disagreeing (1–2)**. The rated distribution is as evenly polarised as the behavioural split — the generalisation is real for roughly a third of users and genuinely absent for another third.
+- **8 of the 18** "stuck" respondents had **no incident in the last 3 months at all**, yet are still in the target segment — for a meaningful share of the stagnant population, the barrier isn't a personal bad experience, it's simply low intent ("I just don't need those categories").
+- A distinct sub-cause surfaced that isn't about product-source quality: **packaging/fulfillment failure** — fragile items (e.g., stationery) arriving crushed because they were packed under heavier groceries, not because the product itself was defective at the source. Notably, that respondent also **named the fix unprompted** in Q15's free-text slot — *"Better and safer packaging guarantees for fragile items"* — rather than picking any of the seven offered options, so this sub-cause carries a user-stated remedy, not just a user-stated symptom.
 
 **Working root cause statement**: for the portion of the stuck segment that *is* driven by quality/trust (an exact half of incident-havers, and plausibly more given how the fear generalizes even without a personal incident), an unresolved or generically-handled quality failure removes the benefit of the doubt a user would otherwise extend to an unfamiliar category — they default to what's already proven safe rather than risk a repeat failure in something new.
 
@@ -53,11 +60,15 @@ Both workarounds are evidence that users aren't simply giving up on quick-commer
 
 Users in the target segment are not disengaged — they're heavy, habitual Blinkit users who've simply narrowed their basket to what they already trust. The Phase 3 survey directly asked what would change that (Q15, ranked by responses):
 
-1. **A clear "no questions asked" return/refund guarantee** — the single most-picked driver (11 picks out of 25 respondents)
-2. **Better visible quality/freshness guarantees** (e.g., certified/verified brand tags) — 9 picks, closing in on the top driver
-3. Reviews/ratings for the specific item, and an option to inspect before accepting delivery — 5 picks each
+1. **A clear "no questions asked" return/refund guarantee** — the single most-picked driver (13 picks out of 31 respondents)
+2. **Better visible quality/freshness guarantees** (e.g., certified/verified brand tags) — 10 picks, closing in on the top driver
+3. **An option to inspect before accepting delivery** — 7 picks
+4. Reviews/ratings for the specific item, and first-purchase offers/discounts — 5 picks each
+5. Nothing in particular (4), a human support agent instead of a chatbot (3), safer packaging for fragile items (1, free-text write-in)
 
-None of these require inventing a new need — they're asking Blinkit to extend the same confidence they already have in their staple categories to an unfamiliar one. Solving this doesn't just reduce complaints; it directly unlocks the exploration behavior these users are already primed for (recall: only 8 of 14 stuck respondents cite an actual bad experience — the rest simply haven't been given a reason to trust an unfamiliar category yet).
+**Ranking change at N=31 (was N=25).** The top two are unchanged and their lead widened (13 · 10, next at 7). But *inspect before accepting delivery* broke out of its former tie at 5/25 and is now the **clear third driver at 7/31**, ahead of item reviews/ratings (5/31, now tied fourth). Two consequences: the MVP's peer social-proof line was justified as mapping to the "tied-third" driver and must now be described as the fourth; and the deferred pre-acceptance-inspection mechanic (§6) is now the highest-ranked driver the MVP does **not** implement, which makes it the strongest candidate for a "what's next" slide rather than a generic backlog note.
+
+None of these require inventing a new need — they're asking Blinkit to extend the same confidence they already have in their staple categories to an unfamiliar one. Solving this doesn't just reduce complaints; it directly unlocks the exploration behavior these users are already primed for (recall: only 10 of 18 stuck respondents cite an actual bad experience — the rest simply haven't been given a reason to trust an unfamiliar category yet).
 
 ---
 
@@ -97,4 +108,4 @@ The MVP (Category Nudge Agent) should:
 - Lead with the two highest-ranked confidence drivers — a refund/return guarantee callout and a quality/freshness signal — rather than a generic "try something new" nudge.
 - Be honest in its scope: this addresses the ~50% of stagnation that's quality/trust-driven, not the portion driven by simple lack of interest — the problem statement above should not overclaim that fixing quality alone converts the entire stuck segment.
 
-**Scope decision (2026-07-22)**: the nudge mechanic combines the refund/return guarantee (Q15 top driver, 11/25 picks) and the quality/freshness-verification signal (Q15 second driver, 9/25 picks) into a single nudge — not two separate mechanics, to stay within the "single nudge mechanic" guardrail in `implementation-plan.md` §5. The pre-acceptance-inspection option (Q15, tied third, 5/25 picks) is deliberately deferred as a backlog/stretch item, not built into the Phase 5 MVP — see `implementation-plan.md` Phase 5 for the backlog note.
+**Scope decision (2026-07-22, figures refreshed at N=31 on 2026-07-28)**: the nudge mechanic combines the refund/return guarantee (Q15 top driver, 13/31 picks) and the quality/freshness-verification signal (Q15 second driver, 10/31 picks) into a single nudge — not two separate mechanics, to stay within the "single nudge mechanic" guardrail in `implementation-plan.md` §5. **The decision itself is unchanged by the recount** — the top two drivers held their positions and widened their lead. The pre-acceptance-inspection option is deliberately deferred as a backlog/stretch item, not built into the Phase 5 MVP — but note it is **no longer tied-third at 5/25; it is now the clear third driver at 7/31**, i.e. the strongest single lever left unbuilt. See `implementation-plan.md` Phase 5 for the backlog note.

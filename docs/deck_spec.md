@@ -77,14 +77,15 @@ confirms it, and the company's own stated growth path depends on the behaviour w
 > that is actually reproducible from this repo and visible in the live discovery app.
 
 ## Slide 5 — Part 2: user research CONFIRMS *and* CHALLENGES the AI *(mandatory)*
-**Title:** 25 real users: the quality fear is real — but it's only half the story.
+**Title:** 31 real users: the quality fear is real — but it's only half the story.
 **Body:**
 - **Confirmed:** quality incidents spread beyond the affected category —
   *"I only order the essential items now if anything urgent."*
 - **Challenged:**
   - One user **churned to a competitor (Zepto)** rather than just avoiding a category.
-  - **6 of 13** incident-havers changed **nothing** — a full refund often neutralizes the fear.
-  - **6 of 14** "stuck" users had **no bad incident at all** — low intent, not distrust.
+  - **7 of 15** incident-havers changed **nothing** — an exact even split; a full refund often neutralizes the fear.
+  - **8 of 18** "stuck" users had **no bad incident at all** — low intent, not distrust.
+  - **Q14 rated:** mean 3.0, **11/31 agree vs 11/31 disagree** that a bad experience generalizes.
 **Data callouts:** a 2-column CONFIRMED / CHALLENGED split.
 **Layout:** left column green-free "confirmed" (use blue accent), right column amber "challenged".
 **Speaker notes:** This is the required confirm-and-contradict slide. Being honest here is the
@@ -93,12 +94,12 @@ point — it directly shapes the scope of the MVP two slides later.
 ## Slide 6 — Part 3: the problem statement
 **Title:** Loyal, high-frequency buyers default to what's proven safe — because one bad experience removes the benefit of the doubt.
 **Body:**
-- **Segment:** repeat buyers who stick to the same categories — **56% of respondents**; heavy,
+- **Segment:** repeat buyers who stick to the same categories — **58% of respondents**; heavy,
   daily/near-daily, mainstream across city tiers.
 - **Root cause:** an unresolved quality failure generalizes into category avoidance — for the
   **~50%** of the segment that is trust-driven (not the low-intent half).
 - **Today's workarounds:** retreat to "essentials only"; or switch platforms.
-**Data callouts:** `56% stuck` · `~50% trust-driven`.
+**Data callouts:** `58% stuck` · `~50% trust-driven`.
 **Layout:** segment / root cause / workarounds as three stacked bands.
 **Speaker notes:** Note the honesty built into the root cause — we scope to the trust-driven half
 rather than claiming quality explains everyone.
@@ -107,12 +108,12 @@ rather than claiming quality explains everyone.
 **Title:** Users already told us the fix — and it aligns with Blinkit's own P&L.
 **Body:**
 - **What users said would change their behavior (survey Q15, top two):**
-  a "no-questions-asked" refund/return guarantee **(11/25)**, and a visible quality/freshness
-  signal **(9/25)**.
+  a "no-questions-asked" refund/return guarantee **(13/31)**, and a visible quality/freshness
+  signal **(10/31)**. Third is inspect-before-accepting **(7/31)** — deliberately not built.
 - **Business fit:** Eternal's own Q4 FY26 call ties future growth to **non-grocery assortment
   expansion** — which only pays off if users actually try those categories. Removing the trust
   barrier is upstream of that growth path.
-**Data callouts:** `11/25` and `9/25` as ranked bars.
+**Data callouts:** `13/31` and `10/31` as ranked bars.
 **Layout:** user-value bars left; business-case note right.
 **Speaker notes:** The fix isn't invented — users ranked it themselves, and it happens to point
 the same direction as a real company cost line. That's the double justification.

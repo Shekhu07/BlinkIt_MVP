@@ -11,3 +11,8 @@ __pycache__/
 Survey_Responses.pdf
 Your Quick-Commerce Shopping Experience*
 *Form Responses*
+Final_survey.pdf
+# Catch-all: any future raw export, whatever it gets named.
+*survey*.pdf
+*Survey*.pdf
+*.csv

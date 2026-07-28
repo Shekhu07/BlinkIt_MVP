@@ -61,7 +61,7 @@ uppercase eyebrow above or below each title naming the section.
    live links. Keep it sparse — this is the only sparse slide.
 
 2. WHY CATEGORY STAGNATION IS THE PROBLEM WORTH SOLVING. Frame the goal: heavy repeat buyers
-   with narrow baskets. Include the segment size stat (56% of surveyed users self-report
+   with narrow baskets. Include the segment size stat (58% of surveyed users self-report
    sticking to the same categories). Set up that this is a trust problem, not an awareness one.
 
 3. THE AI DISCOVERY ENGINE — HOW IT WORKS. This slide must carry the workflow explanation
@@ -81,7 +81,7 @@ uppercase eyebrow above or below each title naming the section.
 5. USER RESEARCH CONFIRMED *AND* CHALLENGED THE AI (this slide is mandatory — it must show
    both). Two columns: CONFIRMED (3 verbatim quotes) vs CHALLENGED (the even 6/6 split, the
    competitor-switching case, the no-incident stuck users, the packaging sub-cause).
-   State the sample honestly: 25 survey responses, no live interviews.
+   State the sample honestly: 31 survey responses, no live interviews.
 
 6. PROBLEM FRAMING CANVAS. Five numbered boxes: (1) the true problem, (2) who it's for,
    (3) how we know, (4) what value solving it creates, (5) why now. Mirror the density of a
@@ -138,18 +138,23 @@ it says what it does not know. Preserve that — do not smooth the caveats away.
 - Models: Groq llama-3.1-8b-instant for extraction/clustering/validation;
   llama-3.3-70b-versatile for the Part 4 agent. (Not Gemini, not OpenAI.)
 
-## Part 2 — primary research (real, N=25 survey; ZERO live interviews)
-- 25 survey responses. Be explicit that live interviews were not conducted.
-- 14/25 (56%) self-report "mostly stick to the same categories" — the target segment.
-- 13/25 (52%) had a bad order in the last 3 months.
-  Failure types: 10 damaged · 1 expired · 1 fake/duplicate · 1 other.
-  Resolution: 9 full refunds · 3 replacements · 1 unresolved.
-- Behaviour-change split among the 13: 6 confirmed a change, 6 reported no change, 1 ambiguous.
-- 6 of the 14 "stuck" respondents had NO incident at all — stagnation there is low intent.
+## Part 2 — primary research (real, N=31 survey; ZERO live interviews)
+- 31 survey responses. Be explicit that live interviews were not conducted.
+- 18/31 (58%) self-report "mostly stick to the same categories" — the target segment.
+- 15/31 (48%) had a bad order in the last 3 months.
+  Failure types: 11 damaged · 2 expired · 1 fake/duplicate · 1 other.
+  Resolution: 11 full refunds · 3 replacements · 1 unresolved.
+- Behaviour-change split among the 15: 7 confirmed a change, 7 reported no change, 1 ambiguous.
+- 8 of the 18 "stuck" respondents had NO incident at all — stagnation there is low intent.
+- Q14 ("a bad experience in one category makes me more hesitant to try others", 1-5):
+  mean 3.0 — 11/31 agree (4-5), 11/31 disagree (1-2), 9 neutral. A rated echo of the same split.
 - Ranked confidence drivers (Q15, "what would make you try a new category", pick up to 2):
-  "No questions asked" refund/return guarantee 11 · Better visible quality/freshness
-  guarantees 9 · Item reviews/ratings 5 · Inspect before accepting delivery 5 ·
-  Human support agent 3 · Intro offers 3 · Nothing in particular 3.
+  "No questions asked" refund/return guarantee 13 · Better visible quality/freshness
+  guarantees 10 · Inspect before accepting delivery 7 · Item reviews/ratings 5 ·
+  Intro offers 5 · Nothing in particular 4 · Human support agent 3 ·
+  Safer packaging for fragile items 1 (free-text write-in).
+  NOTE: inspect-before-accepting is now the clear THIRD driver (it was tied-third at N=25).
+  Item reviews/ratings is now tied FOURTH — do not label it third on any slide.
 - 2 respondents raised pricing vs competitors unprompted.
 - Verbatim quotes you may use (do not alter):
   - "I have stopped exploring new categories on Blinkit. I only order the essential items now

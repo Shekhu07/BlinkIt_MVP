@@ -41,10 +41,12 @@ Rationale for picking option 2: the brief explicitly allows "an AI agent" as an 
 Neither doc actually lists build alternatives — both commit to one design (Category Nudge Agent). But the raw material for multiple nudge-mechanic variants exists in `problem_statement.md` §3–§4:
 
 **Based on ranked confidence drivers (§4, Q15 survey):**
-1. Return/refund-guarantee nudge — top driver, 11/25 picks
-2. Quality/freshness-verification nudge — second driver, 9/25 picks
-3. Social-proof nudge (item reviews/ratings) — tied third, 5/25 picks
-4. Pre-acceptance inspection nudge (inspect before accepting delivery) — tied third, 5/25 picks
+1. Return/refund-guarantee nudge — top driver, 13/31 picks
+2. Quality/freshness-verification nudge — second driver, 10/31 picks
+3. Pre-acceptance inspection nudge (inspect before accepting delivery) — **third driver, 7/31 picks**
+4. Social-proof nudge (item reviews/ratings) — tied fourth, 5/31 picks
+
+*(Re-ranked at N=31 on 2026-07-28: options 3 and 4 swapped. At N=25 they were tied at 5 each; inspection has since pulled clear. The shipped scope — options 1+2 — is unaffected.)*
 
 **Based on workaround patterns (§3):**
 - Counter the "essentials-only retreat" (users who narrowed their basket but stayed on Blinkit)
@@ -68,9 +70,9 @@ Yes — this matches §6's explicit instruction to lead with the two highest-ran
 
 The causal chain, grounded in `problem_statement.md`:
 
-1. **The bottleneck is trust, not awareness.** The target segment (56% of survey respondents, §2) already buys heavily and habitually — they're not category-stagnant from lack of exposure. §4: "only 8 of 14 stuck respondents cite an actual bad experience — the rest simply haven't been given a reason to trust an unfamiliar category yet." The blocker is a risk calculation at the point of trying something new, not a discovery problem.
+1. **The bottleneck is trust, not awareness.** The target segment (58% of survey respondents, §2) already buys heavily and habitually — they're not category-stagnant from lack of exposure. §4: "only 10 of 18 stuck respondents cite an actual bad experience — the rest simply haven't been given a reason to trust an unfamiliar category yet." The blocker is a risk calculation at the point of trying something new, not a discovery problem.
 
-2. **The two chosen drivers directly neutralize that specific risk.** Q15 shows users themselves named these as what would change their behavior (11/25 and 9/25 picks — the two biggest levers). A guarantee + a verified quality/freshness signal removes the exact downside (getting burned again, no easy recourse) keeping users locked into "what's already proven safe" (§2's own framing).
+2. **The two chosen drivers directly neutralize that specific risk.** Q15 shows users themselves named these as what would change their behavior (13/31 and 10/31 picks — the two biggest levers). A guarantee + a verified quality/freshness signal removes the exact downside (getting burned again, no easy recourse) keeping users locked into "what's already proven safe" (§2's own framing).
 
 3. **Per-user, per-category targeting makes it a repeatable trigger**, not ambient messaging. A blanket homepage banner doesn't move the metric because it's generic and ignored; the agent generates the reassurance specifically for the nudged category and the matched friction theme, firing at the actual decision point — which is what a *monthly, repeatable* new-category-purchase metric requires.
 
@@ -206,10 +208,10 @@ ungated run, `architecture.md` §3.1). It trades a known undercount for an unkno
 **Part 2 is the correction.** The undercount needed a different instrument — one that asks users
 directly instead of waiting for them to volunteer the causal link. It found what this question
 predicts (`problem_statement.md` §2, §4):
-- **Q15's top driver is a "no questions asked" return/refund guarantee — 11/25 picks**, ahead of
-  visible quality/freshness guarantees at 9. A *support* attribute ranks first as an exploration unlock.
+- **Q15's top driver is a "no questions asked" return/refund guarantee — 13/31 picks**, ahead of
+  visible quality/freshness guarantees at 10. A *support* attribute ranks first as an exploration unlock.
 - The respondent who stopped exploring entirely was the one whose complaint **went unresolved**.
-- **6 of 13** incident-havers reported no behaviour change, most having been refunded or replaced —
+- **7 of 15** incident-havers reported no behaviour change, most having been refunded or replaced —
   support quality is the moderator determining whether a quality failure generalises into avoidance.
 - A distinct **packaging/fulfillment** sub-cause surfaced (stationery crushed under groceries) —
   a fulfillment failure, not a product-source defect, causing category-specific avoidance.
@@ -224,4 +226,4 @@ The undercount is acknowledged, its direction is known, and Part 2 exists partly
 
 ## Q: Which nudge-mechanic options remain open?
 
-Of the four Q15-driver nudge mechanics: **Option 1 (refund guarantee) + Option 2 (quality/freshness)** are combined and shipped live. **Option 3 (social-proof / item reviews)** and the two §3 targeting variants (essentials-retreat, platform-churn) are unpursued. **Option 4 (pre-acceptance inspection nudge, Q15 tied-third, 5/25 picks)** is the deliberately-deferred backlog item the user has said they still want to try — the next Phase 5 experiment. See memory `project_phase5_mvp.md`.
+Of the four Q15-driver nudge mechanics: **Option 1 (refund guarantee) + Option 2 (quality/freshness)** are combined and shipped live. **Option 3 (social-proof / item reviews)** and the two §3 targeting variants (essentials-retreat, platform-churn) are unpursued. **Option 4 (pre-acceptance inspection nudge, now Q15's clear third driver at 7/31 picks — up from tied-third at 5/25)** is the deliberately-deferred backlog item the user has said they still want to try — the next Phase 5 experiment. See memory `project_phase5_mvp.md`.
