@@ -1,5 +1,10 @@
 # Deck Outline — Blinkit Category Adoption (Phase 6)
 
+> **⚠️ Superseded (2026-07-29).** This early planning draft (N=25 survey figures, an 11th
+> appendix slide) was replaced by the Design Labs import. The current, authoritative deck is
+> `deck/design/Blinkit Category Nudge Case Study.dc.html` (10 slides, no appendix, N=31) — see
+> `deck/design/CLAUDE.md` for its graded hard rules. Kept here for history only; don't build from it.
+
 ## Purpose & rules baked in
 - **10 slides max including the title slide.** Titles are **key messages**, not labels.
 - Structured around the **cross-part traceability thread** (`architecture.md` §8): every slide

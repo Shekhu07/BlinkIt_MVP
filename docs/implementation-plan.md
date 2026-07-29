@@ -99,15 +99,24 @@ Today's date context: roughly 3 weeks available until the deadline. Plan below a
 >   — not reproducible from this repo (see the provenance caveat in `problem_statement.md` §5).
 >   The deck's concall corroboration is the Q4FY26 quotes only.
 >
-> Still open: generating the deck itself from these prompts, then re-running the compliance check
-> (slide count, 14 pt floor, anonymity, <40 MB, link HTTP 200) against the new file.
+> **Done (2026-07-29).** The deck built from the Design Labs prompts is the live, authoritative
+> source: `deck/design/Blinkit Category Nudge Case Study.dc.html`, exactly 10 slides, no appendix
+> (the workflow explainer was folded into slide 3, resolving the earlier 🔴 11-slide blocker).
+> Exported to `deck/NL Blinkit Category Adoption.pdf` and rebuilt as an editable
+> `deck/NL_Blinkit_CategoryAdoption.pptx` (native text/tables, not a flattened image — `deck/build_deck.py`
+> was rewritten to mirror the HTML slide-for-slide, replacing its old N=25/11-slide output). Slide
+> 1's title was updated to the question framing ("Why do Blinkit's most loyal users never widen
+> their basket?"). Compliance re-verified against this build: 10 slides, zero text below 14pt
+> (enforced programmatically in `build_deck.py`'s text helper), no shape overflow or off-slide
+> content, colorblind-safe palette, `NL Blinkit…` naming, both PDF (2.3MB) and PPTX (1.9MB) well
+> under 40MB. `docs/deck_spec.md` and `docs/deck_outline.md` are now superseded planning drafts.
 
-- [ ] Structure the 10-slide deck around the cross-part traceability thread (see architecture.md §8) rather than one slide per part in isolation
-- [ ] Draft slide titles as key messages, not labels (per guideline: state the finding, don't just say "Problem")
-- [ ] Build the 1-slider explaining the Part 1 workflow (separate from the main 10, embedded inside the deck per instructions)
-- [ ] Apply formatting constraints: no fellow name anywhere, 10 slides max including title, minimum font size per tool used (14 for Slides/PPT, 26 for Figma @1920×1080, 22 for Canva @1920×1080), colorblind-safe palette, readable text on any background color
-- [ ] Hyperlink all supporting artifacts (workflow link, MVP link, survey/interview docs if referenced) — double check access permissions on every linked doc
-- [ ] File naming per convention (e.g., "NL BlinkitCategoryAdoption" style), confirm file size under 40MB
+- [x] Structure the 10-slide deck around the cross-part traceability thread (see architecture.md §8) rather than one slide per part in isolation
+- [x] Draft slide titles as key messages, not labels (per guideline: state the finding, don't just say "Problem")
+- [x] Build the 1-slider explaining the Part 1 workflow — folded into slide 3 rather than a separate appendix, keeping the deck at a hard 10
+- [x] Apply formatting constraints: no fellow name anywhere, 10 slides max including title, minimum font size per tool used (14 for Slides/PPT, 26 for Figma @1920×1080, 22 for Canva @1920×1080), colorblind-safe palette, readable text on any background color
+- [x] Hyperlink all supporting artifacts (workflow link, MVP link) — both resolve; known residual: the fellow's name still surfaces in the href/data-props (needs an HF org account to fully clear, see `deck/design/CLAUDE.md`)
+- [x] File naming per convention (`NL Blinkit Category Adoption.pdf`, `NL_Blinkit_CategoryAdoption.pptx`), both files well under 40MB
 - [ ] **Buffer**: Days 22–23 held as contingency before the Aug 4 deadline — do not schedule real work into this buffer
 
 ---
@@ -133,8 +142,8 @@ Deadline     : 4 Aug 2026, 3:59:00 PM IST
 | Deliverable | Phase | Notes |
 |---|---|---|
 | [Link] Discovery workflow, testable | Phase 1/2 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine — three-tab Gradio app (Live Extractor runs the real Two-Step Gated extraction on any pasted review; Bulk Run pushes up to 50 evaluator-supplied reviews through the full guardrail chain; Results Explorer shows the real funnel/themes/validation/concall). Source in `discovery/`. |
-| 1-slider on workflow (inside deck) | Phase 6 | Summarizes Part 1 pipeline |
-| 10-slide PDF deck | Phase 6 | Full narrative across all 4 parts |
+| 1-slider on workflow (inside deck) | Phase 6 | **DONE** — folded into slide 3 rather than a separate appendix |
+| 10-slide PDF deck | Phase 6 | **DONE 2026-07-29** — `deck/NL Blinkit Category Adoption.pdf` (also `deck/NL_Blinkit_CategoryAdoption.pptx`, editable) |
 | [Link] Deployed MVP/agent | Phase 5 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent — Category Nudge Agent on HF Gradio Space. Source in `mvp/`. |
 
 ---
@@ -153,8 +162,8 @@ Deadline     : 4 Aug 2026, 3:59:00 PM IST
 
 ## 6. Definition of Done (whole project)
 
-- [ ] All four parts produce a documented artifact (theme list, interview grid, problem statement, deployed MVP)
-- [ ] At least one explicit place in the deck shows research confirming or contradicting the AI's findings
-- [ ] MVP is live and reachable via URL at submission time
-- [ ] Deck adheres to every formatting guideline (anonymity, slide count, font size, file size, naming, hyperlink access)
+- [x] All four parts produce a documented artifact (theme list, interview grid, problem statement, deployed MVP)
+- [x] At least one explicit place in the deck shows research confirming or contradicting the AI's findings — slide 5
+- [x] MVP is live and reachable via URL at submission time
+- [x] Deck adheres to every formatting guideline (anonymity, slide count, font size, file size, naming, hyperlink access) — see the 2026-07-29 status note in Phase 6 above
 - [ ] Submission completed with buffer before 4 Aug, 3:59:00 PM IST

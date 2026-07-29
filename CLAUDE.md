@@ -10,7 +10,12 @@ All four parts are complete. **Two Gradio apps are deployed live on HuggingFace 
 - `discovery/` — the Part 1 workflow demo (Live Extractor runs the real gated extraction on any pasted review; Results Explorer renders the real findings from `discovery/data/results.json`).
 - `mvp/` — the Category Nudge Agent (operator console + phone mockup; live Groq nudge generation).
 
-Remaining work is Phase 6 deck polish (`deck/`, `docs/deck_spec.md`).
+The Phase 6 deck is built and submission-ready: `deck/design/Blinkit Category Nudge Case Study.dc.html`
+is the authoritative 10-slide source (see its own `deck/design/CLAUDE.md` for the graded hard
+rules), exported to `deck/NL Blinkit Category Adoption.pdf` and rebuilt as an editable
+`deck/NL_Blinkit_CategoryAdoption.pptx` via `deck/build_deck.py`. `docs/deck_spec.md` and
+`docs/deck_outline.md` are earlier planning drafts (different title, N=25 survey, 11-slide
+structure with an appendix) superseded by the HTML deck — don't treat them as current.
 
 **Source of truth for project state and design decisions is `docs/`**, especially:
 - `docs/implementation-plan.md` — phase-by-phase status with checkboxes (what's real vs. not started)

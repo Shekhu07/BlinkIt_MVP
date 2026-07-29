@@ -1,6 +1,11 @@
 # Deck Build Spec — Blinkit Category Adoption
 ### Paste-ready copy for a 10-slide deck + appendix workflow slide
 
+> **⚠️ Superseded (2026-07-29).** This early draft (different title, N=25 survey figures, an
+> 11th appendix slide) was replaced by the Design Labs import. The current, authoritative deck is
+> `deck/design/Blinkit Category Nudge Case Study.dc.html` (10 slides, no appendix, N=31) — see
+> `deck/design/CLAUDE.md` for its graded hard rules. Kept here for history only; don't build from it.
+
 **How to use:** each slide below gives the exact **title** (a key message), the **body copy**
 (final wording — paste as-is), **data callouts**, a **layout suggestion**, and **speaker notes**.
 Build in your tool of choice; apply the compliance checklist at the end.

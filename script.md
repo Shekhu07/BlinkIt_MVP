@@ -2,7 +2,10 @@
 
 ### Blinkit — Cross-Category Adoption | NextLeap PM Fellowship Graduation Project
 
-**Last updated:** 2026-07-28 · figures current at survey freeze N=31 and Part 1 export.
+**Last updated:** 2026-07-29 · figures current at survey freeze N=31 and Part 1 export. Deck
+artefacts refreshed 2026-07-29: slide 1's title copy and both exported files
+(`deck/NL Blinkit Category Adoption.pdf`, `deck/NL_Blinkit_CategoryAdoption.pptx`) were
+rebuilt from `deck/design/Blinkit Category Nudge Case Study.dc.html` — no figures below changed.
 
 **How to use this:** §1–§3 are what you say. §4 is the number sheet to memorise. §5 is the
 question bank, ordered roughly by how likely each is. §6 is the list of things that are
@@ -45,7 +48,7 @@ this come from, and what did the previous part tell us that led here?"_
 
 | Slide | The beat                | The one sentence                                                                                                  |
 | ----- | ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 1     | Title + two live links  | "Both the workflow and the MVP are live — you can test them while I talk."                                        |
+| 1     | Title: "Why do Blinkit's most loyal users never widen their basket?" | "Both the workflow and the MVP are live — you can test them while I talk."                                        |
 | 2     | The goal, framed        | "58% of the people I surveyed say they stick to the same categories. They already see the other ones every week." |
 | 3     | How the engine works    | "Five stages, and the third one is the whole design decision — it gates on relevance before it extracts."         |
 | 4     | What the reviews said   | "One theme carries the segment: poor quality and unreliable products, 770 of 1,094."                              |
