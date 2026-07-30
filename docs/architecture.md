@@ -176,6 +176,21 @@ rest of the project.
   `scrolling="no"`, so the container scrolls itself. Use `max-height`, never `height`: short tabs
   then still size to their content and the frame keeps shrink-wrapping them, so only genuinely
   tall content scrolls internally.
+- **Two more hardening layers on `.gradio-container`'s scroll fix, applied for iPadOS Safari
+  specifically — verify before trusting either.** `.gradio-container` is itself a flex item
+  (Gradio's own `body` is `display:flex;flex-direction:column`), and a flex item's default
+  `min-height:auto` can silently defeat `max-height`+`overflow-y` in Safari's flex
+  implementation even when identical CSS scrolls in Chromium — so `min-height:0 !important` is
+  set alongside the scroll rule. An A/B test in headless Chromium/WebKit showed no difference
+  with or without it, so **this is unverified, not confirmed** — kept because it's zero-downside,
+  not because it's proven necessary.
+  `-webkit-overflow-scrolling:touch` was added for the same rule: the standard fix for touch
+  scrolling being unresponsive inside a nested `overflow:auto` container within a cross-origin
+  iframe on iOS/iPadOS. **This cannot be verified from this environment at all** — WebKit's
+  native touch/momentum compositor is not reachable via Playwright's synthetic touch events on
+  any engine, headless or not. If a future scroll report on iPadOS/iOS persists after this,
+  don't re-guess CSS — the fallback is pointing links at the direct `*.hf.space` URL (no iframe,
+  already verified working on every platform tested).
 - **Reproduce iframe bugs with a local harness, not against the live wrapper.** Neither Chromium
   nor WebKit reproduces this on huggingface.co, because there the resizer happens to size
   correctly — four fixes were shipped against the live page before the cause was found. A static
