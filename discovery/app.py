@@ -98,6 +98,8 @@ body,.gradio-container,.gradio-container *,button,input,textarea{
   color:#141414 !important;box-shadow:0 0 0 1px #ececec}
 .gradio-container .prose,.gradio-container p,.gradio-container span,.gradio-container div{color:inherit}
 footer,.footer,.show-api,.built-with,.settings{display:none !important}
+/* Gradio's char counter is unclassed and ships at gray-300/400 — unreadable. */
+#rev p,#rev div{color:#6b6b6b !important}
 
 /* strip Gradio chrome so our own cards are the only surfaces */
 .block,.form,.gr-box,.gr-group,.panel,.gr-panel,.styler,.wrap.svelte-1parkyl{
@@ -109,12 +111,12 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-head{background:#f8cb46 !important;padding:22px 40px !important;align-items:center !important;
   border:none !important;border-radius:0 !important;flex-wrap:wrap;gap:16px !important;margin:0 !important}
 .dc-head .block{background:transparent !important}
-.dc-logo{width:46px;height:46px;border-radius:13px;background:#141414;display:flex;
+.dc-logo.dc-logo.dc-logo{width:46px;height:46px;border-radius:13px;background:#141414;display:flex;
   align-items:center;justify-content:center;font-size:25px;flex:none;color:#f8cb46}
 .dc-brand{display:flex;align-items:center;gap:16px}
-.dc-title{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1;color:#141414}
+.dc-title.dc-title.dc-title{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1;color:#141414}
 .dc-title span{font-weight:600;opacity:.72}
-.dc-sub{font-size:13px;font-weight:600;color:#5a4b06;margin-top:5px}
+.dc-sub.dc-sub.dc-sub{font-size:13px;font-weight:600;color:#5a4b06;margin-top:5px}
 
 /* pill tabs inside the header */
 .dc-tabs{background:rgba(20,20,20,.10);padding:5px !important;border-radius:12px !important;
@@ -127,15 +129,15 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-tabs button.primary{background:#141414 !important;color:#f8cb46 !important;font-weight:700 !important}
 
 .dc-body{padding:34px 40px 10px !important}
-.dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#756512}
-.dc-h2{font-weight:700;font-size:20px;letter-spacing:-.01em;color:#141414}
+.dc-eyebrow.dc-eyebrow.dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#756512}
+.dc-h2.dc-h2.dc-h2{font-weight:700;font-size:20px;letter-spacing:-.01em;color:#141414}
 .dc-lede{font-size:14px;color:#666 !important;max-width:640px;line-height:1.5;margin:8px 0 4px}
 .dc-lede code{font-family:'JetBrains Mono',monospace !important;font-size:12px;background:#efeee9;
   padding:2px 6px;border-radius:5px}
 .dc-card{background:#fff !important;border-radius:18px !important;border:1px solid #ececec !important;
   padding:22px !important;box-shadow:0 2px 12px rgba(0,0,0,.04) !important}
 .dc-card>*{background:transparent !important}
-.dc-label{font-size:12px;font-weight:700;color:#6b6b6b;margin-bottom:9px;letter-spacing:.02em}
+.dc-label.dc-label.dc-label{font-size:12px;font-weight:700;color:#6b6b6b;margin-bottom:9px;letter-spacing:.02em}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .dc-anim{animation:fadeup .3s ease}
 
@@ -172,9 +174,9 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-rows{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding-right:4px}
 .dc-row{border:1px solid #ececec;border-radius:12px;padding:12px 14px;background:#fff}
 .dc-row.drop{background:#fdf7f7;border-color:#eedada}
-.dc-quote{font-size:12.5px;color:#3d3d3d;line-height:1.45}
-.dc-why{font-size:11.5px;color:#8a5a5a;margin-top:6px;line-height:1.45}
-.dc-stage{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#a63c3c;
+.dc-quote.dc-quote.dc-quote{font-size:12.5px;color:#3d3d3d;line-height:1.45}
+.dc-why.dc-why.dc-why{font-size:11.5px;color:#8a5a5a;margin-top:6px;line-height:1.45}
+.dc-stage.dc-stage.dc-stage{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#a63c3c;
   letter-spacing:.02em}
 
 /* loading state — Gradio's default spinner is hidden by our chrome reset */
@@ -206,7 +208,7 @@ def esc(t):
 # ---------------- Tab 1: Live Extractor ----------------
 EMPTY_HTML = """
 <div style="border:1.5px dashed #e0e0e0;border-radius:18px;padding:40px 24px;text-align:center;color:#6f6f6f">
-  <div style="font-size:34px;color:#f8cb46">⚡</div>
+  <div style="font-size:34px;color:#a87c0c">⚡</div>
   <div style="font-size:13.5px;margin-top:10px;line-height:1.5;color:#6f6f6f">Enter a review and hit Extract to watch the<br>Two-Step Gated Schema run.</div>
 </div>"""
 
@@ -294,7 +296,7 @@ SAMPLE_BULK = """content,rating,source,author
 
 BULK_EMPTY = f"""
 <div style="border:1.5px dashed #e0e0e0;border-radius:18px;padding:40px 24px;text-align:center;color:#6f6f6f">
-  <div style="font-size:34px;color:#f8cb46">📄</div>
+  <div style="font-size:34px;color:#a87c0c">📄</div>
   <div style="font-size:13.5px;margin-top:10px;line-height:1.5;color:#6f6f6f">Paste up to {MAX_ROWS} reviews to run
     them through<br>dedup → heuristic filter → gate → grouping.</div>
 </div>"""
@@ -447,7 +449,7 @@ def results_html():
     bar = "".join(f'<div style="width:{100*b["n"]/tot_b:.1f}%;background:{bshades[min(i,4)]}"></div>'
                   for i, b in enumerate(beh))
     legend = "".join(
-        f'<span><span style="color:{bshades[min(i,4)]}">■</span> {esc(b["behavior_type"])} — '
+        f'<span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{bshades[min(i,4)]};border:1px solid rgba(0,0,0,.22);vertical-align:middle"></span> {esc(b["behavior_type"])} — '
         f'{round(100*b["n"]/tot_b)}%</span>' for i, b in enumerate(beh))
 
     top = themes[0]
@@ -504,12 +506,12 @@ def results_html():
       <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:#141414">{f['raw_reviews']:,}</div>
       <div style="font-size:12.5px;color:#6b6b6b;font-weight:600;margin-top:3px">raw reviews scraped</div>
       <div style="height:9px;border-radius:5px;background:{YELLOW};margin-top:14px"></div></div>
-    <div class="dc-arrow" style="display:flex;align-items:center;color:#9a9a9a;font-size:22px">→</div>
+    <div class="dc-arrow" style="display:flex;align-items:center;color:#7d7d7d;font-size:22px">→</div>
     <div style="flex:1;background:#fff;border:1px solid #ececec;border-radius:16px;padding:18px 20px">
       <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:#141414">{f['filtered_reviews']:,}</div>
       <div style="font-size:12.5px;color:#6b6b6b;font-weight:600;margin-top:3px">after heuristic filter</div>
       <div style="height:9px;border-radius:5px;background:#f2d979;margin-top:14px;width:{w_filt}%"></div></div>
-    <div class="dc-arrow" style="display:flex;align-items:center;color:#9a9a9a;font-size:22px">→</div>
+    <div class="dc-arrow" style="display:flex;align-items:center;color:#7d7d7d;font-size:22px">→</div>
     <div style="flex:1;background:#141414;border-radius:16px;padding:18px 20px;color:#fff">
       <div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:{YELLOW}">{f['gate_pass']:,}</div>
       <div style="font-size:12.5px;color:#cfcfcf;font-weight:600;margin-top:3px">gate-passing extractions</div>
