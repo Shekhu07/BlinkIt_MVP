@@ -146,42 +146,25 @@ substitutions are tabulated in each app's README. This is the same real-vs-mock 
 rest of the project.
 
 **Gradio hardening rules — regressions here are easy and were hit repeatedly:**
-- **PIN THE GRADIO VERSION. Every rule below assumes 4.44.1.** Both Spaces originally shipped
-  with `sdk_version` absent from the README front-matter and a bare `gradio` in
-  `requirements.txt`, so a rebuild on 2026-07-30 silently pulled **Gradio 6.21.0** and broke the
-  design. Gradio 4 rewrites each `css=` selector with the container class
-  (`gradio-app .gradio-container.gradio-container-4-44-1 .contain .nb-dark .h`); **Gradio 6
-  injects the CSS verbatim.** Every colour rule therefore collapsed from that high specificity to
-  a plain `(0,2,0)`, tied Gradio's own `.gradio-container-6-21-0 .prose *`, and lost on load
-  order — so anything without `!important` fell back to `var(--body-text-color)` `#27272A`.
-  White cards still read; the dark reasoning panel and phone frame rendered `#27272A` on
-  `#16130A` = **1.25:1, effectively invisible**. Both `README.md` front-matter
-  (`sdk_version: 4.44.1`) and `requirements.txt` (`gradio==4.44.1`) now pin it, in the Spaces
-  *and* in `mvp/` + `discovery/`. Diagnose this class of bug by comparing the *same selector's*
-  computed colour local vs live — not by reading the CSS, which looks correct either way.
-- **Pinning Gradio alone is not enough — pin its dependency trio.** `gradio==4.44.1` on its own
-  let pip resolve `huggingface_hub` 1.x, which **removed `HfFolder`**; Gradio 4.x still imports
-  it, so both Spaces crashed at startup with
-  `ImportError: cannot import name 'HfFolder' from 'huggingface_hub'` and served **503** until
-  it was fixed. Pin all three to the combination the local venv is known to run:
-  `gradio==4.44.1`, `gradio_client==1.3.0`, `huggingface_hub==0.36.2`. Any future version change
-  must be checked against a live Space, because a Space build failure takes a submission link
-  offline outright rather than degrading it.
-- Gradio ignores `@import` inside the `css=` param, and `head=` does not reliably reach the
-  served page on Spaces. Emit the font `<link>` **in-body** via `gr.HTML`.
-- Never rely on colour inheritance: Gradio's theme colour makes unstyled text invisible.
-  Declare a base `.gradio-container *{color:<ink>}` rule **above** the class rules (not
-  `!important`, so class rules and inline styles still win).
-- Force light mode via `js=`, but do not depend on it — the redirect can be blocked inside
-  HF's iframe.
-- ZeroGPU Spaces refuse to boot without a `@spaces.GPU` function; both apps register a no-op.
-- **Native `gr.Dropdown` options go dark-on-dark under forced dark mode.** Gradio's option
-  rows carry Tailwind `dark:` variants (e.g. `dark:bg-gray-600`); our theme-proofing forces
-  dark ink even under `.dark`, so when HF's iframe forces dark mode the option text becomes
-  invisible. Pin the field + options list to a light surface in **both** themes:
-  `.gradio-container ul.options, .dark .gradio-container ul.options { background:#fff !important }`
-  (and the `li`, `li *`, and `.selected/.active/:hover` states). Same root cause as the
-  colour-inheritance rule — Gradio's own component chrome doesn't inherit our light surface.
+- **Gradio auto-prefixes `css=` on 4.x but NOT on 6.x — write selectors that survive both.**
+  Both Spaces run `gradio` unpinned, so a rebuild on 2026-07-30 pulled **6.21.0**. Gradio 4
+  rewrote every custom selector with the container class
+  (`gradio-app .gradio-container.gradio-container-4-44-1 .contain .nb-dark .h`); Gradio 6 injects
+  it verbatim. Our colour rules therefore collapsed to `(0,1,0)`/`(0,2,0)`, tied Gradio's own
+  `.gradio-container-6-21-0 .prose *` `(0,2,0)`, and lost on load order — everything fell back to
+  `var(--body-text-color)` `#27272A`. That still reads on white cards but rendered `#27272A` on
+  `#16130A` (**1.25:1, invisible**) in the dark reasoning panel and phone frame.
+  **Fix: repeat the class** (`.nb-dark.nb-dark.nb-dark .h`) — raises specificity without changing
+  what it matches, beats `.prose *` on 6.x, keeps inline styles winning, and preserves the
+  relative order among our own rules. Applies on both majors, and costs no dependency change.
+- **Do NOT try to fix this by pinning Gradio.** It was attempted first and took both Spaces down
+  twice: `gradio==4.44.1` alone resolved `huggingface_hub` 1.x, which removed `HfFolder` that
+  Gradio 4 imports (`ImportError`, 503); pinning the hub too then failed with
+  `ValueError: When localhost is not accessible, a shareable link must be created`. A Space build
+  failure takes a submission link **fully offline**, which is strictly worse than a contrast bug.
+  Both Spaces were reverted to unpinned and fixed in CSS instead. Diagnose this class of bug by
+  comparing the *same selector's* computed colour local vs live — reading the CSS is useless,
+  it looks correct under both versions.
 - **Do not wire `gr.File` / `gr.UploadButton` as an event input** on the pinned Gradio
   (4.44.1 / gradio_client 1.3.0). API-schema generation raises
   `TypeError: argument of type 'bool' is not iterable`, the startup self-check fails, and the
