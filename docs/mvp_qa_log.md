@@ -227,3 +227,24 @@ The undercount is acknowledged, its direction is known, and Part 2 exists partly
 ## Q: Which nudge-mechanic options remain open?
 
 Of the four Q15-driver nudge mechanics: **Option 1 (refund guarantee) + Option 2 (quality/freshness)** are combined and shipped live. **Option 3 (social-proof / item reviews)** and the two §3 targeting variants (essentials-retreat, platform-churn) are unpursued. **Option 4 (pre-acceptance inspection nudge, now Q15's clear third driver at 7/31 picks — up from tied-third at 5/25)** is the deliberately-deferred backlog item the user has said they still want to try — the next Phase 5 experiment. See memory `project_phase5_mvp.md`.
+
+---
+
+## Q: Could the shopper pick the category, instead of the agent choosing one?
+
+Raised 2026-07-30. **Documented, not built** — full analysis in
+`docs/concept_category_choice_nudge.md`.
+
+Short version: the candidate pool already exists (`rank_suggestable_categories` returns the top
+four categories the user has *not* bought from, and the console shows them as "Also considered —
+ranked"), so this is a question of *who picks*, not of new modelling.
+
+- **Variant A — operator-selectable alternatives** (click an alternative, regenerate the same
+  trust-led nudge for it): safe and additive. Shopper-facing behaviour unchanged, no deck or
+  scope change, and it demos the "the model never chooses the category" claim live.
+- **Variant B — shopper-facing category picker**: deliberately **not** folded into the trust
+  nudge. Deck slide 7 already rejects the adjacent lever ("Better merchandising and category
+  placement" → *"these buyers already see the categories"*), slide 2 states *"this is a trust
+  problem, not an awareness problem"*, and no Q15 driver asks for more options. It is instead
+  essentially **next step #2** — the relevance-led play for the low-intent half (8 of 18 stuck
+  users had no incident), and belongs there as a separate mechanic measured separately.

@@ -31,6 +31,7 @@ hierarchy. All geometry must go through the `IN()` helper so the scale stays con
 - `docs/problem_statement.md` — the locked Part 3 problem statement; §6 scopes what the MVP may claim
 - `docs/phase3_google_form.md` — the canonical Phase 3 questionnaire (supersedes the other two survey drafts in docs/)
 - `docs/mvp_qa_log.md` — running Q&A/decision log for Part 4
+- **On-record-only proposals — read the status banner before acting on any of them:** `docs/extraction_prompt_v2_proposal.md` (schema v2, would move the cited headline numbers), `docs/concept_trust_concierge_agent.md` (pull/conversational agent), `docs/concept_category_choice_nudge.md` (letting the shopper pick the category — Variant A safe, Variant B would re-scope the MVP). None are built or wired into either Space; each lists the cascade it would require.
 
 Read the relevant doc before changing pipeline behavior — several scripts were rewritten after real-run failures, and the docs record why.
 
