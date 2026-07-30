@@ -98,8 +98,6 @@ body,.gradio-container,.gradio-container *,button,input,textarea{
   color:#141414 !important;box-shadow:0 0 0 1px #ececec}
 .gradio-container .prose,.gradio-container p,.gradio-container span,.gradio-container div{color:inherit}
 footer,.footer,.show-api,.built-with,.settings{display:none !important}
-/* Gradio's char counter is unclassed and ships at gray-300/400 — unreadable. */
-#rev p,#rev div{color:#6b6b6b !important}
 
 /* strip Gradio chrome so our own cards are the only surfaces */
 .block,.form,.gr-box,.gr-group,.panel,.gr-panel,.styler,.wrap.svelte-1parkyl{
