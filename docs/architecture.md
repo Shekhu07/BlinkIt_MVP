@@ -146,6 +146,19 @@ substitutions are tabulated in each app's README. This is the same real-vs-mock 
 rest of the project.
 
 **Gradio hardening rules — regressions here are easy and were hit repeatedly:**
+- **PIN THE GRADIO VERSION. Every rule below assumes 4.44.1.** Both Spaces originally shipped
+  with `sdk_version` absent from the README front-matter and a bare `gradio` in
+  `requirements.txt`, so a rebuild on 2026-07-30 silently pulled **Gradio 6.21.0** and broke the
+  design. Gradio 4 rewrites each `css=` selector with the container class
+  (`gradio-app .gradio-container.gradio-container-4-44-1 .contain .nb-dark .h`); **Gradio 6
+  injects the CSS verbatim.** Every colour rule therefore collapsed from that high specificity to
+  a plain `(0,2,0)`, tied Gradio's own `.gradio-container-6-21-0 .prose *`, and lost on load
+  order — so anything without `!important` fell back to `var(--body-text-color)` `#27272A`.
+  White cards still read; the dark reasoning panel and phone frame rendered `#27272A` on
+  `#16130A` = **1.25:1, effectively invisible**. Both `README.md` front-matter
+  (`sdk_version: 4.44.1`) and `requirements.txt` (`gradio==4.44.1`) now pin it, in the Spaces
+  *and* in `mvp/` + `discovery/`. Diagnose this class of bug by comparing the *same selector's*
+  computed colour local vs live — not by reading the CSS, which looks correct either way.
 - Gradio ignores `@import` inside the `css=` param, and `head=` does not reliably reach the
   served page on Spaces. Emit the font `<link>` **in-body** via `gr.HTML`.
 - Never rely on colour inheritance: Gradio's theme colour makes unstyled text invisible.
