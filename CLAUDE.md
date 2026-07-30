@@ -36,13 +36,19 @@ docker-compose up -d
 
 # Always use the venv's python
 ./venv/bin/python analysis/prefilter.py
+
+# Run either deployed app locally (Gradio, http://localhost:7860)
+./venv/bin/python mvp/app.py
+./venv/bin/python discovery/app.py
 ```
 
 Pipeline order (each stage reads the previous stage's DB table):
 
 1. `scrapers/ingest_master_json.py` (and other `scrapers/ingest_*.py`) → `raw_reviews`
 2. `analysis/prefilter.py` → `filtered_reviews` (heuristic: drops short/5-star reviews)
-3. `analysis/extract_themes.py` → `extractions` (batched Groq LLM calls; `fast_extract.py` is the batched/faster variant)
+3. `analysis/extract_themes.py` → `extractions` (batched Groq LLM calls). `fast_extract.py` is the
+   abandoned pre-Groq (Gemini) prototype this replaced — it now fails on import since
+   `google-generativeai` was removed; don't use it or "fix" its import.
 4. `analysis/cluster_themes.py` → `themes` + `theme_evidence`
 5. `analysis/validate_themes.py` → LLM-judge validation against a theme-relevant held-out sample
 6. `analysis/analyze_concalls.py` → Eternal earnings-call corroboration
