@@ -155,7 +155,14 @@ body,.gradio-container,.gradio-container *,button,input,textarea{
      container at the frame's own viewport and let it scroll itself. max-height (not
      height) keeps short tabs sized to their content, so the frame still shrink-wraps them
      as before and only tall content starts scrolling internally. */
-  max-height:100vh !important;overflow-y:auto !important;overscroll-behavior:contain}
+  max-height:100vh !important;overflow-y:auto !important;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  /* .gradio-container is itself a flex item (body is display:flex;flex-direction:column),
+     and a flex item's default min-height is `auto`, which refuses to shrink below its
+     content's intrinsic height. That silently defeats max-height+overflow-y specifically
+     in Safari (Chromium is more forgiving here) — the classic flexbox scroll bug. Reset it
+     so the overflow rule above can actually take effect. */
+  min-height:0 !important}
 .gradio-container .prose,.gradio-container p,.gradio-container span,.gradio-container div{color:inherit}
 footer,.footer,.show-api,.built-with,.settings{display:none !important}
 
