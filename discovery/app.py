@@ -144,7 +144,18 @@ html,body,.gradio-container,.dark .gradio-container{background:#f6f6f4 !importan
 body,.gradio-container,.gradio-container *,button,input,textarea{
   font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif !important}
 .gradio-container{max-width:1100px !important;margin:0 auto !important;padding:0 !important;
-  color:#141414 !important;box-shadow:0 0 0 1px #ececec}
+  color:#141414 !important;box-shadow:0 0 0 1px #ececec;
+  /* THE SCROLL FIX. Gradio ships overflow:hidden here, and HF embeds the app in an iframe
+     with scrolling="no". So whenever iframe-resizer sizes the frame shorter than the
+     content — which is what happens in Safari — everything past that height is clipped
+     with no way to reach it: the document itself cannot scroll, because scrolling="no"
+     suppresses exactly that. Reproduced in a local harness at 688px unreachable on the
+     Results Explorer tab.
+     An *element* scroll container is not suppressed by scrolling="no", so cap the
+     container at the frame's own viewport and let it scroll itself. max-height (not
+     height) keeps short tabs sized to their content, so the frame still shrink-wraps them
+     as before and only tall content starts scrolling internally. */
+  max-height:100vh !important;overflow-y:auto !important;overscroll-behavior:contain}
 .gradio-container .prose,.gradio-container p,.gradio-container span,.gradio-container div{color:inherit}
 footer,.footer,.show-api,.built-with,.settings{display:none !important}
 
