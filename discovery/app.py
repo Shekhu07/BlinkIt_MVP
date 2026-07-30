@@ -105,7 +105,13 @@ function(){
   var nudge = function () {
     try {
       if (window.parentIFrame && typeof window.parentIFrame.size === 'function') {
-        window.parentIFrame.size();
+        // Pass the height explicitly. iframe-resizer's own calculation measures short here
+        // (bodyOffset misses ~40px on the Bulk Run panel), and because the iframe is
+        // scrolling="no" that shortfall is unreachable rather than merely below the fold.
+        var d = document.documentElement, bd = document.body;
+        var h = Math.max(d ? d.scrollHeight : 0, d ? d.offsetHeight : 0,
+                         bd ? bd.scrollHeight : 0, bd ? bd.offsetHeight : 0);
+        window.parentIFrame.size(h);
       } else {
         window.dispatchEvent(new Event('resize'));
       }
