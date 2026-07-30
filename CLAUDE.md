@@ -62,6 +62,11 @@ docker-compose up -d
 ./venv/bin/python mvp/app.py
 ./venv/bin/python discovery/app.py
 
+# render_cart_nudge/ has its own requirements.txt (a trimmed subset — no `spaces`/`fastapi`,
+# since Render needs no ZeroGPU registration); install into the same venv before running:
+./venv/bin/pip install -r render_cart_nudge/requirements.txt
+GROQ_API_KEY=... ./venv/bin/python render_cart_nudge/app.py
+
 # Rebuild the editable PPTX from deck/build_deck.py (the PDF comes from the HTML, not this)
 ./venv/bin/python deck/build_deck.py
 
