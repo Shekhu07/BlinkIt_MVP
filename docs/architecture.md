@@ -159,6 +159,14 @@ rest of the project.
   (`sdk_version: 4.44.1`) and `requirements.txt` (`gradio==4.44.1`) now pin it, in the Spaces
   *and* in `mvp/` + `discovery/`. Diagnose this class of bug by comparing the *same selector's*
   computed colour local vs live — not by reading the CSS, which looks correct either way.
+- **Pinning Gradio alone is not enough — pin its dependency trio.** `gradio==4.44.1` on its own
+  let pip resolve `huggingface_hub` 1.x, which **removed `HfFolder`**; Gradio 4.x still imports
+  it, so both Spaces crashed at startup with
+  `ImportError: cannot import name 'HfFolder' from 'huggingface_hub'` and served **503** until
+  it was fixed. Pin all three to the combination the local venv is known to run:
+  `gradio==4.44.1`, `gradio_client==1.3.0`, `huggingface_hub==0.36.2`. Any future version change
+  must be checked against a live Space, because a Space build failure takes a submission link
+  offline outright rather than degrading it.
 - Gradio ignores `@import` inside the `css=` param, and `head=` does not reliably reach the
   served page on Spaces. Emit the font `<link>` **in-body** via `gr.HTML`.
 - Never rely on colour inheritance: Gradio's theme colour makes unstyled text invisible.
