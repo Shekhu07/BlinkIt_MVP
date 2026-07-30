@@ -4,6 +4,11 @@ __pycache__/
 *.pyc
 .DS_Store
 
+# Repo-root CLAUDE.md carries local machine paths (real name leak via /Users/<user>/...
+# in the "Running things" section) — kept locally, no longer tracked in this public repo.
+# Anchored to root only: deck/design/CLAUDE.md is a separate, clean file and stays tracked.
+/CLAUDE.md
+
 # Raw Phase 3 survey exports — these contain respondent CONTACT DETAILS (Q18 asked for
 # a phone/email for follow-up), and this repo is public. Keep them local only.
 # `part2_research_tracker.md` deliberately holds the analysis under anonymised R-numbers
