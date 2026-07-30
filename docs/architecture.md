@@ -165,6 +165,25 @@ rest of the project.
   Both Spaces were reverted to unpinned and fixed in CSS instead. Diagnose this class of bug by
   comparing the *same selector's* computed colour local vs live — reading the CSS is useless,
   it looks correct under both versions.
+- **`.gradio-container` must keep `max-height:100vh; overflow-y:auto` — this is the scroll fix.**
+  Gradio ships `overflow:hidden` on that container, and HF embeds the app in an iframe carrying
+  `scrolling="no"` whose height is set by iframe-resizer. When the resizer sizes the frame short
+  (observed in Safari; reported across all three tabs with content visibly cut off), everything
+  past the frame height is **clipped and unreachable** — the document cannot scroll because
+  `scrolling="no"` suppresses exactly that, and `document.scrollHeight` is clamped by the
+  container besides (measured 827 against 1191 of real content), which makes the resizer size it
+  short in the first place. An **element-level** scroll container is not suppressed by
+  `scrolling="no"`, so the container scrolls itself. Use `max-height`, never `height`: short tabs
+  then still size to their content and the frame keeps shrink-wrapping them, so only genuinely
+  tall content scrolls internally.
+- **Reproduce iframe bugs with a local harness, not against the live wrapper.** Neither Chromium
+  nor WebKit reproduces this on huggingface.co, because there the resizer happens to size
+  correctly — four fixes were shipped against the live page before the cause was found. A static
+  page holding `<iframe src="http://127.0.0.1:7860/" scrolling="no" style="overflow:hidden;
+  height:820px">` reproduces it immediately: 688px unreachable on Results Explorer in both
+  engines. **Do not "fix" this class of bug by re-reporting heights on a timer** — an earlier
+  attempt to reconcile the height every second fought iframe-resizer's own autoResize, collapsed
+  the frame to 770px and clipped 357-914px on every tab, and had to be reverted.
 - **Do not wire `gr.File` / `gr.UploadButton` as an event input** on the pinned Gradio
   (4.44.1 / gradio_client 1.3.0). API-schema generation raises
   `TypeError: argument of type 'bool' is not iterable`, the startup self-check fails, and the
