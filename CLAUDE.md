@@ -17,6 +17,14 @@ rules), exported to `deck/NL Blinkit Category Adoption.pdf` and rebuilt as an ed
 `docs/deck_outline.md` are earlier planning drafts (different title, N=25 survey, 11-slide
 structure with an appendix) superseded by the HTML deck — don't treat them as current.
 
+**The PDF is generated from the HTML, not from `build_deck.py`** — editing the builder never
+changes the PDF. `build_deck.py` produces only the editable PPTX mirror, and it renders onto a
+**20 × 11.25in canvas (`SCALE = 1.5`), which is deliberate, not a mistake**: that is exactly
+1920×1080 at 96 DPI, so HTML px × 0.75 = pt and the design's 19px floor lands at 14.25pt. Authoring
+at the usual 13.333 × 7.5in puts the dense panels at 9–13.5pt, under the PRD's 14pt floor; clamping
+those sizes up instead of rescaling flattens ~90% of runs to one size and destroys the type
+hierarchy. All geometry must go through the `IN()` helper so the scale stays consistent.
+
 **Source of truth for project state and design decisions is `docs/`**, especially:
 - `docs/implementation-plan.md` — phase-by-phase status with checkboxes (what's real vs. not started)
 - `docs/architecture.md` — pipeline design, the Two-Step Gated Schema rationale, LLM choices, and §6.4 the UI design system + Gradio hardening rules
@@ -28,7 +36,9 @@ Read the relevant doc before changing pipeline behavior — several scripts were
 
 ## Running things
 
-No build, tests, or linter. Everything is direct Python script invocation using the checked-in venv:
+No build step or linter in this repo, and **no tests here** — everything is direct Python script
+invocation using the checked-in venv. (The only test suite in the project lives in the deployed MVP
+clone, not in `mvp/` — see the divergence warning below.)
 
 ```bash
 # Infra (Postgres 15 + Redis; schema auto-applied from database/schema.sql on first boot)
@@ -40,6 +50,16 @@ docker-compose up -d
 # Run either deployed app locally (Gradio, http://localhost:7860)
 ./venv/bin/python mvp/app.py
 ./venv/bin/python discovery/app.py
+
+# Rebuild the editable PPTX from deck/build_deck.py (the PDF comes from the HTML, not this)
+./venv/bin/python deck/build_deck.py
+
+# The MVP's tests exist ONLY in the deployed clone (pytest is in that clone's
+# requirements-dev.txt; it is in none of this repo's requirements files):
+cd ~/blinkit-category-nudge-agent
+/Users/abhishekspillai/Blinkit_PRD/venv/bin/pip install -r requirements-dev.txt
+/Users/abhishekspillai/Blinkit_PRD/venv/bin/python -m pytest tests/ -q
+/Users/abhishekspillai/Blinkit_PRD/venv/bin/python -m pytest tests/test_cart_filler.py::test_name -q   # single test
 ```
 
 Pipeline order (each stage reads the previous stage's DB table):
@@ -70,7 +90,9 @@ Requires `.env` (copy from `.env.example`): `GROQ_API_KEY` and `DATABASE_URL` ar
 
 - **Both are Gradio on HuggingFace Spaces, free tier.** The Docker SDK is paywalled on this account and CPU-basic hardware was not selectable, so both run on **ZeroGPU** — which refuses to boot unless a `@spaces.GPU` function exists. Each app registers a no-op `_zerogpu_warmup` purely to pass that check; neither uses a GPU (all LLM work is remote on Groq). Don't remove it.
 - **`GROQ_API_KEY` is a Space secret**, never committed. `mvp/.env` and `discovery/.env` are gitignored.
-- **Redeploy** by copying the folder's contents into the corresponding clone (`~/blinkit-discovery-engine`, `~/blinkit-category-nudge-agent`) and pushing; HF rebuilds automatically.
+- **Redeploy** by syncing into the corresponding clone (`~/blinkit-discovery-engine`, `~/blinkit-category-nudge-agent`) and pushing; HF rebuilds automatically. **Never copy a folder's contents wholesale without diffing first** — see the divergence warning below.
+- **⚠️ `mvp/` in this repo is NOT what is deployed.** `~/blinkit-category-nudge-agent` has diverged and is *ahead* on code: it holds a **pytest suite (`tests/`, 51 passing) and GitHub Actions CI (`.github/workflows/tests.yml`)**, `friction_matching.primary_suggested_category()`, parallel nudge generation via `ThreadPoolExecutor`, conditional refund/freshness lines, and newer `agent.py` / `cart_filler.py` / `README.md` — none of which exist in `mvp/`. A blind `cp mvp/* ~/blinkit-category-nudge-agent/` destroys all of it. Always `diff -rq mvp ~/blinkit-category-nudge-agent -x .git -x .env -x __pycache__` first and port only the specific hunks you intend to change. (`discovery/` and its clone are in sync — only that clone's `.gitattributes` differs — so it is safe to copy.)
+- **The clone can also be *behind* on data, in the same breath as being ahead on code.** On 2026-07-29 the deployed agent was still serving stale **N=25** survey figures in six places, including its user-facing methodology tab, long after the survey was frozen at N=31 — precisely the numbers `deck/design/CLAUDE.md` says must never reappear. When touching either app, check both directions, and grep the clone for stale figures (`11/25`, `9/25`, `14/25`, `56%`, `N=25`).
 - **`discovery/data/results.json` is a build artifact** produced by `discovery/export_results.py` from Postgres. The deployed app reads it statically — no DB in production. Re-run the export only if the pipeline is re-run, and update the docs to match the new numbers.
 - **UI design system and Gradio hardening rules are in `docs/architecture.md` §6.4.** Four regressions were hit repeatedly and are easy to reintroduce: Gradio ignores `@import` in `css=` (emit font `<link>` in-body); never rely on colour inheritance (declare a base `.gradio-container *{color:<ink>}` rule above the class rules, not `!important`); don't depend on the force-light `js=` redirect (HF's iframe can block it); and strip Gradio's block/group chrome so custom cards are the only surfaces. Verify UI changes by rendering headlessly (Playwright is installed) rather than by eye.
 
