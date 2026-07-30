@@ -75,11 +75,54 @@ HEAD = """
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 """
 
-# Force light theme — HF renders dark by system preference, which fights the design.
-FORCE_LIGHT = """
-function(){const u=new URL(window.location);
-if(u.searchParams.get('__theme')!=='light'){u.searchParams.set('__theme','light');
-window.location.replace(u.href);}}
+# Theme + embed bootstrap.
+#
+# The previous version unconditionally ran location.replace() to append ?__theme=light.
+# Inside HuggingFace's Space page that is a navigation *within the iframe*, and HF sizes
+# that iframe with iframe-resizer while setting scrolling="no" and overflow:hidden — so a
+# reload can leave the parent holding a stale height, and because the iframe cannot scroll,
+# whatever falls past that height is unreachable rather than merely below the fold. That is
+# the "page won't scroll / data looks incomplete" symptom, and it needs no redirect to be
+# fixed: the CSS above already pins the light surface with !important, verified to hold even
+# when the container carries Gradio's .dark class.
+#
+# So redirect only when we are the top-level document (the direct *.hf.space URL, where it
+# is harmless), and inside an iframe instead keep prodding iframe-resizer to re-measure:
+# after webfonts swap (text metrics change, so height changes), after tab switches (DOM
+# mutations), and on a short settle schedule for the initial paint.
+BOOT_JS = """
+function(){
+  var inIframe = false;
+  try { inIframe = window.self !== window.top; } catch (e) { inIframe = true; }
+  if (!inIframe) {
+    var u = new URL(window.location);
+    if (u.searchParams.get('__theme') !== 'light') {
+      u.searchParams.set('__theme', 'light');
+      window.location.replace(u.href);
+      return;
+    }
+  }
+  var nudge = function () {
+    try {
+      if (window.parentIFrame && typeof window.parentIFrame.size === 'function') {
+        window.parentIFrame.size();
+      } else {
+        window.dispatchEvent(new Event('resize'));
+      }
+    } catch (e) {}
+  };
+  [0, 350, 900, 1800, 3500, 6000].forEach(function (ms) { setTimeout(nudge, ms); });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { nudge(); setTimeout(nudge, 250); });
+  }
+  window.addEventListener('load', function () { setTimeout(nudge, 200); });
+  var timer = null;
+  var mo = new MutationObserver(function () {
+    clearTimeout(timer);
+    timer = setTimeout(nudge, 200);
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+}
 """
 
 CSS = """
@@ -569,7 +612,7 @@ FOOTER = """
 
 
 with gr.Blocks(title="Blinkit Discovery Engine", css=CSS, head=HEAD,
-               js=FORCE_LIGHT, theme=gr.themes.Base()) as demo:
+               js=BOOT_JS, theme=gr.themes.Base()) as demo:
     # Font <link> repeated in-body: Gradio's head= does not always reach the served
     # page on Spaces, and browsers honour stylesheet links in the body too.
     gr.HTML(HEAD)
