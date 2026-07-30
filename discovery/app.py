@@ -126,10 +126,10 @@ footer,.footer,.show-api,.built-with,.settings{display:none !important}
 .dc-tabs button.secondary{background:transparent !important;color:#4a3d05 !important;font-weight:600 !important}
 .dc-tabs button.primary{background:#141414 !important;color:#f8cb46 !important;font-weight:700 !important}
 
-.dc-body{padding:34px 40px 10px !important}
-.dc-eyebrow.dc-eyebrow.dc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:#756512}
+.dc-body{padding:34px 40px 64px !important}
+.dc-eyebrow.dc-eyebrow.dc-eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;color:#4f440d}
 .dc-h2.dc-h2.dc-h2{font-weight:700;font-size:20px;letter-spacing:-.01em;color:#141414}
-.dc-lede{font-size:14px;color:#666 !important;max-width:640px;line-height:1.5;margin:8px 0 4px}
+.dc-lede{font-size:14px;color:#4a4a4a !important;max-width:640px;line-height:1.5;margin:8px 0 4px}
 .dc-lede code{font-family:'JetBrains Mono',monospace !important;font-size:12px;background:#efeee9;
   padding:2px 6px;border-radius:5px}
 .dc-card{background:#fff !important;border-radius:18px !important;border:1px solid #ececec !important;
