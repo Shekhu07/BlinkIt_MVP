@@ -102,44 +102,30 @@ function(){
       return;
     }
   }
-  // Report our real height to iframe-resizer. Its own measurement lands short here (the
-  // Bulk Run panel measures 1087 against 1127 of content), and since HF sets
-  // scrolling="no" that shortfall is unreachable rather than below the fold. A single
-  // report is not enough either: measuring during a tab switch catches the layout
-  // mid-render, and no further mutation fires once it settles. So re-measure on a short
-  // ladder after every trigger, and keep a cheap 1s reconciler as the backstop. The
-  // lastH guard means we only actually call across when the number changes.
-  var lastH = 0;
-  var report = function () {
+  var nudge = function () {
     try {
-      var d = document.documentElement, bd = document.body;
-      var h = Math.max(d ? d.scrollHeight : 0, d ? d.offsetHeight : 0,
-                       bd ? bd.scrollHeight : 0, bd ? bd.offsetHeight : 0);
-      if (!h || h === lastH) return;
-      lastH = h;
       if (window.parentIFrame && typeof window.parentIFrame.size === 'function') {
+        // Pass the height explicitly. iframe-resizer's own calculation measures short here
+        // (bodyOffset misses ~40px on the Bulk Run panel), and because the iframe is
+        // scrolling="no" that shortfall is unreachable rather than merely below the fold.
+        var d = document.documentElement, bd = document.body;
+        var h = Math.max(d ? d.scrollHeight : 0, d ? d.offsetHeight : 0,
+                         bd ? bd.scrollHeight : 0, bd ? bd.offsetHeight : 0);
         window.parentIFrame.size(h);
       } else {
         window.dispatchEvent(new Event('resize'));
       }
     } catch (e) {}
   };
-  var schedule = function () {
-    requestAnimationFrame(function () {
-      report();
-      setTimeout(report, 250);
-      setTimeout(report, 800);
-      setTimeout(report, 1600);
-    });
-  };
-  schedule();
-  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(schedule); }
-  window.addEventListener('load', schedule);
-  setInterval(report, 1000);
+  [0, 350, 900, 1800, 3500, 6000].forEach(function (ms) { setTimeout(nudge, ms); });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { nudge(); setTimeout(nudge, 250); });
+  }
+  window.addEventListener('load', function () { setTimeout(nudge, 200); });
   var timer = null;
   var mo = new MutationObserver(function () {
     clearTimeout(timer);
-    timer = setTimeout(schedule, 150);
+    timer = setTimeout(nudge, 200);
   });
   mo.observe(document.body, { childList: true, subtree: true });
 }
