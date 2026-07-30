@@ -15,4 +15,15 @@ Final_survey.pdf
 # Catch-all: any future raw export, whatever it gets named.
 *survey*.pdf
 *Survey*.pdf
-*.csv
+# CSV form exports only. A blanket `*.csv` was too broad — it silently swallowed every
+# pipeline export as collateral, so nobody could tell which files were excluded on purpose.
+*survey*.csv
+*Survey*.csv
+*Form Responses*.csv
+
+# Pipeline export of the 1,094 gate-passing extractions. Deliberately NOT committed: it
+# carries the full MouthShut review text, which is the one source whose rows exist only in
+# the database and in no tracked data/ file. That text embeds reviewer handles
+# (e.g. "sky…ocean", "m…") and customer order IDs — pseudonymous identifiers for real
+# people. Re-derive it from Postgres instead of publishing it from this public repo.
+gate_passing_extractions.csv

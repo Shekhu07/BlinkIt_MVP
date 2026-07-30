@@ -40,12 +40,29 @@ DARK_TEXT_MUTED2 = RGBColor(0xDA, 0xD8, 0xCE)
 FONT = "Arial"  # Plus Jakarta Sans isn't guaranteed on every machine; Arial is the safe substitute
 MIN = 14  # never render below this (Google Slides / PPT floor)
 
+# The layout below is authored against a 13.333x7.5in canvas, which put the densest text at
+# 9-13.5pt — visually faithful to the HTML deck (19px on its 1920px canvas) but under the
+# brief's literal 14pt floor. Clamping those sizes up flattened 253 of 284 runs to exactly
+# 14pt, destroying the hierarchy and overflowing panels sized for smaller type.
+#
+# Instead, render onto the HTML deck's own canvas: 1920x1080 at 96 DPI is exactly 20x11.25in,
+# where px * 0.75 = pt. Scaling the authored geometry and type by 1.5 maps the HTML's 19px
+# floor to 14.25pt, so the whole scale clears 14pt with its hierarchy intact and the PPTX
+# stays a faithful mirror of the submitted PDF.
+SCALE = 1.5
+
+
+def IN(v):
+    """Inches, scaled onto the 20x11.25in canvas. All geometry must go through this."""
+    return Inches(v * SCALE)
+
+
 DISCOVERY_URL = "https://huggingface.co/spaces/Abhishek292000/blinkit-discovery-engine"
 MVP_URL = "https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent"
 
 prs = Presentation()
-prs.slide_width = Inches(13.333)
-prs.slide_height = Inches(7.5)
+prs.slide_width = IN(13.333)
+prs.slide_height = IN(7.5)
 BLANK = prs.slide_layouts[6]
 SW, SH = 13.333, 7.5
 
@@ -65,7 +82,7 @@ def notes(s, text):
 
 
 def box(s, x, y, w, h, anchor=MSO_ANCHOR.TOP):
-    tb = s.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    tb = s.shapes.add_textbox(IN(x), IN(y), IN(w), IN(h))
     tf = tb.text_frame
     tf.word_wrap = True
     tf.vertical_anchor = anchor
@@ -75,7 +92,10 @@ def box(s, x, y, w, h, anchor=MSO_ANCHOR.TOP):
 def run(p, text, size, color=INK, bold=False, italic=False):
     r = p.add_run()
     r.text = text
-    r.font.size = Pt(max(size, MIN))  # brief's hard floor: never render below 14pt
+    # Scale onto the 20x11.25in canvas, then apply the floor. Post-scale this only catches
+    # the handful of runs authored below the HTML's own 19px floor, so the type hierarchy
+    # survives instead of collapsing into a single size.
+    r.font.size = Pt(max(size * SCALE, MIN))
     r.font.name = FONT
     r.font.color.rgb = color
     r.font.bold = bold
@@ -84,7 +104,7 @@ def run(p, text, size, color=INK, bold=False, italic=False):
 
 
 def panel(s, x, y, w, h, fill=None, border=CARD_BORDER, line_w=0.75):
-    shp = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
+    shp = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, IN(x), IN(y), IN(w), IN(h))
     try:
         shp.adjustments[0] = 0.06
     except Exception:
@@ -107,7 +127,7 @@ def eyebrow(s, text, x=0.55, y=0.35, color=AMBER_TEXT, with_logo=True, size=13):
     logo_w = 0.85
     lx = x
     if with_logo and (IMG / "blinkit-logo.png").exists():
-        s.shapes.add_picture(str(IMG / "blinkit-logo.png"), Inches(lx), Inches(y), height=Inches(0.3))
+        s.shapes.add_picture(str(IMG / "blinkit-logo.png"), IN(lx), IN(y), height=IN(0.3))
         lx += logo_w
     _, tf = box(s, lx, y - 0.03, 10.5, 0.4, anchor=MSO_ANCHOR.MIDDLE)
     p = tf.paragraphs[0]
@@ -137,11 +157,11 @@ def simple_table(s, x, y, w, h, headers, rows, col_widths, header_fill=INK, head
                   body_size=12, header_size=13, row_fill=None):
     n_rows = len(rows) + 1
     n_cols = len(headers)
-    gtable = s.shapes.add_table(n_rows, n_cols, Inches(x), Inches(y), Inches(w), Inches(h))
+    gtable = s.shapes.add_table(n_rows, n_cols, IN(x), IN(y), IN(w), IN(h))
     table = gtable.table
     total = sum(col_widths)
     for i, cw in enumerate(col_widths):
-        table.columns[i].width = Inches(w * cw / total)
+        table.columns[i].width = IN(w * cw / total)
     for j, htext in enumerate(headers):
         cell = table.cell(0, j)
         cell.fill.solid()
@@ -182,7 +202,7 @@ def picture_fit(s, path, x, y, max_w, max_h):
         h = w / ar
     px = x + (max_w - w) / 2
     py = y + (max_h - h) / 2
-    return s.shapes.add_picture(str(path), Inches(px), Inches(py), width=Inches(w), height=Inches(h))
+    return s.shapes.add_picture(str(path), IN(px), IN(py), width=IN(w), height=IN(h))
 
 
 # ========================================================================
@@ -309,7 +329,10 @@ panel(s, 10.0, 0.8, 2.8, 0.9, fill=LIGHT_AMBER_BG, border=YELLOW)
 _, tf = box(s, 10.15, 0.86, 2.5, 0.8)
 run(tf.paragraphs[0], "LIVE · DISCOVERY WORKFLOW", 9, AMBER_TEXT, bold=True)
 p2 = tf.add_paragraph()
-run(p2, "Open the live extractor →", 12, INK, bold=True)
+_r = run(p2, "Open the live extractor →", 12, INK, bold=True)
+# Label-only hyperlink: the URL must carry the click but never render as visible text
+# (deck/design/CLAUDE.md). Without this the slide reads as clickable and isn't.
+_r.hyperlink.address = DISCOVERY_URL
 
 panel(s, 0.55, 1.95, 12.25, 1.0, fill=WHITE, border=CARD_BORDER)
 funnel_vals = [("15,820", "public reviews ingested"), ("4,740", "pass the rule-based prefilter"),
@@ -660,7 +683,8 @@ run(tf.paragraphs[0], "The agent runs today: a shopper-facing nudge, its reasoni
                       "queue behind it", 20, INK, bold=True)
 _, tf = box(s, 0.55, 1.55, 3.3, 0.35)
 p = tf.paragraphs[0]
-run(p, "Open the live agent → ", 12, INK, bold=True)
+_r = run(p, "Open the live agent → ", 12, INK, bold=True)
+_r.hyperlink.address = MVP_URL   # label-only, as above
 panel(s, 9.35, 0.55, 3.45, 1.15, fill=WHITE, border=CARD_BORDER)
 _, tf = box(s, 9.5, 0.62, 3.15, 1.0)
 p = tf.paragraphs[0]

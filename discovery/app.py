@@ -408,6 +408,7 @@ def results_html():
     themes = RESULTS["themes"]
     v = RESULTS["validation"]
     conf = v["breakdown"].get("confirmed", 0)
+    contra = v["breakdown"].get("contradicted", 0)
     pct = round(100 * conf / v["total"]) if v["total"] else 0
     dash = 251
     offset = round(dash * (1 - pct / 100))
@@ -462,15 +463,32 @@ def results_html():
           <div style="font-size:11.5px;color:#6f6f6f;margin-top:4px">{esc(e['source'])} · {esc(e['category'])} · {esc(e['behavior_type'])}</div>
         </div>""" for e in uniq[:3])
 
-    d = RESULTS["company_disclosures"][0] if RESULTS["company_disclosures"] else None
+    # Only a row the judge actually scored as corroborating may be labelled as such.
+    # Every shipped row is signal_type "unrelated" — the Q4FY26 call speaks to assortment
+    # expansion, never to product-quality or refund friction. Labelling it "CORROBORATED"
+    # would claim support the pipeline explicitly did not find (see problem_statement.md §5).
+    _corroborating = [x for x in RESULTS["company_disclosures"]
+                      if (x.get("signal_type") or "").lower() == "corroborates"]
+    d = _corroborating[0] if _corroborating else (
+        RESULTS["company_disclosures"][0] if RESULTS["company_disclosures"] else None)
     corro = ""
     if d:
+        if _corroborating:
+            _label = f"CORROBORATED BY EARNINGS CALL — {esc(d['source_document'].replace('_',' '))}"
+            _caveat = ""
+        else:
+            _label = f"EARNINGS-CALL CONTEXT — {esc(d['source_document'].replace('_',' '))}"
+            _caveat = ("""
+      <div style="font-size:12px;line-height:1.45;color:#6b6144;margin-top:10px">
+        Growth-narrative context, not scored as corroboration: the call ties growth to
+        non-grocery assortment expansion but does not discuss product-quality or refund
+        friction. The link to this project's cause is ours, not the company's.</div>""")
         corro = f"""
     <div style="background:#fdf6dd;border:1px solid #f0e2a8;border-radius:18px;padding:20px 22px">
       <div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:#756512;margin-bottom:9px">
-        CORROBORATED BY EARNINGS CALL — {esc(d['source_document'].replace('_',' '))}</div>
+        {_label}</div>
       <div style="font-family:'Newsreader',serif;font-size:17px;line-height:1.5;color:#3a3320">
-        “{esc(d['content_snippet'].strip())}”</div>
+        “{esc(d['content_snippet'].strip())}”</div>{_caveat}
     </div>"""
 
     return f"""
@@ -524,7 +542,7 @@ def results_html():
         stroke-dasharray="{dash}" stroke-dashoffset="{offset}" transform="rotate(-90 48 48)"/></svg>
       <div style="font-size:27px;font-weight:800;margin-top:-64px;color:{YELLOW}">{pct}%</div>
       <div style="font-size:11px;color:#cfcfcf;margin-top:44px;text-align:center;font-weight:600">
-        LLM-judge validation<br>{conf}/{v['total']} confirmed · 0 contradicted</div></div>
+        LLM-judge validation<br>{conf}/{v['total']} confirmed · {contra} contradicted</div></div>
   </div>
 
   <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:22px 24px;margin-bottom:16px">

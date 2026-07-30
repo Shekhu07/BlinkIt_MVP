@@ -225,6 +225,14 @@ def _call_groq(client, chunk):
     raise UploadError(f"Extraction failed after 3 attempts — {last_error}.")
 
 
+def _as_row_id(v):
+    """Coerce the model's review_id to the int key `by_id` uses; None if unusable."""
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def extract(kept, progress=None):
     """Stage 2 — the Two-Step Gate, batched 15 at a time exactly like the pipeline."""
     if not kept:
@@ -239,7 +247,10 @@ def extract(kept, progress=None):
             progress((idx - 1) / len(chunks),
                      desc=f"Gated extraction — batch {idx}/{len(chunks)}")
         for data in _call_groq(client, chunk):
-            row = by_id.get(data.get("review_id"))
+            # The model returns review_id as either an int or a string ("3"); by_id is
+            # keyed on ints, so coerce before the lookup. Without this every row misses
+            # and the run reports 0 gate-passing with "model omitted it" as the reason.
+            row = by_id.get(_as_row_id(data.get("review_id")))
             if row is None:
                 continue          # model invented an ID; drop rather than misattribute
             # NB: "underlying_reason" is the model's output; "reason" is reserved

@@ -290,8 +290,17 @@ def reasoning_html(theme, r=None, p=None):
                f'margin:10px 0 20px;overflow:hidden"><div style="height:100%;border-radius:99px;'
                f'background:linear-gradient(90deg,#F8CD1B,#1F9D55);width:{pct}%;'
                f'animation:barGrow .8s cubic-bezier(.2,.7,.3,1)"></div></div>')
-    else:
+    elif theme.get("out_of_primary_scope"):
+        # Genuinely outside the trust-driven scope (low_intent_no_incident) — the nudge
+        # mechanic is not the right lever and the UI must say so.
         meter, bar = ('<div style="font-size:12px;font-weight:700;color:#C9CABF">out of primary scope</div>',
+                      '<div style="height:20px"></div>')
+    else:
+        # In scope, but a sub-theme Part 1 never counted separately (packaging_fulfillment).
+        # A null share is NOT the same as out-of-scope — saying so contradicted the
+        # (correctly absent) out-of-scope banner.
+        meter, bar = ('<div style="font-size:12px;font-weight:700;color:#C9CABF">'
+                      'sub-theme · not separately counted in Part 1</div>',
                       '<div style="height:20px"></div>')
 
     alts = alternatives_html(p, r) if p else ""
@@ -490,7 +499,7 @@ def phone_html(p, r=None):
         return _phone_shell(p, inner)
 
     cat = esc(r.get("suggested_category", "")).title()
-    emoji = r.get("emoji") or "🛍️"
+    emoji = esc(r.get("emoji") or "🛍️")   # LLM-supplied — escape like every sibling field
     inner = f"""
 <div class="nb-pop" style="background:#fff;border-radius:20px;overflow:hidden;
   box-shadow:0 6px 22px rgba(0,0,0,.08);border:1px solid #EFEFE9">
@@ -668,7 +677,7 @@ def _notification_card(p, notif):
         '<div style="font-size:11px;font-weight:700;color:#44443B">Blinkit</div>'
         f'<div style="flex:1"></div><div style="font-size:10.5px;color:#8A8A7C">now</div></div>'
         f'<div style="font-size:12.5px;font-weight:800;color:#16130A;line-height:1.3">'
-        f'{notif.get("emoji","🛒")} {esc(notif.get("title"))}</div>'
+        f'{esc(notif.get("emoji","🛒"))} {esc(notif.get("title"))}</div>'
         f'<div style="font-size:11.5px;color:#44443B;line-height:1.45;margin-top:3px">'
         f'{esc(notif.get("body"))}</div>'
         f'<div style="margin-top:6px;font-size:10px;font-weight:700;color:#2551C6">'
