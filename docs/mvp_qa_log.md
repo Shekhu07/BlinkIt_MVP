@@ -248,3 +248,38 @@ ranked"), so this is a question of *who picks*, not of new modelling.
   problem, not an awareness problem"*, and no Q15 driver asks for more options. It is instead
   essentially **next step #2** — the relevance-led play for the low-intent half (8 of 18 stuck
   users had no incident), and belongs there as a separate mechanic measured separately.
+
+---
+
+## Q: Can the checkout cart-filler and the operator console be chained into one flow?
+
+Raised 2026-07-30/31. **Built and shipped** (unlike the Variant B concept above, which stays
+on-record only). The two mechanics were already coordinated at the ranking layer
+(`friction_matching.primary_suggested_category()` — see `concept_category_choice_nudge.md` §2),
+but the operator console never visibly reacted to a shopper's own cart action. This closes that
+loop:
+
+1. Shopper adds a checkout-filler item (an already-real, deterministic, no-LLM suggestion —
+   `cart_filler.suggest_fillers()`).
+2. The console shows a **deterministic, template-only reassurance card** for the item just
+   added — the same two top-ranked trust drivers (refund guarantee + verified/quality seal) the
+   push-nudge agent leads with, applied here as static copy rather than an extra Groq call, since
+   the cart-filler layer is deliberately LLM-free.
+3. The console then fires a **live Groq call** for the next push nudge, with the just-added
+   category excluded from the candidate list (`rank_suggestable_categories(..., exclude=...)`,
+   `generate_nudge(..., exclude_category=...)` — both gained this parameter). The agent is told
+   explicitly why in the prompt: the category was just trialed via the cart-filler, so it must
+   pick a **different** never-bought one. This makes the project's "a new category every month"
+   thesis concrete rather than incidental.
+
+**Where it lives, and why it's not in the main MVP Space.** Both HF accounts available for this
+project hit account-level limits when a third Gradio/ZeroGPU Space was attempted (ZeroGPU quota
+on the original account; the second account gated to the Static SDK pending phone verification).
+Rather than block on that, the feature was spun out as a standalone Gradio app
+(`render_cart_nudge/`, trimmed from the MVP's `app.py` to just this one tab) and deployed
+separately on **Render** — see the deliverables table in `implementation-plan.md`. The tab was
+removed from the main `blinkit-category-nudge-agent` Space/clone so the feature exists in exactly
+one place. It uses its own Groq API key (not the one shared by the two HF Spaces) to avoid
+per-key rate-limit contention across all three live surfaces near submission. Per explicit
+instruction, this link is **not** added to the deck PDF — it's an additional demo surface, not
+one of the two PRD-required links.

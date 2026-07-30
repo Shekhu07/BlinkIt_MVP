@@ -145,6 +145,7 @@ Deadline     : 4 Aug 2026, 3:59:00 PM IST
 | 1-slider on workflow (inside deck) | Phase 6 | **DONE** — folded into slide 3 rather than a separate appendix |
 | 10-slide PDF deck | Phase 6 | **DONE 2026-07-29** — `deck/NL Blinkit Category Adoption.pdf` (also `deck/NL_Blinkit_CategoryAdoption.pptx`, editable) |
 | [Link] Deployed MVP/agent | Phase 5 | **LIVE 2026-07-23** → https://huggingface.co/spaces/Abhishek292000/blinkit-category-nudge-agent — Category Nudge Agent on HF Gradio Space. Source in `mvp/`. |
+| [Link] Cart → Nudge flow (additional, not a submission-required link) | Phase 5 follow-on | **LIVE 2026-07-31** → https://blinkit-cart-nudgeflow.onrender.com — standalone Render deploy of the chained cart-filler → push-nudge demo (see Q&A below). Source in `render_cart_nudge/`. Not one of the two required PRD links and deliberately **not added to the deck PDF**; free-tier cold start (30–60s) after ~15 min idle. |
 
 ---
 

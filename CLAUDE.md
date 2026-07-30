@@ -10,6 +10,16 @@ All four parts are complete. **Two Gradio apps are deployed live on HuggingFace 
 - `discovery/` — the Part 1 workflow demo (Live Extractor runs the real gated extraction on any pasted review; Results Explorer renders the real findings from `discovery/data/results.json`).
 - `mvp/` — the Category Nudge Agent (operator console + phone mockup; live Groq nudge generation).
 
+A third, additional app — `render_cart_nudge/` — is deployed separately on **Render**
+(https://blinkit-cart-nudgeflow.onrender.com), not HF: both HF accounts available for this
+project hit account-level limits (ZeroGPU quota; the second account gated to the Static SDK).
+It's a standalone spinoff of the MVP's "Cart → Nudge flow" tab — adding a checkout cart-filler
+item now excludes that category from the push-nudge agent's candidate list, so the console's
+next suggestion is always a genuinely different never-bought category. See
+`docs/mvp_qa_log.md` ("Can the checkout cart-filler and the operator console be chained into
+one flow?") for the full rationale. **This is not one of the two required PRD submission links
+and is deliberately not referenced in the deck PDF** — treat it as a bonus demo surface only.
+
 The Phase 6 deck is built and submission-ready: `deck/design/Blinkit Category Nudge Case Study.dc.html`
 is the authoritative 10-slide source (see its own `deck/design/CLAUDE.md` for the graded hard
 rules), exported to `deck/NL Blinkit Category Adoption.pdf` and rebuilt as an editable
