@@ -32,3 +32,24 @@ Final_survey.pdf
 # (e.g. "sky…ocean", "m…") and customer order IDs — pseudonymous identifiers for real
 # people. Re-derive it from Postgres instead of publishing it from this public repo.
 gate_passing_extractions.csv
+
+# Solution-breakdown report. Kept local only, per explicit instruction — it is an internal
+# working document, not a submission deliverable, and it is published as a private Claude
+# artifact instead. Do not commit.
+docs/solution_breakdown.html
+
+# Interview-framework form (build sheet + Apps Script builder). Kept local only, per explicit
+# instruction. These transcribe the PRD brief's own interview questions into a Google Form,
+# built after the decision to substitute the N=31 survey for live interviews — publishing them
+# in the submission repo would read as backfilling a requirement that was openly scoped out.
+# The deviation is declared in part2_research_tracker.md and implementation-plan.md instead.
+docs/interview_framework_google_form.md
+docs/interview_framework_form_builder.gs
+
+# Playwright MCP scratch output (page snapshots, console logs, screenshots) written into
+# the working tree during live QA passes against the deployed Spaces. Transient debug
+# artifacts, not project data.
+.playwright-mcp/
+*.png.tmp
+/console-view.png
+/hf-01-console.png
