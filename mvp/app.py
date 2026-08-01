@@ -498,7 +498,10 @@ def phone_html(p, r=None):
 </div>"""
         return _phone_shell(p, inner)
 
-    cat = esc(r.get("suggested_category", "")).title()
+    # Title-case BEFORE escaping. The other order title-cases the "&amp;" that esc()
+    # produces into "&Amp;", which is not a valid HTML entity, so it renders literally
+    # as "Kitchen &Amp; Dining". Hits every category containing "&".
+    cat = esc(r.get("suggested_category", "").title())
     emoji = esc(r.get("emoji") or "🛍️")   # LLM-supplied — escape like every sibling field
     inner = f"""
 <div class="nb-pop" style="background:#fff;border-radius:20px;overflow:hidden;
