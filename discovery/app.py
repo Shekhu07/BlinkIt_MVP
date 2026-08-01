@@ -616,6 +616,43 @@ def results_html():
     <div style="font-weight:800;font-size:13.5px;margin-bottom:14px;color:#141414">Sample evidence — {esc(top['theme_name'])}</div>
     <div style="display:flex;flex-direction:column;gap:12px">{ev}</div></div>
   {corro}
+
+  <div style="margin-top:22px">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:6px">
+      <span class="dc-eyebrow">HOW THIS WAS BUILT</span>
+      <span class="dc-h2" style="font-size:17px">From gate-passing rows to the numbers above</span></div>
+    <div class="dc-lede" style="margin-bottom:18px">The two steps that turn 1,094 raw extractions into
+      named themes and a confidence number — not run live here (see the "run it yourself" tabs for
+      what is), but this is the exact code path that produced every figure on this page.</div>
+
+    <div class="dc-grid3" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
+        <div style="font-weight:800;font-size:13.5px;margin-bottom:10px;color:#141414">
+          1&nbsp;&middot;&nbsp;How themes were identified</div>
+        <div style="font-size:12.5px;line-height:1.6;color:#4a4a4a">
+          Every gate-passing review already has a category and a behavior tag on it. We group
+          reviews that share the same pair of tags — a plain count, nothing guessed. The biggest
+          groups, with a few real examples from each, get sent to the model <b>once</b> and it's
+          asked to roll them up into 3&ndash;5 themes with names and short descriptions. Each group
+          can only be claimed by one theme, so no review is ever counted twice. The model chooses
+          the theme names; the numbers next to them are exact counts, not estimates.</div>
+        <div style="font-size:11px;color:#8a8a7c;margin-top:10px;font-family:'JetBrains Mono',monospace">
+          analysis/cluster_themes.py</div></div>
+
+      <div style="background:#fff;border:1px solid #ececec;border-radius:18px;padding:20px 22px">
+        <div style="font-weight:800;font-size:13.5px;margin-bottom:10px;color:#141414">
+          2&nbsp;&middot;&nbsp;How quality was validated</div>
+        <div style="font-size:12.5px;line-height:1.6;color:#4a4a4a">
+          For the top theme, we pulled 20 matching reviews the model had <b>never seen</b> while
+          building that theme — a genuine unseen test set, not a re-check of its own homework. A
+          separate pass, acting as an independent judge with no stake in the original answer, reads
+          each one and decides: does this actually support the theme, contradict it, or is it
+          unclear? The {conf}/{v['total']} above is that judge's count — not a self-report from
+          the step that built the theme in the first place.</div>
+        <div style="font-size:11px;color:#8a8a7c;margin-top:10px;font-family:'JetBrains Mono',monospace">
+          analysis/validate_themes.py</div></div>
+    </div>
+  </div>
 </div>"""
 
 
