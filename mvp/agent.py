@@ -7,6 +7,8 @@ per docs/architecture.md section 7 and CLAUDE.md. Gemini is NOT used (dropped pr
 """
 import json
 import os
+import random
+import time
 
 from dotenv import load_dotenv
 from groq import Groq
@@ -110,9 +112,41 @@ their existing basket) — choose exactly ONE per rule 3:
 Write the nudge now."""
 
 
+# Groq free-tier quota can be exhausted by a burst of calls (e.g. a batch run). Retry
+# transient/rate-limit failures with backoff, and cache identical calls so repeat
+# clicks for the same user/theme don't re-spend quota.
+_MAX_RETRIES = 4
+_BASE_DELAY_S = 1.5
+_NUDGE_CACHE = {}
+
+
+def _is_retryable(exc):
+    status = getattr(exc, "status_code", None)
+    if status in (429, 500, 502, 503, 504):
+        return True
+    return type(exc).__name__ in (
+        "RateLimitError", "APIConnectionError", "APITimeoutError", "InternalServerError",
+    )
+
+
+def _create_completion(client, **kwargs):
+    for attempt in range(_MAX_RETRIES + 1):
+        try:
+            return client.chat.completions.create(**kwargs)
+        except Exception as exc:
+            if attempt == _MAX_RETRIES or not _is_retryable(exc):
+                raise
+            time.sleep(_BASE_DELAY_S * (2 ** attempt) + random.uniform(0, 0.5))
+
+
 def generate_nudge(profile, theme, match_reason, client=None):
+    cache_key = (profile.get("user_id"), theme["name"], match_reason)
+    if cache_key in _NUDGE_CACHE:
+        return dict(_NUDGE_CACHE[cache_key])
+
     client = client or _client()
-    resp = client.chat.completions.create(
+    resp = _create_completion(
+        client,
         model=GROQ_MODEL,
         temperature=0.4,
         response_format={"type": "json_object"},
@@ -126,7 +160,8 @@ def generate_nudge(profile, theme, match_reason, client=None):
     out["_matched_theme"] = theme["name"]
     out["_match_reason"] = match_reason
     out["_in_primary_scope"] = not theme.get("out_of_primary_scope", False)
-    return out
+    _NUDGE_CACHE[cache_key] = out
+    return dict(out)
 
 
 if __name__ == "__main__":
