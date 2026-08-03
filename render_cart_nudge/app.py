@@ -599,7 +599,7 @@ TOP = """
 <div class="nb-top">
   <div class="nb-brand">
     <div class="nb-logo">🛒</div>
-    <div><div class="nb-t1">Category Nudge Agent</div>
+    <div><div class="nb-t1">BlinkIQ <span style="font-weight:400;color:#6B6B60">— Category Nudge Agent</span></div>
     <div class="nb-t2">Part 4 MVP · nudges a repeat buyer toward one new category</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
