@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <rect width="100" height="100" rx="12" fill="none"/>
+  
+  <!-- Left Basket: Full/Overflowing (High Volume) -->
+  <g transform="translate(10, 35)">
+    <!-- Basket Handle -->
+    <path d="M10 0 C10 -10 30 -10 30 0" fill="none" stroke="#16130A" stroke-width="3" stroke-linecap="round"/>
+    <!-- Basket Body -->
+    <path d="M0 0 L5 30 H35 L40 0 Z" fill="none" stroke="#16130A" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Overflowing Items (Stacked High) -->
+    <g transform="translate(5, -15)">
+      <rect x="0" y="5" width="10" height="10" rx="1" fill="#F8CD1B" stroke="#16130A" stroke-width="2"/>
+      <rect x="12" y="5" width="10" height="10" rx="1" fill="none" stroke="#16130A" stroke-width="2"/>
+      <rect x="24" y="5" width="10" height="10" rx="1" fill="#F8CD1B" stroke="#16130A" stroke-width="2"/>
+      <rect x="6" y="-5" width="10" height="10" rx="1" fill="none" stroke="#16130A" stroke-width="2"/>
+      <rect x="18" y="-5" width="10" height="10" rx="1" fill="#F8CD1B" stroke="#16130A" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- Right Basket: Sparse/Empty Space (Narrow Variety) -->
+  <g transform="translate(55, 35)">
+    <!-- Basket Handle -->
+    <path d="M10 0 C10 -10 30 -10 30 0" fill="none" stroke="#16130A" stroke-width="3" stroke-linecap="round"/>
+    <!-- Basket Body -->
+    <path d="M0 0 L5 30 H35 L40 0 Z" fill="none" stroke="#16130A" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Sparse Identical Items -->
+    <g transform="translate(12, 10)">
+      <rect x="0" y="0" width="10" height="10" rx="1" fill="#F8CD1B" stroke="#16130A" stroke-width="2"/>
+      <rect x="5" y="5" width="10" height="10" rx="1" fill="#F8CD1B" stroke="#16130A" stroke-width="2" opacity="0.8"/>
+    </g>
+  </g>
+</svg>
