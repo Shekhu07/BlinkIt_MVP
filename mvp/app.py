@@ -625,19 +625,16 @@ def auto_gate_head(min_tenure=MIN_TENURE_MONTHS):
 </div>"""
 
 
-def auto_eligibility_html(min_tenure=MIN_TENURE_MONTHS):
-    """Funnel + the in-queue / held-back split.
+def auto_funnel_html(min_tenure=MIN_TENURE_MONTHS):
+    """The compact 3-stage funnel only (all profiles -> cadence passes -> in queue).
 
-    Every count is computed live from the 8 synthetic profiles through the real
-    deterministic gate (auto_targeting.eligibility_detail), so moving the tenure slider
-    re-runs the actual rule rather than animating a fixed number.
+    Split out of the old auto_eligibility_html() so this stays visible at a glance while
+    the much longer per-profile breakdown (below) can be tucked into a collapsed
+    accordion — the full always-open list of all 8 profiles was the main source of
+    clutter in this tab.
     """
     min_tenure = int(min_tenure)
-    incl, excl = [], []
-    for p in PROFILES:
-        ok, why = eligibility_detail(p, min_tenure)
-        (incl if ok else excl).append((p, why))
-
+    incl = [p for p in PROFILES if eligibility_detail(p, min_tenure)[0]]
     freq_ok = [p for p in PROFILES if (p.get("order_frequency") or "").strip().lower()
                in ELIGIBLE_FREQS]
     stages = [(len(PROFILES), "All profiles", "synthetic user base"),
@@ -657,6 +654,17 @@ def auto_eligibility_html(min_tenure=MIN_TENURE_MONTHS):
           <div style="height:100%;width:{round(100 * n / total)}%;border-radius:99px;
             background:{YELLOW};animation:barGrow .7s cubic-bezier(.2,.7,.3,1)"></div></div>
       </div>""" for i, (n, lab, sub) in enumerate(stages))
+    return f'<div style="display:flex;gap:12px;flex-wrap:wrap">{funnel}</div>'
+
+
+def auto_profile_list_html(min_tenure=MIN_TENURE_MONTHS):
+    """The full in-queue / held-back per-profile breakdown, meant to sit inside a
+    collapsed accordion (see the tab layout) rather than always on screen."""
+    min_tenure = int(min_tenure)
+    incl, excl = [], []
+    for p in PROFILES:
+        ok, why = eligibility_detail(p, min_tenure)
+        (incl if ok else excl).append((p, why))
 
     def row(p, why, ok):
         """One profile row in the eligibility split.
@@ -708,8 +716,7 @@ def auto_eligibility_html(min_tenure=MIN_TENURE_MONTHS):
         '<div style="font-size:12.5px;color:#6B6B60">Nobody held back at this threshold.</div>'
 
     return f"""
-<div style="display:flex;gap:12px;flex-wrap:wrap">{funnel}</div>
-<div style="display:flex;gap:14px;margin-top:18px;flex-wrap:wrap">
+<div style="display:flex;gap:14px;flex-wrap:wrap">
   <div style="flex:1;min-width:250px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <span style="width:8px;height:8px;border-radius:50%;background:#1F9D55"></span>
@@ -731,11 +738,27 @@ def auto_eligibility_html(min_tenure=MIN_TENURE_MONTHS):
 </div>"""
 
 
-def _notification_card(p, notif):
-    """One push payload, styled as an iOS-style lock-screen notification."""
+def _notification_card(p, notif, nudge=None):
+    """One push payload, styled as an iOS-style lock-screen notification, plus a
+    catchy category badge and (when available) the trust-driver line underneath —
+    outside the bubble, since no real notification carries its own targeting metadata."""
+    cat_label = str(notif.get("category") or "").title()
+    badge = (
+        f'<div style="margin-top:6px"><span style="font-size:10px;font-weight:800;'
+        f'color:#16130A;background:{YELLOW};border-radius:20px;padding:4px 10px;'
+        f'white-space:nowrap">🆕 New pick · {esc(cat_label)}</span></div>'
+        if cat_label else ''
+    )
+    refund_line = (nudge or {}).get("refund_line") or ""
+    trust = (
+        f'<div style="margin-top:5px;font-size:10.5px;color:#6B6B60;line-height:1.4">'
+        f'💯 {esc(refund_line)}</div>'
+        if refund_line else ''
+    )
     return (
+        '<div style="margin-bottom:12px">'
         '<div class="nb-pop" style="background:rgba(255,255,255,.94);border-radius:17px;'
-        'padding:11px 13px;margin-bottom:9px;box-shadow:0 4px 16px rgba(0,0,0,.16)">'
+        'padding:11px 13px;box-shadow:0 4px 16px rgba(0,0,0,.16)">'
         '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'
         '<div style="width:19px;height:19px;border-radius:5px;background:#F8CD1B;display:flex;'
         f'align-items:center;justify-content:center;font-size:11px">🛒</div>'
@@ -745,8 +768,10 @@ def _notification_card(p, notif):
         f'{esc(notif.get("emoji","🛒"))} {esc(notif.get("title"))}</div>'
         f'<div style="font-size:11.5px;color:#44443B;line-height:1.45;margin-top:3px">'
         f'{esc(notif.get("body"))}</div>'
-        f'<div style="margin-top:6px;font-size:10px;font-weight:700;color:#2551C6">'
-        f'To {esc(p["display_name"])} · new category · {esc(notif.get("category"))}</div>'
+        '</div>'
+        f'{badge}{trust}'
+        f'<div style="margin-top:4px;font-size:9.5px;font-weight:700;color:#8A8A7C">'
+        f'For {esc(p["display_name"])}</div>'
         '</div>')
 
 
@@ -803,13 +828,13 @@ def on_run_auto_batch(min_tenure=MIN_TENURE_MONTHS, uid=None):
     for p in queue:
         theme, reason = match_profile_to_theme(p, THEMES)
         try:
-            notif = to_notification(generate_nudge(p, theme, reason))  # REAL Groq call
+            nudge = generate_nudge(p, theme, reason)  # REAL Groq call
         except Exception as e:  # noqa: BLE001
             cards += (f'<div style="background:rgba(255,255,255,.9);border-radius:15px;padding:11px;'
                       f'font-size:11.5px;color:#B00;margin-bottom:9px">Failed for '
                       f'{esc(p["display_name"])}: {esc(e)}</div>')
             continue
-        cards += _notification_card(p, notif)
+        cards += _notification_card(p, to_notification(nudge), nudge=nudge)
     footer = (f"Previewing the push {esc(queue[0]['display_name'])} would receive · "
               f"not part of a batch send") if uid else None
     return _lock_screen(cards, len(queue), total, footer=footer)
@@ -1105,6 +1130,15 @@ with gr.Blocks(title="Blinkit Category Nudge Agent", css=CSS, head=FONT_LINK,
                         gr.HTML(instrumentation_html())
 
         with gr.Tab("Auto-nudge queue"):
+            with gr.Column(elem_classes="nb-card"):
+                gr.HTML('<div class="nb-eyebrow">Blink & Try It · auto-nudge</div>'
+                        '<div style="font-size:15px;font-weight:800;color:#16130A;'
+                        'margin-top:4px">Pick a user, then preview the push they would receive</div>')
+                with gr.Row():
+                    auto_user = gr.Dropdown(
+                        choices=[(p["display_name"], p["user_id"]) for p in PROFILES],
+                        value=PROFILES[0]["user_id"], label="Synthetic user", scale=70)
+                    run_batch = gr.Button("▶ Run scheduled batch", elem_id="genbatch", scale=30)
             with gr.Row(elem_classes="nb-cols"):
                 with gr.Column(scale=110):
                     with gr.Column(elem_classes="nb-card"):
@@ -1112,11 +1146,9 @@ with gr.Blocks(title="Blinkit Category Nudge Agent", css=CSS, head=FONT_LINK,
                         with gr.Column(elem_id="tenwrap"):
                             tenure = gr.Slider(3, 12, value=MIN_TENURE_MONTHS, step=1,
                                                label="Minimum tenure threshold (months)")
-                        gate_out = gr.HTML(auto_eligibility_html())
-                        auto_user = gr.Dropdown(
-                            choices=[(p["display_name"], p["user_id"]) for p in PROFILES],
-                            value=PROFILES[0]["user_id"], label="Preview push for user")
-                        run_batch = gr.Button("▶ Run scheduled batch", elem_id="genbatch")
+                        funnel_out = gr.HTML(auto_funnel_html())
+                        with gr.Accordion("See all 8 profiles — who's in queue and why", open=False):
+                            gate_out = gr.HTML(auto_profile_list_html())
                 with gr.Column(scale=90):
                     with gr.Column(elem_classes="nb-card"):
                         auto_out = gr.HTML(_lock_screen(
@@ -1151,7 +1183,8 @@ with gr.Blocks(title="Blinkit Category Nudge Agent", css=CSS, head=FONT_LINK,
                   outputs=[sel, prof_out, reason_out, phone_out, measure_out] + chip_btns)
     gen.click(on_generate, inputs=sel, outputs=[reason_out, phone_out, measure_out])
     tenure.change(auto_gate_head, inputs=tenure, outputs=head_out)
-    tenure.change(auto_eligibility_html, inputs=tenure, outputs=gate_out)
+    tenure.change(auto_funnel_html, inputs=tenure, outputs=funnel_out)
+    tenure.change(auto_profile_list_html, inputs=tenure, outputs=gate_out)
     run_batch.click(on_run_auto_batch, inputs=[tenure, auto_user], outputs=auto_out)
     for _c in (cart_user, cart_amt):
         _c.change(cart_phone_html, inputs=[cart_user, cart_amt], outputs=cart_phone)
