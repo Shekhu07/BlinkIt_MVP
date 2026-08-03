@@ -739,26 +739,33 @@ def auto_profile_list_html(min_tenure=MIN_TENURE_MONTHS):
 
 
 def _notification_card(p, notif, nudge=None):
-    """One push payload, styled as an iOS-style lock-screen notification, plus a
-    catchy category badge and (when available) the trust-driver line underneath —
-    outside the bubble, since no real notification carries its own targeting metadata."""
+    """One push payload, styled as an iOS-style lock-screen notification.
+
+    The category badge and trust-driver line render INSIDE the bubble (below the
+    title/body, same rounded card, same width) — an earlier version put them outside as
+    captions on the lock-screen background, which visually overflowed past the phone
+    frame for longer category names (a nowrap pill with no width limit). Keeping them
+    inside the bubble means they share its width and wrapping, so nothing can spill past
+    the phone's edge.
+    """
     cat_label = str(notif.get("category") or "").title()
     badge = (
-        f'<div style="margin-top:6px"><span style="font-size:10px;font-weight:800;'
-        f'color:#16130A;background:{YELLOW};border-radius:20px;padding:4px 10px;'
-        f'white-space:nowrap">🆕 New pick · {esc(cat_label)}</span></div>'
+        f'<div style="margin-top:7px"><span style="display:inline-block;max-width:100%;'
+        f'box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'
+        f'vertical-align:top;font-size:10px;font-weight:800;color:#16130A;background:{YELLOW};'
+        f'border-radius:20px;padding:4px 10px">🆕 Try: {esc(cat_label)}</span></div>'
         if cat_label else ''
     )
     refund_line = (nudge or {}).get("refund_line") or ""
     trust = (
-        f'<div style="margin-top:5px;font-size:10.5px;color:#6B6B60;line-height:1.4">'
-        f'💯 {esc(refund_line)}</div>'
+        f'<div style="margin-top:5px;font-size:10.5px;color:#6B6B60;line-height:1.4;'
+        f'word-wrap:break-word">💯 {esc(refund_line)}</div>'
         if refund_line else ''
     )
     return (
         '<div style="margin-bottom:12px">'
         '<div class="nb-pop" style="background:rgba(255,255,255,.94);border-radius:17px;'
-        'padding:11px 13px;box-shadow:0 4px 16px rgba(0,0,0,.16)">'
+        'padding:11px 13px 12px;box-shadow:0 4px 16px rgba(0,0,0,.16)">'
         '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'
         '<div style="width:19px;height:19px;border-radius:5px;background:#F8CD1B;display:flex;'
         f'align-items:center;justify-content:center;font-size:11px">🛒</div>'
@@ -768,8 +775,8 @@ def _notification_card(p, notif, nudge=None):
         f'{esc(notif.get("emoji","🛒"))} {esc(notif.get("title"))}</div>'
         f'<div style="font-size:11.5px;color:#44443B;line-height:1.45;margin-top:3px">'
         f'{esc(notif.get("body"))}</div>'
-        '</div>'
         f'{badge}{trust}'
+        '</div>'
         f'<div style="margin-top:4px;font-size:9.5px;font-weight:700;color:#8A8A7C">'
         f'For {esc(p["display_name"])}</div>'
         '</div>')
