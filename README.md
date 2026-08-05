@@ -6,7 +6,7 @@ discovery problem, the project builds an evidence chain across four parts to tes
 assumption and ship a targeted fix.
 
 **Full write-up and evaluator Q&A prep:** [`script.md`](script.md)
-**Deck:** [`deck/NL Blinkit Category Adoption.pdf`](deck/NL%20Blinkit%20Category%20Adoption.pdf) · [`deck/NL_Blinkit_CategoryAdoption.pptx`](deck/NL_Blinkit_CategoryAdoption.pptx)
+**Deck source:** [`deck/design/`](deck/design/) (see [`deck/design/README.md`](deck/design/README.md))
 
 ## The four parts
 
