@@ -8,6 +8,11 @@ assumption and ship a targeted fix.
 **Full write-up and evaluator Q&A prep:** [`script.md`](script.md)
 **Deck source:** [`deck/design/`](deck/design/) (see [`deck/design/README.md`](deck/design/README.md))
 
+## Live demos
+
+- **Discovery engine (Part 1):** https://huggingface.co/spaces/Cr7292000/blinkit-discovery-engine
+- **Category Nudge Agent (Part 4 MVP):** https://huggingface.co/spaces/Cr7292000/blinkit-category-nudge-agent
+
 ## The four parts
 
 | Part | What it is | Where |
@@ -25,7 +30,7 @@ assumption and ship a targeted fix.
 - `database/schema.sql` — Postgres schema backing the discovery engine.
 - `mvp/` — Part 4 Category Nudge Agent, deployed on Hugging Face Spaces (Gradio/ZeroGPU).
 - `render_cart_nudge/` — standalone Cart → Nudge flow, deployed separately to Render after HF compute quota was hit.
-- `deck/` — final exported deck (PDF/PPTX) plus the design source (`deck/design/`) and product screenshots (`deck/screenshots/`).
+- `deck/` — deck design source (`deck/design/`) and product screenshots (`deck/screenshots/`).
 - `docs/` — research tracker, problem statement, architecture notes, QA logs, and the Phase 3 survey build sheet.
 - `data/` — review corpus exports consumed by the ingestion/analysis scripts.
 
