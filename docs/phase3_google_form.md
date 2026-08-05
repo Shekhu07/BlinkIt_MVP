@@ -1,6 +1,6 @@
 # Phase 3 Interview Questionnaire — Google Forms Build Sheet
 
-**This is the canonical Phase 3 questionnaire** — built directly from the real Part 1 theme ("Poor Quality and Unreliable Products," 770/1,094 gate-passing extractions, spanning groceries/electronics/snacks/household/personal care). It supersedes the earlier drafts in `user_interview_survey.md` and `user_research_survey_phase3.md`, which were written before the real theme was confirmed.
+**This is the canonical Phase 3 questionnaire** — built directly from the real Part 1 theme ("Poor Quality and Unreliable Products," 770/1,094 gate-passing extractions, spanning groceries/electronics/snacks/household/personal care). It supersedes earlier drafts written before the real theme was confirmed (since removed from the repo).
 
 Structured for direct copy-paste into Google Forms, including section breaks and branching logic. Question type labels (`[Short answer]`, `[Paragraph]`, etc.) match Google Forms' actual option names exactly.
 
