@@ -53,3 +53,13 @@ docs/interview_framework_form_builder.gs
 *.png.tmp
 /console-view.png
 /hf-01-console.png
+
+# Deck-building working prompts (paste-into-Figma/Design-Labs instructions, revision specs,
+# per-slide fix prompts). These are scratch artifacts for iterating on the deck in an external
+# tool, not submission content — the deliverable is deck/design/*.dc.html and the exported
+# PDF/PPTX. Keep local only.
+docs/deck_*.md
+
+# Stitch icon-generation tool exports (zip archives + duplicate code.html previews) used to
+# produce a handful of icons now embedded in the deck. Raw tool output, not a deliverable.
+deck/design/img/stitch_Design's/
